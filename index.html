@@ -373,7 +373,8 @@
 
         if (earth) {
           // Faster, cinematic motion (you asked for this)
-          earth.rotation.y += 0.00255;
+          earth.rotation.y += 0.0032;
+
           earth.rotation.x = Math.sin(t) * 0.018;
 
           if (clouds) clouds.rotation.y += 0.00325;
