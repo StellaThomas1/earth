@@ -1,0 +1,226 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="1894.7">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  </style>
+</head>
+<body>
+<p class="p1">&lt;!DOCTYPE html&gt;</p>
+<p class="p1">&lt;html lang="en"&gt;</p>
+<p class="p1">&lt;head&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta charset="UTF-8" /&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0" /&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;title&gt;Global Water Fund — Planetary Water Systems&lt;/title&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;style&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>:root{</p>
+<p class="p1"><span class="Apple-converted-space">      </span>--bg:#05070b;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>--ink:#eaf2ff;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>--muted:rgba(234,242,255,.72);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>--muted2:rgba(234,242,255,.55);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>--accent:#6fd3ff;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>--accent2:#2d6cff;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>--ring:rgba(111,211,255,.28);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>--ring2:rgba(45,108,255,.18);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>html, body {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>margin: 0;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding: 0;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>height: 100%;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background: var(--bg);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>color: var(--ink);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>overflow-x: hidden;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.stage {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>position: relative;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>min-height: 100vh;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>overflow: hidden;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>canvas {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>position: absolute;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>inset: 0;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>width: 100%;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>height: 100%;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: block;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.heroText {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>position: relative;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>z-index: 5;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>min-height: 100vh;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: grid;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>align-content: center;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding: clamp(24px, 5vw, 72px);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>max-width: 960px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.kicker {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>text-transform: uppercase;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>letter-spacing: .16em;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-size: 12px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>color: var(--muted2);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>margin-bottom: 12px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>opacity: 0;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>animation: fadeUp 1s ease forwards;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>animation-delay: .4s;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>h1 {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-size: clamp(36px, 4.5vw, 64px);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>line-height: 1.05;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>margin: 0 0 18px 0;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-weight: 600;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>opacity: 0;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>animation: fadeUp 1.2s ease forwards;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>animation-delay: .8s;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.sub {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-size: clamp(16px, 1.6vw, 20px);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>max-width: 58ch;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>color: var(--muted);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>line-height: 1.55;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>opacity: 0;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>animation: fadeUp 1.2s ease forwards;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>animation-delay: 1.2s;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.scroll {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>position: absolute;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>bottom: 28px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>left: 0;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>right: 0;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>text-align: center;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-size: 11px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>letter-spacing: .12em;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>color: var(--muted2);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>text-transform: uppercase;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>opacity: 0;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>animation: fadeIn 1s ease forwards;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>animation-delay: 2.2s;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>@keyframes fadeUp {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>from { opacity: 0; transform: translateY(12px); }</p>
+<p class="p1"><span class="Apple-converted-space">      </span>to <span class="Apple-converted-space">  </span>{ opacity: 1; transform: translateY(0); }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>@keyframes fadeIn {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>to { opacity: 1; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>@media (max-width: 900px){</p>
+<p class="p1"><span class="Apple-converted-space">      </span>.stage { min-height: 75vh; }</p>
+<p class="p1"><span class="Apple-converted-space">      </span>.heroText { min-height: 75vh; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/style&gt;</p>
+<p class="p1">&lt;/head&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;body&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;section class="stage" id="hero"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;canvas id="globe"&gt;&lt;/canvas&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="heroText"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="kicker"&gt;GLOBAL WATER FUND&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;h1&gt;Water Is the Planet’s Operating System&lt;/h1&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;p class="sub"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>Climate, food, energy, trade, and security all flow through water.</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="scroll"&gt;Scroll&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/section&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;script type="module"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>const canvas = document.getElementById("globe");</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });</p>
+<p class="p1"><span class="Apple-converted-space">    </span>renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));</p>
+<p class="p1"><span class="Apple-converted-space">    </span>renderer.setSize(window.innerWidth, window.innerHeight);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>const scene = new THREE.Scene();</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>const camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 100);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>camera.position.z = 6.2;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>const ambient = new THREE.AmbientLight(0x0b1830, 0.7);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>scene.add(ambient);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>const sun = new THREE.DirectionalLight(0xffffff, 1.2);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>sun.position.set(5, 3, 5);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>scene.add(sun);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function createTexture(size=1024){</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const c = document.createElement("canvas");</p>
+<p class="p1"><span class="Apple-converted-space">      </span>c.width = c.height = size;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const ctx = c.getContext("2d");</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const grad = ctx.createRadialGradient(size*0.35, size*0.35, size*0.1, size*0.5, size*0.5, size*0.8);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>grad.addColorStop(0,"#0e5b8a");</p>
+<p class="p1"><span class="Apple-converted-space">      </span>grad.addColorStop(0.4,"#08345e");</p>
+<p class="p1"><span class="Apple-converted-space">      </span>grad.addColorStop(1,"#02060f");</p>
+<p class="p1"><span class="Apple-converted-space">      </span>ctx.fillStyle = grad;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>ctx.fillRect(0,0,size,size);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>ctx.globalAlpha = 0.25;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>for(let i=0;i&lt;2000;i++){</p>
+<p class="p1"><span class="Apple-converted-space">        </span>ctx.fillStyle = `rgba(120,200,255,${Math.random()*0.25})`;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>ctx.beginPath();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>ctx.arc(Math.random()*size,Math.random()*size,Math.random()*6+2,0,Math.PI*2);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>ctx.fill();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const tex = new THREE.CanvasTexture(c);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>tex.colorSpace = THREE.SRGBColorSpace;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>return tex;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>const texture = createTexture();</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>const globe = new THREE.Mesh(</p>
+<p class="p1"><span class="Apple-converted-space">      </span>new THREE.SphereGeometry(1.9,128,128),</p>
+<p class="p1"><span class="Apple-converted-space">      </span>new THREE.MeshStandardMaterial({</p>
+<p class="p1"><span class="Apple-converted-space">        </span>map: texture,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>emissive: new THREE.Color(0x2d6cff),</p>
+<p class="p1"><span class="Apple-converted-space">        </span>emissiveMap: texture,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>emissiveIntensity: 0.55,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>roughness: 0.9,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>metalness: 0.05</p>
+<p class="p1"><span class="Apple-converted-space">      </span>})</p>
+<p class="p1"><span class="Apple-converted-space">    </span>);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>scene.add(globe);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function animate(){</p>
+<p class="p1"><span class="Apple-converted-space">      </span>globe.rotation.y += 0.0012;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>renderer.render(scene,camera);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>requestAnimationFrame(animate);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>animate();</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>window.addEventListener("resize",()=&gt;{</p>
+<p class="p1"><span class="Apple-converted-space">      </span>renderer.setSize(window.innerWidth,window.innerHeight);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>camera.aspect = window.innerWidth/window.innerHeight;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>camera.updateProjectionMatrix();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>});</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/script&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;/body&gt;</p>
+<p class="p1">&lt;/html&gt;</p>
+</body>
+</html>
