@@ -1,1 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Planetary Stability</title>
+<style>
+body{
+  margin:0;
+  background:#05060a;
+  color:#f3f6ff;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
+}
+.wrap{
+  padding:clamp(22px,5vw,72px);
+}
+h1{font-size:42px;}
+canvas{
+  width:100%;
+  height:60vh;
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:18px;
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Planetary Stability</h1>
+  <canvas id="c"></canvas>
+</div>
+
+<script>
+const c=document.getElementById("c");
+const ctx=c.getContext("2d");
+function resize(){
+  c.width=c.clientWidth;
+  c.height=c.clientHeight;
+  draw();
+}
+window.addEventListener("resize",resize);
+
+function draw(){
+  const w=c.width,h=c.height;
+  ctx.clearRect(0,0,w,h);
+  const cx=w/2,cy=h/2,R=Math.min(w,h)*0.35;
+  for(let i=1;i<=4;i++){
+    ctx.beginPath();
+    ctx.arc(cx,cy,R*i/4,0,Math.PI*2);
+    ctx.strokeStyle="rgba(255,255,255,.15)";
+    ctx.stroke();
+  }
+}
+resize();
+</script>
+</body>
+</html>
 
