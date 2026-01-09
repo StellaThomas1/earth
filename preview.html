@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>Global Water Fund — Preview</title>
 
 <style>
@@ -12,58 +12,53 @@
     --ink:#f3f6ff;
     --muted:rgba(243,246,255,.78);
     --muted2:rgba(243,246,255,.55);
-
-    --ice1: rgba(170, 240, 255, .95);
-    --ice2: rgba(100, 200, 255, .70);
-    --ice3: rgba(60, 170, 255, .45);
   }
 
   html, body{
     margin:0;
+    padding:0;
     height:100%;
     background: radial-gradient(1200px 900px at 60% 30%, var(--bg2) 0%, var(--bg) 60%, #04050a 100%);
     color:var(--ink);
     font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
     overflow-x:hidden;
+    -webkit-text-size-adjust: 100%;
   }
 
-  .wrap{ min-height: 150vh; }
-  .hero{ position: sticky; top:0; height: 100vh; overflow:hidden; }
+  .wrap{ min-height: 165vh; }
+
+  .hero{
+    height: 100vh;
+    height: 100svh;
+    height: 100dvh;
+    overflow:hidden;
+    position: relative;
+  }
 
   canvas{
-    position:absolute;
+    position: fixed;
     inset:0;
     width:100%;
     height:100%;
     display:block;
-  }
-
-  /* VERSION STAMP */
-  .ver{
-    position:absolute;
-    top:14px;
-    left:14px;
-    z-index:50;
-    font-size:11px;
-    letter-spacing:.16em;
-    text-transform:uppercase;
-    color:rgba(243,246,255,.55);
-    background:rgba(0,0,0,.35);
-    border:1px solid rgba(255,255,255,.10);
-    padding:8px 10px;
-    border-radius:999px;
     pointer-events:none;
   }
 
   .overlay{
-    position:relative;
-    z-index:10;
-    height:100%;
-    display:grid;
+    position: relative;
+    z-index: 10;
+    height: 100%;
+    display: grid;
     grid-template-columns: minmax(300px, 520px) 1fr;
     gap: clamp(16px, 3vw, 44px);
-    padding: clamp(18px, 4.5vw, 64px);
-    align-items:center;
+    align-items: center;
+
+    padding-top: calc(18px + env(safe-area-inset-top));
+    padding-bottom: calc(18px + env(safe-area-inset-bottom));
+    padding-left: calc(18px + env(safe-area-inset-left));
+    padding-right: calc(18px + env(safe-area-inset-right));
+    padding-inline: clamp(18px, 4.5vw, 64px);
+
     pointer-events:none;
   }
 
@@ -114,11 +109,10 @@
   }
   .revealLine.on{ opacity: 1; transform: translateY(0); }
 
-  /* Planetary graphic: NO box */
   .viz{
     position:relative;
-    height: min(84vh, 860px);
-    width:  min(84vh, 860px);
+    width: min(84vh, 860px);
+    height:min(84vh, 860px);
     justify-self: center;
   }
   .viz svg{
@@ -128,44 +122,50 @@
     background: transparent !important;
   }
 
-  /* Museum-grade typography (desktop) */
+  /* Typography (desktop) */
   .labels{
-    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
     font-weight: 650;
-    font-size: 22px;
-    letter-spacing: .14em;
+    font-size: 21px;
+    letter-spacing: .12em;
     fill: rgba(243,246,255,.90);
     text-transform: uppercase;
   }
-  .labels tspan{ letter-spacing: .12em; }
+  .labels tspan{ letter-spacing: .10em; }
 
-  .footerPad{ height: 50vh; }
+  .footerPad{ height: 60vh; }
 
-  /* ✅ MOBILE FIX: single column, cleaner spacing, smaller labels, less tracking */
+  /* ✅ MOBILE: clean stack + bigger labels + move circle higher */
   @media (max-width: 980px){
     .overlay{
       grid-template-columns: 1fr;
-      align-content:center;
-      gap: 18px;
-      padding: 22px;
+      align-content: start;
+      gap: 14px;
+      padding-inline: 18px;
+      padding-top: calc(18px + env(safe-area-inset-top));
+      padding-bottom: calc(18px + env(safe-area-inset-bottom));
     }
-    .copy{
-      max-width: 680px;
-    }
+
+    .copy{ max-width: 720px; }
     .copy p{
-      text-align: left;           /* justified looks messy on mobile */
+      text-align: left;
       line-height: 1.75;
+      margin: 8px 0;
     }
+
     .viz{
-      width: min(86vw, 560px);
-      height: min(86vw, 560px);
+      width: min(92vw, 600px);
+      height:min(92vw, 600px);
       margin: 0 auto;
+      /* gives a bit more bottom room on iPhone */
+      padding-bottom: 14px;
     }
+
     .labels{
-      font-size: 16px;
-      letter-spacing: .08em;
-      font-weight: 650;
+      font-size: 17px;       /* BIGGER on mobile */
+      letter-spacing: .07em; /* less tracking so it reads clean */
+      font-weight: 750;
     }
+    .labels tspan{ letter-spacing: .06em; }
   }
 </style>
 </head>
@@ -173,7 +173,6 @@
 <body>
 <div class="wrap">
   <section class="hero" id="hero">
-    <div class="ver">UPDATED • V10 • LABELS+MOBILE FIX</div>
     <canvas id="globe"></canvas>
 
     <div class="overlay">
@@ -190,20 +189,36 @@
         <div id="revealLine" class="revealLine">FROM PLANET TO POLICY — BEFORE THE SHOCK.</div>
       </div>
 
-      <div class="viz" aria-label="Planetary Stability Rings">
-        <!-- KEY CHANGE: viewBox expanded AND labels moved INWARD so nothing clips -->
+      <div class="viz" aria-label="Planetary Stability Cones">
         <svg viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
           <defs>
+            <!-- Centered halo -->
             <radialGradient id="halo" cx="50%" cy="50%" r="62%">
-              <stop offset="0%"   stop-color="rgba(170,240,255,.30)"/>
-              <stop offset="42%"  stop-color="rgba(100,200,255,.14)"/>
+              <stop offset="0%"   stop-color="rgba(170,240,255,.26)"/>
+              <stop offset="42%"  stop-color="rgba(100,200,255,.12)"/>
               <stop offset="72%"  stop-color="rgba(10,14,24,0)"/>
             </radialGradient>
 
-            <linearGradient id="arcGrad" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stop-color="rgba(170,240,255,.95)"/>
-              <stop offset="60%" stop-color="rgba(100,200,255,.70)"/>
-              <stop offset="100%" stop-color="rgba(60,170,255,.50)"/>
+            <!-- Cone colors (quiet, premium) -->
+            <linearGradient id="coneClimate" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="rgba(160,220,255,.42)"/>
+              <stop offset="100%" stop-color="rgba(160,220,255,.08)"/>
+            </linearGradient>
+            <linearGradient id="coneFresh" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="rgba(130,255,230,.34)"/>
+              <stop offset="100%" stop-color="rgba(130,255,230,.08)"/>
+            </linearGradient>
+            <linearGradient id="coneFood" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="rgba(255,210,120,.30)"/>
+              <stop offset="100%" stop-color="rgba(255,210,120,.08)"/>
+            </linearGradient>
+            <linearGradient id="coneCoast" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="rgba(140,170,255,.30)"/>
+              <stop offset="100%" stop-color="rgba(140,170,255,.08)"/>
+            </linearGradient>
+            <linearGradient id="coneSecurity" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="rgba(255,150,200,.26)"/>
+              <stop offset="100%" stop-color="rgba(255,150,200,.08)"/>
             </linearGradient>
 
             <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
@@ -215,61 +230,94 @@
             </filter>
           </defs>
 
-          <circle cx="500" cy="500" r="430" fill="url(#halo)"/>
+          <!-- MOBILE: lift the entire chart up a bit so bottom label never clips -->
+          <g id="chartGroup">
+            <circle cx="500" cy="500" r="430" fill="url(#halo)"/>
 
-          <circle cx="500" cy="500" r="210" fill="none" stroke="rgba(255,255,255,.14)" stroke-width="2"/>
-          <circle cx="500" cy="500" r="300" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="2"/>
-          <circle cx="500" cy="500" r="390" fill="none" stroke="rgba(255,255,255,.10)" stroke-width="2"/>
-          <circle cx="500" cy="500" r="460" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="2"/>
+            <!-- Rings -->
+            <circle cx="500" cy="500" r="210" fill="none" stroke="rgba(255,255,255,.14)" stroke-width="2"/>
+            <circle cx="500" cy="500" r="300" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="2"/>
+            <circle cx="500" cy="500" r="390" fill="none" stroke="rgba(255,255,255,.10)" stroke-width="2"/>
+            <circle cx="500" cy="500" r="460" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="2"/>
 
-          <path d="M 180 520 A 330 330 0 0 1 360 240"
-                fill="none" stroke="url(#arcGrad)" stroke-width="6" stroke-linecap="round" filter="url(#softGlow)"/>
-          <path d="M 640 235 A 350 350 0 0 1 860 470"
-                fill="none" stroke="rgba(170,240,255,.70)" stroke-width="6" stroke-linecap="round" filter="url(#softGlow)"/>
-          <path d="M 820 660 A 340 340 0 0 1 585 875"
-                fill="none" stroke="rgba(100,200,255,.56)" stroke-width="6" stroke-linecap="round" filter="url(#softGlow)"/>
-          <path d="M 425 895 A 360 360 0 0 1 175 665"
-                fill="none" stroke="rgba(60,170,255,.46)" stroke-width="6" stroke-linecap="round" filter="url(#softGlow)"/>
+            <!-- 5 Cones (wedge sectors) INSIDE the ring (replaces “blue arc line”) -->
+            <!-- Geometry: center (500,500), inner radius ~110, outer radius ~420, five wedges -->
+            <!-- Wedge 1: Climate (top) -->
+            <path d="M500 500
+                     L500 120
+                     A380 380 0 0 1 680 170
+                     Z"
+                  fill="url(#coneClimate)" opacity=".92"/>
 
-          <circle cx="500" cy="500" r="74" fill="rgba(10,14,24,.58)" stroke="rgba(255,255,255,.14)" stroke-width="2"/>
-          <text x="500" y="510" text-anchor="middle"
-                font-family="system-ui, -apple-system, Segoe UI, Roboto, Arial"
-                font-size="26" font-weight="700" letter-spacing="4"
-                fill="rgba(243,246,255,.92)">
-            WATER
-          </text>
+            <!-- Wedge 2: Freshwater (upper-right) -->
+            <path d="M500 500
+                     L680 170
+                     A380 380 0 0 1 860 340
+                     Z"
+                  fill="url(#coneFresh)" opacity=".92"/>
 
-          <!-- Labels moved INWARD to avoid desktop clipping -->
-          <g class="labels">
-            <!-- Top -->
-            <text x="500" y="92" text-anchor="middle">
-              <tspan x="500">CLIMATE</tspan>
-              <tspan x="500" dy="30">VARIABILITY</tspan>
+            <!-- Wedge 3: Food systems (lower-right) -->
+            <path d="M500 500
+                     L860 340
+                     A380 380 0 0 1 780 720
+                     Z"
+                  fill="url(#coneFood)" opacity=".92"/>
+
+            <!-- Wedge 4: Coastal (bottom) -->
+            <path d="M500 500
+                     L780 720
+                     A380 380 0 0 1 320 880
+                     Z"
+                  fill="url(#coneCoast)" opacity=".92"/>
+
+            <!-- Wedge 5: Human security (lower-left) -->
+            <path d="M500 500
+                     L320 880
+                     A380 380 0 0 1 140 340
+                     Z"
+                  fill="url(#coneSecurity)" opacity=".92"/>
+
+            <!-- Center: WATER -->
+            <circle cx="500" cy="500" r="74" fill="rgba(10,14,24,.58)" stroke="rgba(255,255,255,.14)" stroke-width="2"/>
+            <text x="500" y="510" text-anchor="middle"
+                  font-family="system-ui, -apple-system, Segoe UI, Roboto, Arial"
+                  font-size="26" font-weight="700" letter-spacing="4"
+                  fill="rgba(243,246,255,.92)">
+              WATER
             </text>
 
-            <!-- Right (moved inward from edge) -->
-            <text x="810" y="330" text-anchor="start">
-              <tspan x="810">FRESHWATER</tspan>
-              <tspan x="810" dy="30">AVAILABILITY</tspan>
-            </text>
+            <!-- Labels: force perfectly aligned two-line tspans (no drifting) -->
+            <g class="labels">
+              <!-- Top -->
+              <text x="500" y="92" text-anchor="middle">
+                <tspan x="500" dy="0">CLIMATE</tspan>
+                <tspan x="500" dy="30">VARIABILITY</tspan>
+              </text>
 
-            <!-- Lower-right -->
-            <text x="810" y="720" text-anchor="start">
-              <tspan x="810">FOOD</tspan>
-              <tspan x="810" dy="30">SYSTEMS</tspan>
-            </text>
+              <!-- Upper-right (inset to avoid clipping) -->
+              <text x="760" y="335" text-anchor="start">
+                <tspan x="760" dy="0">FRESHWATER</tspan>
+                <tspan x="760" dy="30">AVAILABILITY</tspan>
+              </text>
 
-            <!-- Bottom (moved upward so it never clips) -->
-            <text x="500" y="930" text-anchor="middle">
-              <tspan x="500">COASTAL</tspan>
-              <tspan x="500" dy="30">STABILITY</tspan>
-            </text>
+              <!-- Lower-right -->
+              <text x="760" y="705" text-anchor="start">
+                <tspan x="760" dy="0">FOOD</tspan>
+                <tspan x="760" dy="30">SYSTEMS</tspan>
+              </text>
 
-            <!-- Left (moved inward) -->
-            <text x="190" y="720" text-anchor="end">
-              <tspan x="190">HUMAN</tspan>
-              <tspan x="190" dy="30">SECURITY</tspan>
-            </text>
+              <!-- Bottom (higher to prevent mobile clip) -->
+              <text x="500" y="900" text-anchor="middle">
+                <tspan x="500" dy="0">COASTAL</tspan>
+                <tspan x="500" dy="30">STABILITY</tspan>
+              </text>
+
+              <!-- Lower-left -->
+              <text x="240" y="705" text-anchor="end">
+                <tspan x="240" dy="0">HUMAN</tspan>
+                <tspan x="240" dy="30">SECURITY</tspan>
+              </text>
+            </g>
           </g>
         </svg>
       </div>
@@ -285,9 +333,15 @@
   const canvas = document.getElementById("globe");
   const hero = document.getElementById("hero");
   const revealLine = document.getElementById("revealLine");
+  const chartGroup = document.getElementById("chartGroup");
 
   const isMobile = window.matchMedia("(max-width: 980px)").matches;
   const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // Move circle higher on mobile (fix bottom clipping)
+  if(isMobile && chartGroup){
+    chartGroup.setAttribute("transform","translate(0,-55)");
+  }
 
   const renderer = new THREE.WebGLRenderer({ canvas, alpha:true, antialias: !isMobile });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isMobile ? 1.5 : 2));
@@ -297,7 +351,6 @@
   const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 200);
   camera.position.set(0.35, 0.10, 6.35);
 
-  // Tuned brightness
   scene.add(new THREE.AmbientLight(0xffffff, 0.32));
   const key = new THREE.DirectionalLight(0xffffff, 1.30);
   key.position.set(6, 3.2, 6);
