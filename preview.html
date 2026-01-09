@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Global Water Fund — Earth Systems</title>
+
+  <style>
+    :root{
+      --bg:#05060a;
+      --ink:#f3f6ff;
+      --muted:rgba(243,246,255,.72);
+      --muted2:rgba(243,246,255,.50);
+      --accent:#78c8ff;
+      --river:#3aa8ff;
+      --ring:#8ad7ff;
+    }
+
+    html, body{
+      margin:0; padding:0;
+      height:100%;
+      background: var(--bg);
+      color:var(--ink);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      overflow-x:hidden;
+    }
+
+    /* The hero is scroll-driven: we make it taller so scrolling drives the sequence */
+    .scrollStage{
+      position:relative;
+      height: 260vh; /* adjust for longer/shorter storytelling */
+      background: radial-gradient(1200px 900px at 60% 30%, #0b0f1a 0%, #05060a 60%, #04050a 100%);
+    }
+
+    .sticky{
+      position:sticky;
+      top:0;
+      height:100vh;
+      overflow:hidden;
+    }
+
+    canvas{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      display:block;
+    }
+
+    /* Editorial overlay */
+    .copy{
+      position:relative;
+      z-index:10;
+      height:100%;
+      display:grid;
+      align-content:center;
+      padding: clamp(22px, 5vw, 72px);
+      max-width: 980px;
+      pointer-events:none;
+    }
+
+    .kicker{
+      text-transform:uppercase;
+      letter-spacing:.18em;
+      font-size:12px;
+      color:var(--muted2);
+      margin-bottom:12px;
+    }
+
+    .headline{
+      font-size: clamp(36px, 4.8vw, 72px);
+      line-height:1.03;
+      margin:0 0 12px 0;
+      font-weight:650;
+      letter-spacing:-0.01em;
+    }
+
+    .sub{
+      font-size: clamp(15px, 1.6vw, 20px);
+      max-width: 64ch;
+      line-height:1.55;
+      color:var(--muted);
+      margin:0;
+    }
+
+    .micro{
+      margin-top: 18px;
+      font-size: 13px;
+      letter-spacing:.10em;
+      text-transform: uppercase;
+      color: rgba(243,246,255,.62);
+      display:flex;
+      gap: 14px;
+      flex-wrap:wrap;
+    }
+
+    .badge{
+      padding: 9px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(10,14,24,.34);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    /* Step lines that fade in/out with scroll */
+    .stepLine{
+      position:absolute;
+      left: clamp(22px, 5vw, 72px);
+      bottom: 28px;
+      z-index: 12;
+      font-size: 12px;
+      letter-spacing:.14em;
+      text-transform: uppercase;
+      color: rgba(243,246,255,.72);
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity .35s ease, transform .35s ease;
+      pointer-events:none;
+    }
+
+    @media (max-width: 900px){
+      .scrollStage{ height: 290vh; }
+      .copy{ padding: 22px; }
+      .stepLine{ left: 22px; right: 22px; }
+    }
+  </style>
+</head>
+
+<body>
+  <section class="scrollStage" id="stage">
+    <div class="sticky">
+      <canvas id="globe"></canvas>
+      <canvas id="overlay"></canvas>
+
+      <div class="copy">
+        <div class="kicker">GLOBAL WATER FUND</div>
+        <h1 class="headline">Water is Earth’s system architecture.</h1>
+        <p class="sub">Scroll to watch water emerge from the dark: rivers, basins, networks—then a map, then planetary stability.</p>
+
+        <div class="micro">
+          <div class="badge">Networks</div>
+          <div class="badge">Basins</div>
+          <div class="badge">Cascading Risk</div>
+          <div class="badge">Forecasting</div>
+        </div>
+      </div>
+
+      <div class="stepLine" id="stepLine">Scroll</div>
+    </div>
+  </section>
+
+  <!-- three.js (classic build) -->
+  <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
+
+  <script>
+    (function(){
+      const stage = document.getElementById("stage");
+      const stepLine = document.getElementById("stepLine");
+
+      const globeCanvas = document.getElementById("globe");
+      const overlayCanvas = document.getElementById("overlay");
+      const octx = overlayCanvas.getContext("2d");
+
+      const isMobile = matchMedia("(max-width: 900px)").matches;
+      const prefersReducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      // ====== TUNING KNOBS ======
+      const K = {
+        // speed (you said previous was too slow)
+        spin: prefersReducedMotion ? 0.000 : 0.0105,
+        cloudSpin: prefersReducedMotion ? 0.000 : 0.0155,
+
+        // when each step happens (0..1 progress)
+        step1_end: 0.18,   // dark serious globe
+        step2_end: 0.45,   // color + rivers reveal
+        step3_end: 0.65,   // water falls off (droplets)
+        step4_end: 0.84,   // flatten to map
+        step5_end: 1.00,   // planetary stability
+
+        // visual intensity
+        riverCount: isMobile ? 28 : 44,
+        riverPts: 120,
+        dropletCount: isMobile ? 2200 : 3600,
+        dropletSize: isMobile ? 0.022 : 0.018,
+        gravity: 0.050, // stronger fall
+      };
+
+      // ====== HELPERS ======
+      const clamp01 = (x)=>Math.max(0, Math.min(1, x));
+      const smooth = (x)=>x*x*(3-2*x); // smoothstep
+      const lerp = (a,b,t)=>a+(b-a)*t;
+
+      function getProgress(){
+        const r = stage.getBoundingClientRect();
+        const total = stage.offsetHeight - innerHeight;
+        if (total <= 0) return 0;
+        return clamp01((-r.top) / total);
+      }
+
+      function resize2D(){
+        overlayCanvas.width = Math.floor(overlayCanvas.clientWidth * Math.min(devicePixelRatio, 2));
+        overlayCanvas.height = Math.floor(overlayCanvas.clientHeight * Math.min(devicePixelRatio, 2));
+        octx.setTransform(1,0,0,1,0,0);
+        octx.scale(overlayCanvas.width/overlayCanvas.clientWidth, overlayCanvas.height/overlayCanvas.clientHeight);
+      }
+
+      // ====== THREE SETUP ======
+      const renderer = new THREE.WebGLRenderer({ canvas: globeCanvas, antialias: !isMobile, alpha: true });
+      renderer.setPixelRatio(Math.min(devicePixelRatio || 1, isMobile ? 1.5 : 2));
+      renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 200);
+      camera.position.set(0.35, 0.10, 6.2);
+
+      // lighting (serious cinematic)
+      scene.add(new THREE.AmbientLight(0xffffff, 0.25));
+      const key = new THREE.DirectionalLight(0xffffff, 1.10);
+      key.position.set(6, 3, 6);
+      scene.add(key);
+      const rim = new THREE.DirectionalLight(0x86d4ff, 0.85);
+      rim.position.set(-8, -2, 3);
+      scene.add(rim);
+
+      function resize3D(){
+        const w = globeCanvas.clientWidth;
+        const h = globeCanvas.clientHeight;
+        if (!w || !h) return;
+        renderer.setSize(w, h, false);
+        camera.aspect = w/h;
+        camera.updateProjectionMatrix();
+      }
+
+      addEventListener("resize", ()=>{
+        resize3D();
+        resize2D();
+      });
+
+      // textures (standard earth textures; you’ll replace later with custom if you want)
+      const TEX = {
+        day:    "https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg",
+        normal: "https://threejs.org/examples/textures/planets/earth_normal_2048.jpg",
+        spec:   "https://threejs.org/examples/textures/planets/earth_specular_2048.jpg",
+        clouds: "https://threejs.org/examples/textures/planets/earth_clouds_1024.png"
+      };
+
+      const loader = new THREE.TextureLoader();
+      loader.crossOrigin = "anonymous";
+      const loadTex = (url)=>new Promise((res, rej)=>loader.load(url, t=>{ t.colorSpace = THREE.SRGBColorSpace; res(t); }, undefined, rej));
+
+      const seg = isMobile ? 96 : 128;
+      const earthGeo = new THREE.SphereGeometry(1.95, seg, seg);
+      const cloudsGeo = new THREE.SphereGeometry(1.975, seg, seg);
+
+      let earth, clouds, atmo, mapTexture;
+
+      // ====== RIVERS (glow lines) ======
+      const riverGroup = new THREE.Group();
+      scene.add(riverGroup);
+
+      function randomOnSphere(){
+        const u = Math.random(), v = Math.random();
+        const theta = 2*Math.PI*u;
+        const phi = Math.acos(2*v-1);
+        return new THREE.Vector3(
+          Math.sin(phi)*Math.cos(theta),
+          Math.cos(phi),
+          Math.sin(phi)*Math.sin(theta)
+        );
+      }
+
+      function greatCircle(a,b,t){
+        const dot = Math.max(-1, Math.min(1, a.dot(b)));
+        const omega = Math.acos(dot);
+        if (omega < 1e-6) return a.clone();
+        const so = Math.sin(omega);
+        const s1 = Math.sin((1-t)*omega)/so;
+        const s2 = Math.sin(t*omega)/so;
+        return a.clone().multiplyScalar(s1).add(b.clone().multiplyScalar(s2)).normalize();
+      }
+
+      function makeRiver(){
+        const a = randomOnSphere();
+        const b = randomOnSphere().lerp(a, 0.35).normalize(); // basin-like
+        const pts = [];
+        for(let i=0;i<K.riverPts;i++){
+          const t = i/(K.riverPts-1);
+          const p = greatCircle(a,b,t);
+          // meander
+          p.add(new THREE.Vector3((Math.random()-0.5)*0.02,(Math.random()-0.5)*0.02,(Math.random()-0.5)*0.02)).normalize();
+          pts.push(p.multiplyScalar(1.956));
+        }
+        const geo = new THREE.BufferGeometry().setFromPoints(pts);
+        const mat = new THREE.LineBasicMaterial({
+          color: 0x3aa8ff,
+          transparent: true,
+          opacity: 0.0,
+          blending: THREE.AdditiveBlending
+        });
+        const line = new THREE.Line(geo, mat);
+        line.userData.seed = Math.random()*Math.PI*2;
+        riverGroup.add(line);
+      }
+
+      // ====== DROPLETS (detach) ======
+      const dropletGeom = new THREE.BufferGeometry();
+      let dropletPos, dropletVel;
+
+      const dropletMat = new THREE.PointsMaterial({
+        color: 0x78c8ff,
+        size: K.dropletSize,
+        transparent: true,
+        opacity: 0.0,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending
+      });
+
+      const droplets = new THREE.Points(dropletGeom, dropletMat);
+      scene.add(droplets);
+
+      function initDroplets(){
+        dropletPos = new Float32Array(K.dropletCount*3);
+        dropletVel = new Float32Array(K.dropletCount*3);
+        for(let i=0;i<K.dropletCount;i++){
+          const p = randomOnSphere().multiplyScalar(1.99);
+          dropletPos[i*3+0]=p.x; dropletPos[i*3+1]=p.y; dropletPos[i*3+2]=p.z;
+          dropletVel[i*3+0]=(Math.random()-0.5)*0.012;
+          dropletVel[i*3+1]=-(0.03 + Math.random()*0.04);
+          dropletVel[i*3+2]=(Math.random()-0.5)*0.012;
+        }
+        dropletGeom.setAttribute("position", new THREE.BufferAttribute(dropletPos, 3));
+      }
+
+      // ====== EARTH MATERIAL “CINEMATIC → COLORFUL” ======
+      // We do this by desaturating initially, then restoring color during the reveal.
+      function applyDesatShader(mat){
+        mat.onBeforeCompile = (shader)=>{
+          shader.uniforms.uDesat = { value: 1.0 };       // 1 = grayscale
+          shader.uniforms.uBright = { value: 0.85 };     // darker start
+          shader.uniforms.uContrast = { value: 1.12 };
+
+          shader.fragmentShader = "uniform float uDesat; uniform float uBright; uniform float uContrast;\n" + shader.fragmentShader;
+          shader.fragmentShader = shader.fragmentShader.replace(
+            "#include <dithering_fragment>",
+            `
+              float l = dot(gl_FragColor.rgb, vec3(0.299,0.587,0.114));
+              vec3 g = vec3(l);
+              gl_FragColor.rgb = mix(gl_FragColor.rgb, g, uDesat);
+              gl_FragColor.rgb = (gl_FragColor.rgb - 0.5) * uContrast + 0.5;
+              gl_FragColor.rgb *= uBright;
+              #include <dithering_fragment>
+            `
+          );
+
+          mat.userData.shader = shader;
+        };
+      }
+
+      // ====== 2D OVERLAY: FLAT MAP + PLANETARY CHART ======
+      const mapImg = new Image();
+      mapImg.crossOrigin = "anonymous";
+      mapImg.src = TEX.day; // reuse earth texture as a “map” (works surprisingly well)
+
+      function drawFlatMap(alpha){
+        if (!mapImg.complete) return;
+        const w = overlayCanvas.clientWidth;
+        const h = overlayCanvas.clientHeight;
+
+        octx.save();
+        octx.globalAlpha = alpha;
+        octx.fillStyle = "rgba(5,6,10,0.0)";
+        octx.fillRect(0,0,w,h);
+
+        // map panel centered
+        const pad = Math.max(22, w*0.08);
+        const panelW = w - pad*2;
+        const panelH = Math.min(h*0.46, panelW*0.52);
+        const x = pad;
+        const y = h*0.52 - panelH*0.55;
+
+        // subtle glass frame
+        octx.fillStyle = "rgba(255,255,255,0.05)";
+        roundRect(octx, x, y, panelW, panelH, 18);
+        octx.fill();
+
+        octx.strokeStyle = "rgba(255,255,255,0.10)";
+        octx.lineWidth = 1;
+        roundRect(octx, x, y, panelW, panelH, 18);
+        octx.stroke();
+
+        // draw equirectangular-like strip from earth texture
+        // (we’re not doing real projection math here—this is the cinematic “flat map” beat)
+        octx.globalAlpha = alpha * 0.90;
+        octx.drawImage(mapImg, x+10, y+10, panelW-20, panelH-20);
+
+        // overlay “basins + networks” accents
+        octx.globalAlpha = alpha * 0.55;
+        octx.strokeStyle = "rgba(58,168,255,0.55)";
+        octx.lineWidth = 2;
+        for (let i=0;i<7;i++){
+          const yy = y + 18 + (panelH-36)*(i/6);
+          octx.beginPath();
+          octx.moveTo(x+18, yy);
+          octx.bezierCurveTo(x+panelW*0.35, yy-10, x+panelW*0.65, yy+10, x+panelW-18, yy);
+          octx.stroke();
+        }
+
+        octx.restore();
+      }
+
+      function drawPlanetaryChart(alpha){
+        const w = overlayCanvas.clientWidth;
+        const h = overlayCanvas.clientHeight;
+
+        const cx = w*0.74;
+        const cy = h*0.56;
+        const R = Math.min(w,h) * 0.18;
+
+        octx.save();
+        octx.globalAlpha = alpha;
+
+        // rings
+        for(let i=1;i<=4;i++){
+          octx.beginPath();
+          octx.arc(cx, cy, R*(i/4), 0, Math.PI*2);
+          octx.strokeStyle = `rgba(138,215,255,${0.10 + i*0.03})`;
+          octx.lineWidth = 1;
+          octx.stroke();
+        }
+
+        // axes + labels (tight, Davos)
+        const labels = ["Climate", "Freshwater", "Food", "Energy", "Coastal", "Security"];
+        const n = labels.length;
+
+        for(let i=0;i<n;i++){
+          const ang = (-Math.PI/2) + (i*(Math.PI*2/n));
+          const x2 = cx + Math.cos(ang)*R*1.05;
+          const y2 = cy + Math.sin(ang)*R*1.05;
+
+          octx.beginPath();
+          octx.moveTo(cx, cy);
+          octx.lineTo(x2, y2);
+          octx.strokeStyle = "rgba(255,255,255,0.10)";
+          octx.stroke();
+
+          octx.fillStyle = "rgba(243,246,255,0.78)";
+          octx.font = "12px system-ui, -apple-system, Segoe UI, Roboto, Arial";
+          octx.textAlign = (Math.cos(ang) > 0.2) ? "left" : (Math.cos(ang) < -0.2 ? "right" : "center");
+          octx.textBaseline = "middle";
+          octx.fillText(labels[i], cx + Math.cos(ang)*R*1.18, cy + Math.sin(ang)*R*1.18);
+        }
+
+        // inner “stability shape” (just a cinematic signal; you’ll replace with real numbers later)
+        octx.globalAlpha = alpha * 0.75;
+        octx.beginPath();
+        for(let i=0;i<n;i++){
+          const ang = (-Math.PI/2) + (i*(Math.PI*2/n));
+          const rr = R * (0.55 + 0.18*Math.sin(i*1.7));
+          const px = cx + Math.cos(ang)*rr;
+          const py = cy + Math.sin(ang)*rr;
+          if (i===0) octx.moveTo(px,py); else octx.lineTo(px,py);
+        }
+        octx.closePath();
+        octx.fillStyle = "rgba(58,168,255,0.22)";
+        octx.strokeStyle = "rgba(58,168,255,0.50)";
+        octx.lineWidth = 2;
+        octx.fill();
+        octx.stroke();
+
+        // title
+        octx.globalAlpha = alpha;
+        octx.fillStyle = "rgba(243,246,255,0.88)";
+        octx.font = "12px system-ui, -apple-system, Segoe UI, Roboto, Arial";
+        octx.textAlign = "center";
+        octx.fillText("PLANETARY STABILITY", cx, cy - R*1.28);
+
+        octx.restore();
+      }
+
+      function roundRect(ctx, x, y, w, h, r){
+        const rr = Math.min(r, w/2, h/2);
+        ctx.beginPath();
+        ctx.moveTo(x+rr, y);
+        ctx.arcTo(x+w, y, x+w, y+h, rr);
+        ctx.arcTo(x+w, y+h, x, y+h, rr);
+        ctx.arcTo(x, y+h, x, y, rr);
+        ctx.arcTo(x, y, x+w, y, rr);
+        ctx.closePath();
+      }
+
+      // ====== LOAD + RUN ======
+      Promise.all([loadTex(TEX.day), loadTex(TEX.normal), loadTex(TEX.spec), loadTex(TEX.clouds)])
+        .then(([day, normal, spec, cloudsTex])=>{
+          const mat = new THREE.MeshPhongMaterial({
+            map: day,
+            normalMap: normal,
+            specularMap: spec,
+            specular: new THREE.Color(0x2b5a7a),
+            shininess: 12
+          });
+
+          applyDesatShader(mat);
+
+          earth = new THREE.Mesh(earthGeo, mat);
+          earth.rotation.y = 0.9;
+          scene.add(earth);
+
+          clouds = new THREE.Mesh(cloudsGeo, new THREE.MeshLambertMaterial({
+            map: cloudsTex,
+            transparent: true,
+            opacity: 0.26,
+            depthWrite: false
+          }));
+          clouds.rotation.y = earth.rotation.y + 0.35;
+          scene.add(clouds);
+
+          atmo = new THREE.Mesh(
+            new THREE.SphereGeometry(2.05, seg, seg),
+            new THREE.MeshBasicMaterial({
+              color: 0x78c8ff,
+              transparent: true,
+              opacity: 0.10,
+              depthWrite: false,
+              blending: THREE.AdditiveBlending
+            })
+          );
+          scene.add(atmo);
+
+          for(let i=0;i<K.riverCount;i++) makeRiver();
+          initDroplets();
+
+          resize3D();
+          resize2D();
+          animate();
+        })
+        .catch(err => console.error("Texture load error:", err));
+
+      let tick = 0;
+
+      function setStepCopy(p){
+        // Step labels that match your story
+        let text = "Scroll";
+        if (p < K.step1_end) text = "Water is Earth’s system architecture.";
+        else if (p < K.step2_end) text = "Networks. Basins. Cascading risk.";
+        else if (p < K.step3_end) text = "Water detaches—risk becomes visible.";
+        else if (p < K.step4_end) text = "Sphere → map.";
+        else text = "Map → planetary stability.";
+        stepLine.textContent = text;
+
+        // show once scrolling begins
+        const show = p > 0.02;
+        stepLine.style.opacity = show ? "1" : "0";
+        stepLine.style.transform = show ? "translateY(0)" : "translateY(6px)";
+      }
+
+      function animate(){
+        requestAnimationFrame(animate);
+        resize3D();
+
+        const p = getProgress();
+        setStepCopy(p);
+
+        tick += 0.020;
+
+        if (!earth) return;
+
+        // Globe opacity control (we fade it for the flat-map step)
+        let globeAlpha = 1;
+
+        // Step 1: dark + serious (desaturated, low brightness)
+        // Step 2: color emerges + rivers appear
+        // Step 3: water detaches (droplets)
+        // Step 4: flatten map (fade globe)
+        // Step 5: planetary chart
+        const s1 = clamp01(p / K.step1_end);
+        const s2 = clamp01((p - K.step1_end) / (K.step2_end - K.step1_end));
+        const s3 = clamp01((p - K.step2_end) / (K.step3_end - K.step2_end));
+        const s4 = clamp01((p - K.step3_end) / (K.step4_end - K.step3_end));
+        const s5 = clamp01((p - K.step4_end) / (K.step5_end - K.step4_end));
+
+        // Faster rotation (you asked for it)
+        earth.rotation.y += K.spin;
+        clouds.rotation.y += K.cloudSpin;
+
+        // subtle bob
+        earth.rotation.x = Math.sin(tick) * 0.018;
+
+        // Camera: slightly push in during reveal, then pull out for map
+        const push = smooth(s2);
+        camera.position.z = 6.2 - push*0.45 + smooth(s4)*0.9;
+        camera.position.y = 0.10 + smooth(s3)*0.18;
+
+        // Desaturation/brightness animation (dark → colorful)
+        const reveal = smooth(s2); // 0..1
+        const desat = lerp(1.0, 0.10, reveal);      // 1 = grayscale to near full color
+        const bright = lerp(0.78, 1.00, reveal);    // darker to normal
+        const contrast = lerp(1.20, 1.06, reveal);  // strong to slightly softer
+
+        const sh = earth.material.userData.shader;
+        if (sh){
+          sh.uniforms.uDesat.value = desat;
+          sh.uniforms.uBright.value = bright;
+          sh.uniforms.uContrast.value = contrast;
+        }
+
+        // Rivers opacity: appear in Step2, peak, then start to shed in Step3
+        const riversIn = smooth(s2);
+        const riversOut = 1.0 - smooth(s3)*0.55;
+        riverGroup.children.forEach((line)=>{
+          const pulse = 0.65 + 0.35*Math.sin(tick*1.25 + line.userData.seed);
+          line.material.opacity = 0.95 * riversIn * riversOut * pulse;
+        });
+
+        // Droplets: only during Step3 (water falls off)
+        const detach = smooth(s3);
+        dropletMat.opacity = 0.85 * detach;
+
+        if (detach > 0.001){
+          const posAttr = dropletGeom.getAttribute("position");
+          const fall = K.gravity * (0.55 + detach*1.8);
+
+          for(let i=0;i<K.dropletCount;i++){
+            dropletPos[i*3+0] += dropletVel[i*3+0] * (1 + detach*2.0);
+            dropletPos[i*3+1] += (dropletVel[i*3+1] - fall) * (1 + detach*1.6);
+            dropletPos[i*3+2] += dropletVel[i*3+2] * (1 + detach*2.0);
+
+            if (dropletPos[i*3+1] < -5.2){
+              const p0 = randomOnSphere().multiplyScalar(1.99);
+              dropletPos[i*3+0]=p0.x;
+              dropletPos[i*3+1]=p0.y;
+              dropletPos[i*3+2]=p0.z;
+            }
+          }
+          posAttr.needsUpdate = true;
+        }
+
+        // Fade globe during Step4 so flat map dominates
+        globeAlpha = 1.0 - smooth(s4)*0.92;
+        earth.material.opacity = globeAlpha;
+        earth.material.transparent = globeAlpha < 0.999;
+
+        clouds.material.opacity = 0.26 * globeAlpha;
+        atmo.material.opacity = 0.10 * globeAlpha;
+
+        // 2D overlay drawing
+        resize2D();
+        octx.clearRect(0,0,overlayCanvas.clientWidth, overlayCanvas.clientHeight);
+
+        // Step4: Flat map appears
+        const mapAlpha = smooth(s4);
+        if (mapAlpha > 0.001) drawFlatMap(mapAlpha);
+
+        // Step5: Planetary chart appears on top
+        const chartAlpha = smooth(s5);
+        if (chartAlpha > 0.001) drawPlanetaryChart(chartAlpha);
+
+        renderer.render(scene, camera);
+      }
+    })();
+  </script>
+</body>
+</html>
