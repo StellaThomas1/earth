@@ -1,458 +1,170 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Global Water Fund — Planetary Stability Thresholds (Preview)</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Global Water Fund</title>
 
-  <style>
-    :root{
-      --bg:#05060a;
-      --bg2:#0b0f1a;
-      --ink:#f3f6ff;
+<style>
+:root{
+--bg:#05060a;
+--bg2:#0b0f1a;
+--ink:#f3f6ff;
+}
 
-      /* tighter hierarchy */
-      --muted:rgba(243,246,255,.72);
-      --muted2:rgba(243,246,255,.54);
+html,body{
+margin:0;
+height:100%;
+background:radial-gradient(1200px 900px at 60% 30%, var(--bg2), var(--bg));
+color:var(--ink);
+font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+overflow:hidden;
+}
 
-      /* BRIGHTER but still “ice” (not neon) */
-      --accent: rgba(165,235,255,.95);
-      --accent2: rgba(92,190,255,.85);
-      --accent3: rgba(58,168,255,.62);
+canvas{
+position:fixed;
+inset:0;
+width:100%;
+height:100%;
+}
 
-      --stroke: rgba(255,255,255,.14);
-      --stroke2: rgba(255,255,255,.10);
-      --glass: rgba(10,14,24,.32);
-    }
+.overlay{
+position:fixed;
+top:0;left:0;
+width:100%;
+height:100%;
+display:grid;
+grid-template-columns: 520px 1fr;
+padding:60px;
+z-index:10;
+}
 
-    html, body{
-      margin:0; padding:0;
-      height:100%;
-      background: radial-gradient(1200px 900px at 60% 30%, var(--bg2) 0%, var(--bg) 60%, #04050a 100%);
-      color: var(--ink);
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      overflow-x:hidden;
-    }
+h1{
+font-size:32px;
+letter-spacing:.12em;
+text-transform:uppercase;
+margin:0 0 12px 0;
+font-weight:600;
+}
 
-    /* scrollable but calm */
-    .wrap{ min-height: 140vh; }
-    .hero{ position: sticky; top:0; height: 100vh; overflow:hidden; }
+.copy{
+max-width:500px;
+}
 
-    canvas{
-      position:absolute;
-      inset:0;
-      width:100%;
-      height:100%;
-      display:block;
-    }
+.copy p{
+font-size:15px;
+line-height:1.8;
+opacity:.85;
+}
 
-    .overlay{
-      position:relative;
-      z-index:10;
-      height:100%;
-      display:grid;
-      grid-template-columns: minmax(280px, 520px) 1fr;
-      gap: clamp(16px, 3vw, 40px);
-      padding: clamp(18px, 4.5vw, 64px);
-      align-items:center;
-      pointer-events:none;
-    }
+.reveal{
+opacity:0;
+transition:opacity 2s ease;
+margin-top:12px;
+letter-spacing:.14em;
+text-transform:uppercase;
+font-size:12px;
+}
 
-    .kicker{
-      text-transform:uppercase;
-      letter-spacing:.18em;
-      font-size:12px;
-      color: var(--muted2);
-      margin-bottom: 12px;
-    }
+.reveal.on{opacity:.7;}
 
-    /* Title smaller (your request) */
-    h1{
-      margin:0 0 10px 0;
-      font-size: clamp(22px, 2.6vw, 34px);
-      line-height:1.12;
-      letter-spacing:.02em;
-      font-weight:650;
-      text-transform:uppercase;
-      opacity:0;
-      transform: translateY(10px);
-      animation: fadeUp 1.1s ease forwards;
-      animation-delay: .15s;
-    }
+svg{
+width:100%;
+height:100%;
+}
 
-    /* Tiny subhead — strategic, not preachy */
-    .subhead{
-      margin: 0 0 14px 0;
-      font-size: clamp(13px, 1.25vw, 16px);
-      line-height: 1.7;
-      color: rgba(243,246,255,.70);
-      max-width: 60ch;
-      opacity:0;
-      transform: translateY(10px);
-      animation: fadeUp 1.2s ease forwards;
-      animation-delay: .30s;
-    }
-
-    .sectionTitle{
-      margin-top: 14px;
-      font-size: 12px;
-      letter-spacing:.16em;
-      text-transform: uppercase;
-      color: rgba(243,246,255,.62);
-      opacity:0;
-      transform: translateY(10px);
-      animation: fadeUp 1.2s ease forwards;
-      animation-delay: .45s;
-    }
-
-    /* Body smaller (your request) */
-    .bodycopy{
-      margin: 10px 0 0 0;
-      font-size: clamp(13px, 1.25vw, 16px);
-      line-height: 1.8;
-      color: rgba(243,246,255,.80);
-      max-width: 62ch;
-      opacity:0;
-      transform: translateY(10px);
-      animation: fadeUp 1.25s ease forwards;
-      animation-delay: .58s;
-    }
-    .bodycopy p{ margin: 0 0 10px 0; }
-
-    /* Chart bigger (your request) */
-    .viz{
-      position:relative;
-      height: min(82vh, 820px);
-      width:  min(82vh, 820px);
-      justify-self: center;
-      pointer-events:none;
-      opacity:0;
-      transform: translateY(10px);
-      animation: fadeUp 1.25s ease forwards;
-      animation-delay: .42s;
-    }
-
-    /* More beautiful “glass” + bright halo */
-    .viz::before{
-      content:"";
-      position:absolute;
-      inset:-14px;
-      border-radius: 34px;
-      background:
-        radial-gradient(900px 700px at 50% 35%, rgba(255,255,255,.08) 0%, rgba(10,14,24,.18) 40%, rgba(10,14,24,0) 70%),
-        radial-gradient(500px 420px at 50% 50%, rgba(165,235,255,.08) 0%, rgba(10,14,24,0) 68%);
-      border: 1px solid rgba(255,255,255,.08);
-    }
-
-    .ringSvg{
-      position:absolute;
-      inset:0;
-      width:100%;
-      height:100%;
-      display:block;
-    }
-
-    .microNote{
-      position:absolute;
-      left: clamp(18px, 4.5vw, 64px);
-      bottom: 18px;
-      z-index: 12;
-      font-size: 12px;
-      letter-spacing:.14em;
-      text-transform: uppercase;
-      color: rgba(243,246,255,.50);
-      opacity:.92;
-      pointer-events:none;
-    }
-
-    .footerPad{ height: 40vh; }
-
-    @keyframes fadeUp{
-      to { opacity:1; transform: translateY(0); }
-    }
-
-    @media (max-width: 980px){
-      .overlay{ grid-template-columns: 1fr; align-content:center; }
-      .viz{ height: min(70vh, 620px); width: min(70vh, 620px); margin-top: 10px; }
-    }
-  </style>
+.labels{
+font-size:22px;
+letter-spacing:.06em;
+fill:rgba(255,255,255,.85);
+font-weight:500;
+}
+</style>
 </head>
 
 <body>
-  <div class="wrap">
-    <section class="hero" id="hero">
-      <canvas id="globe"></canvas>
 
-      <div class="overlay">
-        <div class="copy">
-          <div class="kicker">GLOBAL WATER FUND</div>
+<canvas id="globe"></canvas>
 
-          <h1>Planetary Stability Thresholds</h1>
-
-        
-
-          <div class="sectionTitle">Water and Planetary Stability</div>
-
-          <div class="bodycopy">
-            <p>Planetary stability depends on a small number of critical thresholds. When crossed, systems shift — often abruptly and irreversibly.</p>
-            <p>Water sits at the center of several thresholds, linking climate variability, ecosystems, food systems, coastlines, and human security.</p>
-            <p>Global Water Fund focuses on where water stress pushes systems toward instability — and how strategic intervention preserves resilience.</p>
-          </div>
-        </div>
-
-        <div class="viz" aria-label="Planetary Stability Rings">
-          <svg class="ringSvg" viewBox="0 0 1000 1000">
-            <defs>
-              <radialGradient id="halo" cx="50%" cy="42%" r="62%">
-                <stop offset="0%"  stop-color="rgba(165,235,255,.26)"/>
-                <stop offset="38%" stop-color="rgba(92,190,255,.12)"/>
-                <stop offset="70%" stop-color="rgba(10,14,24,0)"/>
-              </radialGradient>
-
-              <linearGradient id="arcGrad" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stop-color="rgba(165,235,255,.95)"/>
-                <stop offset="60%" stop-color="rgba(92,190,255,.70)"/>
-                <stop offset="100%" stop-color="rgba(58,168,255,.55)"/>
-              </linearGradient>
-
-              <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
-                <feGaussianBlur stdDeviation="5" result="b"/>
-                <feMerge>
-                  <feMergeNode in="b"/>
-                  <feMergeNode in="SourceGraphic"/>
-                </feMerge>
-              </filter>
-            </defs>
-
-            <!-- global halo -->
-            <circle cx="500" cy="500" r="410" fill="url(#halo)"/>
-
-            <!-- rings (slightly brighter) -->
-            <circle cx="500" cy="500" r="185" fill="none" stroke="rgba(255,255,255,.14)" stroke-width="2"/>
-            <circle cx="500" cy="500" r="260" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="2"/>
-            <circle cx="500" cy="500" r="335" fill="none" stroke="rgba(255,255,255,.10)" stroke-width="2"/>
-            <circle cx="500" cy="500" r="410" fill="none" stroke="rgba(255,255,255,.09)" stroke-width="2"/>
-
-            <!-- subtle arcs: “threshold zones” (brighter + glow) -->
-            <path d="M 190 520 A 310 310 0 0 1 375 240"
-                  fill="none" stroke="url(#arcGrad)" stroke-width="6" stroke-linecap="round" filter="url(#softGlow)"/>
-            <path d="M 625 235 A 330 330 0 0 1 835 470"
-                  fill="none" stroke="rgba(165,235,255,.70)" stroke-width="6" stroke-linecap="round" filter="url(#softGlow)"/>
-            <path d="M 790 660 A 320 320 0 0 1 570 855"
-                  fill="none" stroke="rgba(92,190,255,.55)" stroke-width="6" stroke-linecap="round" filter="url(#softGlow)"/>
-            <path d="M 430 865 A 340 340 0 0 1 195 650"
-                  fill="none" stroke="rgba(58,168,255,.45)" stroke-width="6" stroke-linecap="round" filter="url(#softGlow)"/>
-
-            <!-- center: Water -->
-            <circle cx="500" cy="500" r="70" fill="rgba(10,14,24,.58)" stroke="rgba(255,255,255,.14)" stroke-width="2"/>
-            <text x="500" y="506" text-anchor="middle"
-                  font-family="system-ui, -apple-system, Segoe UI, Roboto, Arial"
-                  font-size="24" font-weight="650" letter-spacing="3"
-                  fill="rgba(243,246,255,.90)" style="text-transform:uppercase;">
-              WATER
-            </text>
-
-            <!-- Labels BIGGER (your request) -->
-           <g font-family="system-ui, -apple-system, Segoe UI, Roboto, Arial"
-              font-size="26" font-weight="600" fill="rgba(243,246,255,.88)">
-
-              <text x="500" y="108" text-anchor="middle">Climate variability</text>
-              <text x="895" y="360" text-anchor="start">Freshwater availability</text>
-              <text x="875" y="705" text-anchor="start">Food systems</text>
-              <text x="500" y="942" text-anchor="middle">Coastal stability</text>
-              <text x="105" y="705" text-anchor="end">Human security</text>
-            </g>
-          </svg>
-        </div>
-      </div>
-
-    </section>
-
-    <div class="footerPad"></div>
+<div class="overlay">
+  <div class="copy">
+    <h1>Planetary Stability Thresholds</h1>
+    <p>
+      Planetary stability depends on a small number of critical thresholds.  
+      Water links climate, food, coastlines, ecosystems and human security.
+    </p>
+    <div id="reveal" class="reveal">From Planet To Policy</div>
   </div>
 
-  <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
+  <svg viewBox="-200 -200 1400 1400">
+    <defs>
+      <radialGradient id="g">
+        <stop offset="0%" stop-color="#9fdcff" stop-opacity=".4"/>
+        <stop offset="60%" stop-color="#9fdcff" stop-opacity=".08"/>
+        <stop offset="100%" stop-color="transparent"/>
+      </radialGradient>
+    </defs>
 
-  <script>
-    (function(){
-      const canvas = document.getElementById("globe");
-      const hero = document.getElementById("hero");
-      const isMobile = window.matchMedia("(max-width: 980px)").matches;
-      const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    <circle cx="500" cy="500" r="430" fill="url(#g)"/>
 
-      // calm motion (tides/circulation)
-      const MOTION = {
-        baseSpin: prefersReduced ? 0 : 0.0024,
-        cloudSpin: prefersReduced ? 0 : 0.0032,
-        parallax: prefersReduced ? 0 : 0.08
-      };
+    <circle cx="500" cy="500" r="210" fill="none" stroke="rgba(255,255,255,.14)"/>
+    <circle cx="500" cy="500" r="300" fill="none" stroke="rgba(255,255,255,.12)"/>
+    <circle cx="500" cy="500" r="390" fill="none" stroke="rgba(255,255,255,.10)"/>
 
-      const renderer = new THREE.WebGLRenderer({ canvas, antialias: !isMobile, alpha: true });
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isMobile ? 1.5 : 2));
-      renderer.outputColorSpace = THREE.SRGBColorSpace;
+    <g class="labels">
+      <text x="500" y="90" text-anchor="middle">
+        <tspan x="500" dy="0">Climate</tspan>
+        <tspan x="500" dy="28">Variability</tspan>
+      </text>
 
-      const scene = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 200);
-      camera.position.set(0.35, 0.10, 6.35);
+      <text x="920" y="320" text-anchor="start">
+        <tspan x="920" dy="0">Freshwater</tspan>
+        <tspan x="920" dy="28">Availability</tspan>
+      </text>
 
-      // Brighter but soft lighting
-      scene.add(new THREE.AmbientLight(0xffffff, 0.26));
-      const key = new THREE.DirectionalLight(0xffffff, 1.18);
-      key.position.set(6, 3.2, 6);
-      scene.add(key);
-      const rim = new THREE.DirectionalLight(0xa5ebff, 0.72);
-      rim.position.set(-8, -2, 3);
-      scene.add(rim);
+      <text x="920" y="730" text-anchor="start">
+        <tspan x="920" dy="0">Food</tspan>
+        <tspan x="920" dy="28">Systems</tspan>
+      </text>
 
-      function resize(){
-        const w = canvas.clientWidth, h = canvas.clientHeight;
-        if(!w || !h) return;
-        renderer.setSize(w, h, false);
-        camera.aspect = w/h;
-        camera.updateProjectionMatrix();
-      }
-      window.addEventListener("resize", resize);
+      <text x="500" y="1020" text-anchor="middle">
+        <tspan x="500" dy="0">Coastal</tspan>
+        <tspan x="500" dy="28">Stability</tspan>
+      </text>
 
-      const loader = new THREE.TextureLoader();
-      loader.crossOrigin = "anonymous";
-      const loadTex = (url)=>new Promise((res, rej)=>{
-        loader.load(url, t=>{ t.colorSpace = THREE.SRGBColorSpace; res(t); }, undefined, rej);
-      });
+      <text x="80" y="730" text-anchor="end">
+        <tspan x="80" dy="0">Human</tspan>
+        <tspan x="80" dy="28">Security</tspan>
+      </text>
+    </g>
+  </svg>
+</div>
 
-      const TEX = {
-        day:    "https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg",
-        normal: "https://threejs.org/examples/textures/planets/earth_normal_2048.jpg",
-        spec:   "https://threejs.org/examples/textures/planets/earth_specular_2048.jpg",
-        clouds: "https://threejs.org/examples/textures/planets/earth_clouds_1024.png"
-      };
+<script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
 
-      const seg = isMobile ? 96 : 128;
-      const earthGeo  = new THREE.SphereGeometry(2.0, seg, seg);
-      const cloudsGeo = new THREE.SphereGeometry(2.02, seg, seg);
+<script>
+const canvas=document.getElementById("globe");
+const reveal=document.getElementById("reveal");
 
-      let earth, clouds, atmo;
+const renderer=new THREE.WebGLRenderer({canvas,alpha:true});
+renderer.setPixelRatio(window.devicePixelRatio);
+renderer.setSize(window.innerWidth,window.innerHeight);
 
-      function applyRevealShader(mat){
-        mat.onBeforeCompile = (shader)=>{
-          shader.uniforms.uDesat = { value: 1.0 };
-          shader.uniforms.uBright = { value: 0.78 };
-          shader.uniforms.uContrast = { value: 1.14 };
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(35,window.innerWidth/window.innerHeight,0.1,100);
+camera.position.z=6;
 
-          shader.fragmentShader =
-            "uniform float uDesat; uniform float uBright; uniform float uContrast;\n" + shader.fragmentShader;
+scene.add(new THREE.AmbientLight(0xffffff,.35));
+const sun=new THREE.DirectionalLight(0xffffff,1.2);
+sun.position.set(6,4,4);
+scene.add(sun);
 
-          shader.fragmentShader = shader.fragmentShader.replace(
-            "#include <dithering_fragment>",
-            `
-              float l = dot(gl_FragColor.rgb, vec3(0.299,0.587,0.114));
-              vec3 g = vec3(l);
-              gl_FragColor.rgb = mix(gl_FragColor.rgb, g, uDesat);
-              gl_FragColor.rgb = (gl_FragColor.rgb - 0.5) * uContrast + 0.5;
-              gl_FragColor.rgb *= uBright;
-              #include <dithering_fragment>
-            `
-          );
+const loader=new THREE.TextureLoader();
+Promise.all([
+loader.loadAsync("https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg"),
+loader.loadAsync("https://threejs.org/examples/textures/planets/earth_normal_2048.jpg"),
+loader.loadAsync("https://threejs.org/examples/textures/planets/earth_specular_2048.jpg"),
+loader.loadAsync("https://threejs.org/examples/textures/planets/earth_clouds_1024.png")
+]).then(([day,normal,spec,clouds])=>{
 
-          mat.userData.shader = shader;
-        };
-      }
-
-      const clamp01 = (x)=>Math.max(0, Math.min(1, x));
-      const smooth = (x)=>x*x*(3-2*x);
-      const lerp = (a,b,t)=>a+(b-a)*t;
-
-      let targetPX = 0, targetPY = 0, px = 0, py = 0;
-      window.addEventListener("mousemove", (e)=>{
-        const nx = (e.clientX / window.innerWidth) * 2 - 1;
-        const ny = (e.clientY / window.innerHeight) * 2 - 1;
-        targetPX = nx * MOTION.parallax;
-        targetPY = ny * MOTION.parallax;
-      }, { passive:true });
-
-      function getScrollInfluence(){
-        const r = hero.getBoundingClientRect();
-        return clamp01((-r.top) / (window.innerHeight * 0.7));
-      }
-
-      Promise.all([loadTex(TEX.day), loadTex(TEX.normal), loadTex(TEX.spec), loadTex(TEX.clouds)])
-        .then(([day, normal, spec, cloudsTex])=>{
-          const earthMat = new THREE.MeshPhongMaterial({
-            map: day,
-            normalMap: normal,
-            specularMap: spec,
-            specular: new THREE.Color(0x2b5a7a),
-            shininess: 10
-          });
-          applyRevealShader(earthMat);
-
-          earth = new THREE.Mesh(earthGeo, earthMat);
-          earth.rotation.y = 0.9;
-          scene.add(earth);
-
-          const cloudsMat = new THREE.MeshLambertMaterial({
-            map: cloudsTex,
-            transparent:true,
-            opacity: 0.22,
-            depthWrite:false
-          });
-          clouds = new THREE.Mesh(cloudsGeo, cloudsMat);
-          clouds.rotation.y = earth.rotation.y + 0.35;
-          scene.add(clouds);
-
-          // slightly brighter atmosphere
-          atmo = new THREE.Mesh(
-            new THREE.SphereGeometry(2.08, seg, seg),
-            new THREE.MeshBasicMaterial({
-              color: 0xa5ebff,
-              transparent:true,
-              opacity: 0.10,
-              depthWrite:false,
-              blending: THREE.AdditiveBlending
-            })
-          );
-          scene.add(atmo);
-
-          resize();
-          animate();
-        })
-        .catch(err => console.error("Texture load error:", err));
-
-      let tick = 0;
-      let revealT = 0;
-
-      function animate(){
-        requestAnimationFrame(animate);
-        resize();
-        if(!earth) return;
-
-        px += (targetPX - px) * 0.03;
-        py += (targetPY - py) * 0.03;
-
-        const scroll = getScrollInfluence();
-        camera.position.x = 0.35 + px*0.9;
-        camera.position.y = 0.10 - py*0.7 + scroll*0.10;
-        camera.position.z = 6.35 + scroll*0.30;
-
-        earth.rotation.y += MOTION.baseSpin;
-        clouds.rotation.y += MOTION.cloudSpin;
-
-        tick += 0.006;
-        earth.rotation.x = Math.sin(tick) * 0.012;
-
-        // slightly faster but still calm reveal
-        revealT = prefersReduced ? 1 : Math.min(1, revealT + 0.0060);
-        const s = smooth(revealT);
-
-        const sh = earth.material.userData.shader;
-        if(sh){
-          sh.uniforms.uDesat.value = lerp(1.0, 0.05, s);   // more color
-          sh.uniforms.uBright.value = lerp(0.78, 1.06, s); // brighter
-          sh.uniforms.uContrast.value = lerp(1.14, 1.06, s);
-        }
-
-        renderer.render(scene, camera);
-      }
-    })();
-  </script>
-</body>
-</html>
+const earthMat=new THREE
