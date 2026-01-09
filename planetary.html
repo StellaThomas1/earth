@@ -1,57 +1,247 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Planetary Stability</title>
 <style>
-body{
-  margin:0;
-  background:#05060a;
-  color:#f3f6ff;
-  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
-}
-.wrap{
-  padding:clamp(22px,5vw,72px);
-}
-h1{font-size:42px;}
-canvas{
-  width:100%;
-  height:60vh;
-  border:1px solid rgba(255,255,255,.15);
-  border-radius:18px;
-}
+  :root{
+    --bg:#05060a;
+    --ink:#f3f6ff;
+    --muted:rgba(243,246,255,.70);
+    --stroke:rgba(255,255,255,.12);
+    --ring:rgba(138,215,255,.20);
+    --accent:rgba(58,168,255,.55);
+    --fill:rgba(58,168,255,.16);
+  }
+  html,body{
+    margin:0;
+    height:100%;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  }
+  .wrap{
+    min-height:100vh;
+    display:grid;
+    grid-template-rows:auto 1fr auto;
+    gap:14px;
+    padding:clamp(22px,5vw,72px);
+  }
+  .k{
+    text-transform:uppercase;
+    letter-spacing:.18em;
+    font-size:12px;
+    color:rgba(243,246,255,.55);
+    margin-bottom:10px;
+  }
+  h1{
+    margin:0 0 10px 0;
+    font-size:clamp(26px,3.2vw,46px);
+    font-weight:650;
+    letter-spacing:-0.01em;
+  }
+  .sub{
+    margin:0;
+    max-width:72ch;
+    line-height:1.6;
+    color:var(--muted);
+    font-size:clamp(14px,1.4vw,18px);
+  }
+  canvas{
+    width:100%;
+    height:min(70vh, 780px);
+    border:1px solid rgba(255,255,255,.10);
+    border-radius:18px;
+    background:rgba(10,14,24,.22);
+  }
+  .cta{
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+    align-items:center;
+  }
+  a{
+    color:var(--ink);
+    text-decoration:none;
+    border:1px solid rgba(255,255,255,.16);
+    padding:10px 16px;
+    border-radius:999px;
+    text-transform:uppercase;
+    font-size:12px;
+    letter-spacing:.12em;
+    background:rgba(0,0,0,.35);
+  }
+  .note{
+    color:rgba(243,246,255,.52);
+    font-size:12px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+  }
 </style>
 </head>
+
 <body>
-<div class="wrap">
-  <h1>Planetary Stability</h1>
-  <canvas id="c"></canvas>
-</div>
+  <div class="wrap">
+    <div>
+      <div class="k">GLOBAL WATER FUND</div>
+      <h1>Planetary Stability</h1>
+      <p class="sub">
+        A signal view of the operating envelope: how water pressure cascades across climate, food, energy, coastlines, and security.
+        (Placeholder shape — we’ll swap to real indices once you define inputs.)
+      </p>
+    </div>
+
+    <canvas id="chart"></canvas>
+
+    <div class="cta">
+      <a href="map.html">← Back to Map</a>
+      <a href="index.html">Restart → Earth</a>
+      <div class="note">Radar = stability envelope</div>
+    </div>
+  </div>
 
 <script>
-const c=document.getElementById("c");
-const ctx=c.getContext("2d");
-function resize(){
-  c.width=c.clientWidth;
-  c.height=c.clientHeight;
-  draw();
-}
-window.addEventListener("resize",resize);
+(() => {
+  const canvas = document.getElementById("chart");
+  const ctx = canvas.getContext("2d");
 
-function draw(){
-  const w=c.width,h=c.height;
-  ctx.clearRect(0,0,w,h);
-  const cx=w/2,cy=h/2,R=Math.min(w,h)*0.35;
-  for(let i=1;i<=4;i++){
-    ctx.beginPath();
-    ctx.arc(cx,cy,R*i/4,0,Math.PI*2);
-    ctx.strokeStyle="rgba(255,255,255,.15)";
-    ctx.stroke();
+  // Labels (edit freely)
+  const labels = ["Climate", "Freshwater", "Food", "Energy", "Coastal", "Security"];
+  const N = labels.length;
+
+  // Values (0..1). 1 = strong stability / inside safe operating space
+  // Replace later with real metrics; for now it’s a clean “signal shape”.
+  let values = [0.62, 0.48, 0.58, 0.55, 0.46, 0.60];
+
+  const CSS = getComputedStyle(document.documentElement);
+  const colors = {
+    ring: CSS.getPropertyValue("--ring").trim(),
+    stroke: CSS.getPropertyValue("--stroke").trim(),
+    accent: CSS.getPropertyValue("--accent").trim(),
+    fill: CSS.getPropertyValue("--fill").trim(),
+    ink: CSS.getPropertyValue("--ink").trim(),
+    muted: CSS.getPropertyValue("--muted").trim()
+  };
+
+  function resize() {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.floor(canvas.clientWidth * dpr);
+    canvas.height = Math.floor(canvas.clientHeight * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    draw();
   }
-}
-resize();
+  window.addEventListener("resize", resize);
+
+  function clamp01(x){ return Math.max(0, Math.min(1, x)); }
+
+  function draw() {
+    const w = canvas.clientWidth;
+    const h = canvas.clientHeight;
+    ctx.clearRect(0, 0, w, h);
+
+    // Layout
+    const cx = w * 0.50;
+    const cy = h * 0.55;
+    const R = Math.min(w, h) * 0.34;
+
+    // Title inside chart
+    ctx.save();
+    ctx.fillStyle = "rgba(243,246,255,.82)";
+    ctx.font = "12px system-ui, -apple-system, Segoe UI, Roboto, Arial";
+    ctx.textAlign = "center";
+    ctx.fillText("SAFE OPERATING ENVELOPE (SIGNAL VIEW)", cx, cy - R*1.25);
+    ctx.restore();
+
+    // Rings
+    for (let i = 1; i <= 4; i++) {
+      ctx.beginPath();
+      ctx.arc(cx, cy, (R * i) / 4, 0, Math.PI * 2);
+      ctx.strokeStyle = `rgba(138,215,255,${0.08 + i*0.04})`;
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
+
+    // Axes + labels
+    ctx.save();
+    ctx.font = "12px system-ui, -apple-system, Segoe UI, Roboto, Arial";
+    for (let i = 0; i < N; i++) {
+      const ang = (-Math.PI / 2) + (i * (Math.PI * 2 / N));
+      const x2 = cx + Math.cos(ang) * R * 1.06;
+      const y2 = cy + Math.sin(ang) * R * 1.06;
+
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(x2, y2);
+      ctx.strokeStyle = "rgba(255,255,255,0.10)";
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      // label placement
+      const lx = cx + Math.cos(ang) * R * 1.20;
+      const ly = cy + Math.sin(ang) * R * 1.20;
+
+      ctx.fillStyle = "rgba(243,246,255,.78)";
+      ctx.textBaseline = "middle";
+      const c = Math.cos(ang);
+      ctx.textAlign = c > 0.25 ? "left" : (c < -0.25 ? "right" : "center");
+      ctx.fillText(labels[i], lx, ly);
+    }
+    ctx.restore();
+
+    // Stability polygon
+    const pts = [];
+    for (let i = 0; i < N; i++) {
+      const ang = (-Math.PI / 2) + (i * (Math.PI * 2 / N));
+      const rr = R * clamp01(values[i]);
+      pts.push([cx + Math.cos(ang) * rr, cy + Math.sin(ang) * rr]);
+    }
+
+    ctx.save();
+    ctx.beginPath();
+    pts.forEach(([x,y], i) => i === 0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y));
+    ctx.closePath();
+
+    ctx.fillStyle = colors.fill;     // transparent fill
+    ctx.strokeStyle = colors.accent; // outline
+    ctx.lineWidth = 2;
+    ctx.fill();
+    ctx.stroke();
+    ctx.restore();
+
+    // Center dot
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(cx, cy, 3, 0, Math.PI * 2);
+    ctx.fillStyle = "rgba(243,246,255,.70)";
+    ctx.fill();
+    ctx.restore();
+
+    // Small legend bottom-left
+    ctx.save();
+    ctx.fillStyle = "rgba(243,246,255,.55)";
+    ctx.font = "11px system-ui, -apple-system, Segoe UI, Roboto, Arial";
+    ctx.textAlign = "left";
+    ctx.fillText("Outer ring = higher stability", 18, h - 18);
+    ctx.restore();
+  }
+
+  // Optional: quick demo “breathing” (subtle). Comment out if you want perfectly static.
+  let tick = 0;
+  function animate(){
+    tick += 0.012;
+    // Tiny motion to feel alive (Davos-calm, not flashy)
+    const wobble = 0.015 * Math.sin(tick);
+    values = [0.62+wobble, 0.48-wobble, 0.58+wobble*0.6, 0.55-wobble*0.3, 0.46+wobble*0.2, 0.60-wobble*0.5];
+    draw();
+    requestAnimationFrame(animate);
+  }
+
+  resize();
+  // If you want totally static, comment out the next line:
+  animate();
+})();
 </script>
+
 </body>
 </html>
-
