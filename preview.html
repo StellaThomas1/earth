@@ -310,3 +310,240 @@
 
   <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
   <script>
+(() => {
+  const canvas = document.getElementById("globe");
+  const hero = document.getElementById("hero");
+  const revealLine = document.getElementById("revealLine");
+  const chartGroup = document.getElementById("chartGroup");
+  const vizSvg = document.getElementById("vizSvg");
+
+  const isMobile = window.matchMedia("(max-width: 980px)").matches;
+  const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // Lift chart slightly on mobile so COASTAL STABILITY never clips
+  if (isMobile && chartGroup) chartGroup.setAttribute("transform","translate(0,-55)");
+
+  // Renderer
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha:true, antialias: !isMobile });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isMobile ? 1.5 : 2));
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 200);
+  camera.position.set(0.35, 0.10, 6.35);
+
+  // Lighting (cinematic, but restrained)
+  scene.add(new THREE.AmbientLight(0xffffff, 0.32));
+  const key = new THREE.DirectionalLight(0xffffff, 1.30);
+  key.position.set(6, 3.2, 6);
+  scene.add(key);
+
+  const rim = new THREE.DirectionalLight(0xaaf0ff, 0.90);
+  rim.position.set(-8, -2, 3);
+  scene.add(rim);
+
+  function resize(){
+    const w = canvas.clientWidth, h = canvas.clientHeight;
+    if(!w || !h) return;
+    renderer.setSize(w, h, false);
+    camera.aspect = w/h;
+    camera.updateProjectionMatrix();
+  }
+  window.addEventListener("resize", resize);
+
+  // Mouse drift (desktop only)
+  let targetPX=0, targetPY=0, px=0, py=0;
+  window.addEventListener("mousemove", (e)=>{
+    const nx = (e.clientX / window.innerWidth) * 2 - 1;
+    const ny = (e.clientY / window.innerHeight) * 2 - 1;
+    targetPX = nx * 0.08;
+    targetPY = ny * 0.08;
+  }, { passive:true });
+
+  const clamp01 = x => Math.max(0, Math.min(1, x));
+  const smooth = x => x*x*(3-2*x);
+  const lerp = (a,b,t) => a+(b-a)*t;
+
+  function scrollInfluence(){
+    const r = hero.getBoundingClientRect();
+    return clamp01((-r.top) / (window.innerHeight * 0.7));
+  }
+
+  // Textures
+  const loader = new THREE.TextureLoader();
+  loader.crossOrigin = "anonymous";
+  const loadTex = url => new Promise((res, rej)=>{
+    loader.load(url, t=>{ t.colorSpace = THREE.SRGBColorSpace; res(t); }, undefined, rej);
+  });
+
+  const TEX = {
+    day:    "https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg",
+    normal: "https://threejs.org/examples/textures/planets/earth_normal_2048.jpg",
+    spec:   "https://threejs.org/examples/textures/planets/earth_specular_2048.jpg",
+    clouds: "https://threejs.org/examples/textures/planets/earth_clouds_1024.png"
+  };
+
+  const seg = isMobile ? 96 : 128;
+  const earthGeo  = new THREE.SphereGeometry(2.0, seg, seg);
+  const cloudsGeo = new THREE.SphereGeometry(2.02, seg, seg);
+
+  let earth, clouds, atmo, veil;
+  let veilTriggered=false, veilT=0;
+  let revealT=0, revealLineShown=false;
+  let tideOn=false;
+  let tick=0;
+
+  // Shader: grayscale -> color reveal
+  function applyRevealShader(mat){
+    mat.onBeforeCompile = (shader)=>{
+      shader.uniforms.uDesat = { value: 1.0 };
+      shader.uniforms.uBright = { value: 0.74 };
+      shader.uniforms.uContrast = { value: 1.18 };
+
+      shader.fragmentShader =
+        "uniform float uDesat; uniform float uBright; uniform float uContrast;\n" + shader.fragmentShader;
+
+      shader.fragmentShader = shader.fragmentShader.replace(
+        "#include <dithering_fragment>",
+        `
+          float l = dot(gl_FragColor.rgb, vec3(0.299,0.587,0.114));
+          vec3 g = vec3(l);
+          gl_FragColor.rgb = mix(gl_FragColor.rgb, g, uDesat);
+          gl_FragColor.rgb = (gl_FragColor.rgb - 0.5) * uContrast + 0.5;
+          gl_FragColor.rgb *= uBright;
+          #include <dithering_fragment>
+        `
+      );
+
+      mat.userData.shader = shader;
+    };
+  }
+
+  Promise.all([loadTex(TEX.day), loadTex(TEX.normal), loadTex(TEX.spec), loadTex(TEX.clouds)])
+    .then(([day, normal, spec, cloudsTex])=>{
+
+      const earthMat = new THREE.MeshPhongMaterial({
+        map: day,
+        normalMap: normal,
+        specularMap: spec,
+        specular: new THREE.Color(0x2b5a7a),
+        shininess: 12
+      });
+      applyRevealShader(earthMat);
+
+      earth = new THREE.Mesh(earthGeo, earthMat);
+      earth.rotation.y = 0.9;
+      scene.add(earth);
+
+      const cloudsMat = new THREE.MeshLambertMaterial({
+        map: cloudsTex,
+        transparent:true,
+        opacity: 0.23,
+        depthWrite:false
+      });
+      clouds = new THREE.Mesh(cloudsGeo, cloudsMat);
+      clouds.rotation.y = earth.rotation.y + 0.35;
+      scene.add(clouds);
+
+      atmo = new THREE.Mesh(
+        new THREE.SphereGeometry(2.08, seg, seg),
+        new THREE.MeshBasicMaterial({
+          color: 0xaaf0ff,
+          transparent:true,
+          opacity: 0.12,
+          depthWrite:false,
+          blending: THREE.AdditiveBlending
+        })
+      );
+      scene.add(atmo);
+
+      // Water veil “shedding” moment (subtle)
+      const veilMat = new THREE.MeshBasicMaterial({
+        color: 0xaaf0ff,
+        transparent:true,
+        opacity: 0.0,
+        depthWrite:false,
+        blending: THREE.AdditiveBlending
+      });
+      veil = new THREE.Mesh(new THREE.SphereGeometry(2.12, seg, seg), veilMat);
+      scene.add(veil);
+
+      resize();
+      animate();
+    });
+
+  function animate(){
+    requestAnimationFrame(animate);
+    resize();
+    if(!earth) return;
+
+    // Gentle drift
+    px += (targetPX - px) * 0.03;
+    py += (targetPY - py) * 0.03;
+
+    const sScroll = scrollInfluence();
+    camera.position.x = 0.35 + (isMobile ? 0 : px*0.9);
+    camera.position.y = 0.10 + sScroll*0.10 - (isMobile ? 0 : py*0.7);
+    camera.position.z = 6.35 + sScroll*0.30;
+
+    // Rotation (not rushed)
+    earth.rotation.y += prefersReduced ? 0 : 0.0024;
+    clouds.rotation.y += prefersReduced ? 0 : 0.0030;
+
+    tick += 0.006;
+    earth.rotation.x = Math.sin(tick) * 0.012;
+
+    // Reveal progression
+    revealT = prefersReduced ? 1 : Math.min(1, revealT + 0.0064);
+    const s = smooth(revealT);
+
+    const sh = earth.material.userData.shader;
+    if(sh){
+      sh.uniforms.uDesat.value = lerp(1.0, 0.03, s);
+      sh.uniforms.uBright.value = lerp(0.74, 1.10, s);
+      sh.uniforms.uContrast.value = lerp(1.18, 1.06, s);
+    }
+
+    // When reveal completes: show line + start tidal cones
+    if(!revealLineShown && revealT > 0.965){
+      revealLineShown = true;
+      revealLine.classList.add("on");
+
+      if(vizSvg && !tideOn && !prefersReduced){
+        vizSvg.classList.add("tide");
+        tideOn = true;
+      }
+    }
+
+    // Veil moment
+    if(!prefersReduced && !veilTriggered && revealT > 0.978){
+      veilTriggered = true;
+      veilT = 0.0001;
+      veil.material.opacity = 0.05;
+      veil.position.y = 0.02;
+      veil.scale.set(1,1,1);
+    }
+
+    if(veilTriggered && veilT > 0){
+      veilT = Math.min(1, veilT + 0.0056);
+      const vv = smooth(veilT);
+
+      veil.position.y = lerp(0.02, -0.25, vv);
+      const sc = lerp(1.0, 1.038, vv);
+      veil.scale.set(sc, sc, sc);
+
+      const peak = vv < 0.40 ? (vv/0.40) : (1 - (vv-0.40)/0.60);
+      veil.material.opacity = 0.085 * Math.max(0, peak);
+
+      if(veilT >= 1){
+        veil.material.opacity = 0.0;
+        veilT = 0;
+      }
+    }
+
+    renderer.render(scene, camera);
+  }
+})();
+  </script>
+</body>
+</html>
