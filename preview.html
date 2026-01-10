@@ -657,29 +657,29 @@
     const idx = Math.floor(spotDeg / 60);     // 0..5
     const t = (spotDeg % 60) / 60;
 
-    const wCenter = 0.55 + 0.35 * (0.5 + 0.5*Math.cos((t - 0.5) * Math.PI));
-    const wNeighbor = 0.18 + 0.10 * breath;
+    // Spotlight follows Earth rotation — ONE cone at a time
+const rotDeg = ((earth.rotation.y * 180 / Math.PI) % 360 + 360) % 360;
+const spotDeg = (rotDeg + 90 + 40) % 360;   // align with lit hemisphere
+const idx = Math.floor(spotDeg / 60);      // 0..5
 
-    const pulse = 0.06 * s * breath;
+const base = 0.12 + 0.60 * s;               // ramps up as Earth reveals
+const glow = 12 + 22 * s;                   // glow size
+const alpha = 0.12 * s;                     // glow intensity
 
-    const glowBase = 5 + 10 * s;
-    const glowSpot = 10 + 18 * s * breath;
+for (let i=0; i<cones.length; i++){
+  const c = cones[i];
 
-    for (let i=0; i<cones.length; i++){
-      const c = cones[i];
-      const d = Math.min((i - idx + 6) % 6, (idx - i + 6) % 6);
-
-      let lift = 0.0;
-      if (d === 0) lift = wCenter;
-      else if (d === 1) lift = wNeighbor;
-
-      const op = Math.min(0.98, base + pulse + (0.18 * s * lift));
-      c.style.opacity = String(op);
-
-      const g = glowBase + (d === 0 ? glowSpot : (d === 1 ? glowSpot*0.35 : 0));
-      const a = (0.04 + 0.10 * s) * (d === 0 ? 1.0 : (d === 1 ? 0.55 : 0.0));
-
-      c.style.filter = a > 0
+  if (i === idx) {
+    // ACTIVE cone
+    c.style.opacity = Math.min(0.95, base + 0.25);
+    c.style.filter = `drop-shadow(0 0 ${glow}px rgba(170,240,255,${alpha}))`;
+  } else {
+    // INACTIVE cones
+    c.style.opacity = base * 0.25;
+    c.style.filter = "none";
+  }
+}
+= a > 0
         ? `drop-shadow(0 0 ${g.toFixed(1)}px rgba(170,240,255,${a.toFixed(3)}))`
         : "none";
     }
