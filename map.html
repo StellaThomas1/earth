@@ -184,8 +184,34 @@
   </style>
 </head>
 
+  .mapLayer{
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+
+  /* Map image (Mercator / equirectangular) */
+  background-image: url("https://eoimages.gsfc.nasa.gov/images/imagerecords/73000/73909/world.topo.bathy.200412.3x5400x2700.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  /* Davos-grade grading */
+  filter: contrast(1.06) saturate(0.92) brightness(0.62);
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 1.6s ease, transform 1.6s ease, filter 1.6s ease;
+}
+
+.mapLayer.on{
+  opacity: 0.92;
+  transform: translateY(0);
+  filter: contrast(1.06) saturate(0.96) brightness(0.78);
+}
+
+
 <body>
-  <canvas id="map"></canvas>
+  <div id="mapLayer" class="mapLayer" aria-hidden="true"></div>
   <div class="grid"></div>
   <div class="vignette"></div>
 
@@ -207,7 +233,7 @@
     <div id="whisper" class="whisper">GLOBAL OPERATING PICTURE — WATER, FOOD, ENERGY, COASTS, SECURITY</div>
   </div>
 
-  <script>
+ 
     // NASA (public domain) world topo/bathy texture (Mercator)
     const MAP_URL = "https://eoimages.gsfc.nasa.gov/images/imagerecords/73000/73909/world.topo.bathy.200412.3x5400x2700.jpg";
 
@@ -302,6 +328,32 @@
       elDoctrine.classList.add("on");
       elWhisper.classList.add("on");
     };
-  </script>
+
+  <script>
+  // Reveal the map + typography in a controlled sequence
+  const mapLayer = document.getElementById("mapLayer");
+  const systems = document.getElementById("systems");
+  const doctrine = document.getElementById("doctrine");
+  const whisper = document.getElementById("whisper");
+
+  // Preload image so we only fade in once it’s available
+  const img = new Image();
+  img.src = getComputedStyle(mapLayer).backgroundImage.slice(5, -2);
+
+  img.onload = () => {
+    requestAnimationFrame(() => mapLayer.classList.add("on"));
+    setTimeout(() => systems.classList.add("on"), 250);
+    setTimeout(() => doctrine.classList.add("on"), 420);
+    setTimeout(() => whisper.classList.add("on"), 650);
+  };
+
+  img.onerror = () => {
+    // Even if image fails, show typography
+    systems.classList.add("on");
+    doctrine.classList.add("on");
+    whisper.classList.add("on");
+  };
+</script>
+  
 </body>
 </html>
