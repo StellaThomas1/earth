@@ -12,8 +12,8 @@
       --ink:rgba(245,248,255,.92);
       --muted:rgba(245,248,255,.72);
       --muted2:rgba(245,248,255,.52);
-      --grid:rgba(245,248,255,.060);
-      --grid2:rgba(245,248,255,.035);
+      --grid:rgba(245,248,255,.075);
+      --grid2:rgba(245,248,255,.045);
       --glow:rgba(170,240,255,.10);
     }
 
@@ -99,16 +99,14 @@
       background: radial-gradient(900px 650px at 55% 40%,
         rgba(170,240,255,.08) 0%,
         rgba(170,240,255,0) 62%);
-      opacity:.45;
+      opacity:.75;
       mix-blend-mode:screen;
     }
 
     /* Top systems bar */
     .topbar{
-  position:fixed;
-  left:0; right:0; top:14px;
-  ...
-  }
+      position:fixed;
+      left:0; right:0; top:0;
       z-index:10;
       text-align:center;
       padding-top: calc(14px + env(safe-area-inset-top));
@@ -134,8 +132,7 @@
       letter-spacing: .20em;
       text-transform:uppercase;
       font-weight: 720;
-      color: rgba(245,248,255,.78);
-
+      color: rgba(245,248,255,.84);
       opacity:0;
       transform: translateY(-8px);
       transition: opacity 1.2s ease, transform 1.2s ease;
@@ -178,7 +175,7 @@
       max-width: 820px;
       font-size: clamp(13px, 1.2vw, 16px);
       line-height: 1.9;
-      color: rgba(245,248,255,.68);
+      color: rgba(245,248,255,.74);
       letter-spacing: .02em;
     }
 
@@ -199,7 +196,7 @@
       font-size:11px;
       letter-spacing:.22em;
       text-transform:uppercase;
-      color: rgba(245,248,255,.40);
+      color: rgba(245,248,255,.46);
       opacity:0;
       transform: translateY(8px);
       transition: opacity 1.6s ease, transform 1.6s ease;
