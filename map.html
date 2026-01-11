@@ -18,22 +18,51 @@
     }
 
     /* Ocean micro-current shimmer */
+./* Ocean micro-current shimmer (Safari-safe, visible, premium) */
 .waterFlow{
   position:fixed;
-  inset:0;
+  inset:-12%;               /* bigger than viewport so it can move */
   z-index:5;
   pointer-events:none;
+
+  /* layered “glass” flow */
   background:
-    radial-gradient(1200px 600px at 30% 50%, rgba(120,200,255,.05), transparent 60%),
-    radial-gradient(900px 500px at 70% 40%, rgba(120,200,255,.04), transparent 55%),
     linear-gradient(120deg,
-      rgba(120,200,255,.025) 0%,
-      rgba(120,200,255,.06) 50%,
-      rgba(120,200,255,.025) 100%);
+      rgba(120,200,255,0.00) 0%,
+      rgba(120,200,255,0.055) 35%,
+      rgba(120,200,255,0.090) 50%,
+      rgba(120,200,255,0.055) 65%,
+      rgba(120,200,255,0.00) 100%),
+    radial-gradient(900px 520px at 30% 55%, rgba(120,200,255,0.06), transparent 65%),
+    radial-gradient(760px 460px at 70% 40%, rgba(120,200,255,0.05), transparent 62%);
+
   mix-blend-mode:screen;
-  animation: oceanDrift 42s linear infinite;
-  opacity:.35;
+  opacity:0.32;
+
+  /* IMPORTANT: Safari likes explicit properties */
+  will-change: transform, background-position;
+  transform: translate3d(0,0,0);
+
+  /* Move BOTH background and layer */
+  background-size: 180% 180%, 140% 140%, 140% 140%;
+  background-position: 0% 0%, 0% 0%, 0% 0%;
+
+  animation: oceanFlow 18s ease-in-out infinite;
 }
+
+@keyframes oceanFlow{
+  0%{
+    transform: translate3d(-2.5%, -1.5%, 0);
+    background-position: 0% 20%, 10% 55%, 80% 40%;
+  }
+  50%{
+    transform: translate3d(2.5%, 1.5%, 0);
+    background-position: 100% 80%, 30% 60%, 60% 35%;
+  }
+  100%{
+    transform: translate3d(-2.5%, -1.5%, 0);
+    background-position: 0% 20%, 10% 55%, 80% 40%;
+  }
 
 @keyframes oceanDrift{
   0%   { transform: translateX(-6%) translateY(-3%); }
