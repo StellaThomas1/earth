@@ -17,6 +17,30 @@
       --glow:rgba(170,240,255,.10);
     }
 
+    /* Ocean micro-current shimmer */
+.waterFlow{
+  position:fixed;
+  inset:0;
+  z-index:5;
+  pointer-events:none;
+  background:
+    radial-gradient(1200px 600px at 30% 50%, rgba(120,200,255,.05), transparent 60%),
+    radial-gradient(900px 500px at 70% 40%, rgba(120,200,255,.04), transparent 55%),
+    linear-gradient(120deg,
+      rgba(120,200,255,.025) 0%,
+      rgba(120,200,255,.06) 50%,
+      rgba(120,200,255,.025) 100%);
+  mix-blend-mode:screen;
+  animation: oceanDrift 42s linear infinite;
+  opacity:.35;
+}
+
+@keyframes oceanDrift{
+  0%   { transform: translateX(-6%) translateY(-3%); }
+  50%  { transform: translateX(6%)  translateY(3%); }
+  100% { transform: translateX(-6%) translateY(-3%); }
+}
+
     html,body{
       margin:0;
       height:100%;
@@ -92,6 +116,7 @@
 
     /* soft glow wash (very subtle) */
     .glow{
+      <div class="waterFlow" aria-hidden="true"></div>
       position:fixed;
       inset:0;
       z-index:4;
