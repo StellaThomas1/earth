@@ -11,29 +11,52 @@
       --bg2:#0b0f1a;
       --ink:rgba(245,248,255,.92);
       --muted:rgba(245,248,255,.72);
+      --muted2:rgba(245,248,255,.52);
       --grid:rgba(245,248,255,.075);
       --grid2:rgba(245,248,255,.045);
-
-            font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      overflow:hidden;
+      --glow:rgba(170,240,255,.10);
     }
 
-    /* MAP */
+    html,body{
+      margin:0;
+      height:100%;
+      background: radial-gradient(1200px 900px at 60% 30%, var(--bg2) 0%, var(--bg) 60%, #04050a 100%);
+      color:var(--ink);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      overflow:hidden;
+      -webkit-text-size-adjust:100%;
+    }
+
+    /* Map layer (LOCAL FILE IN REPO) */
     .mapLayer{
       position:fixed;
       inset:0;
       z-index:0;
+      pointer-events:none;
+
       background-image:url("world.topo.bathy.200412.3x5400x2700.jpg");
       background-size:cover;
       background-position:center;
       background-repeat:no-repeat;
-      filter: contrast(1.05) saturate(0.95) brightness(0.6);
-      opacity:0;
-      transition:opacity 1.8s ease;
-    }
-    .mapLayer.on{ opacity:1; }
 
-    /* Grid overlay */
+      /* graded, quiet, premium */
+      filter: contrast(1.06) saturate(0.94) brightness(0.60);
+      opacity:0;
+      transform: translateY(14px);
+      transition: opacity 2.0s ease, transform 2.0s ease, filter 2.0s ease;
+    }
+    .mapLayer.on{
+      opacity:0.92;
+      transform: translateY(0);
+      filter: contrast(1.06) saturate(0.98) brightness(0.78);
+    }
+
+    /* subtle parallax drift (very small, tide-like) */
+    .mapLayer.drift{
+      transition: opacity 2.0s ease, transform 2.0s ease, filter 2.0s ease;
+    }
+
+    /* Mercator grid overlay */
     .grid{
       position:fixed;
       inset:0;
@@ -42,104 +65,217 @@
       background:
         repeating-linear-gradient(90deg,
           transparent 0px,
-          transparent 90px,
-          rgba(255,255,255,0.06) 91px,
-          transparent 92px),
+          transparent 84px,
+          var(--grid) 85px,
+          transparent 86px),
         repeating-linear-gradient(0deg,
           transparent 0px,
-          transparent 60px,
-          rgba(255,255,255,0.04) 61px,
-          transparent 62px);
+          transparent 58px,
+          var(--grid2) 59px,
+          transparent 60px);
+      opacity:.70;
+      mix-blend-mode:screen;
     }
 
-    /* Top bar */
-    .top{
+    /* vignette + depth */
+    .vignette{
       position:fixed;
-      top:0;
-      width:100%;
+      inset:0;
+      z-index:3;
+      pointer-events:none;
+      background:
+        radial-gradient(900px 650px at 50% 45%,
+          rgba(0,0,0,0) 0%,
+          rgba(0,0,0,.25) 60%,
+          rgba(0,0,0,.62) 100%);
+    }
+
+    /* soft glow wash (very subtle) */
+    .glow{
+      position:fixed;
+      inset:0;
+      z-index:4;
+      pointer-events:none;
+      background: radial-gradient(900px 650px at 55% 40%,
+        rgba(170,240,255,.08) 0%,
+        rgba(170,240,255,0) 62%);
+      opacity:.75;
+      mix-blend-mode:screen;
+    }
+
+    /* Top systems bar */
+    .topbar{
+      position:fixed;
+      left:0; right:0; top:0;
       z-index:10;
       text-align:center;
-      padding:20px;
-      background:linear-gradient(to bottom, rgba(0,0,0,.7), rgba(0,0,0,0));
-      letter-spacing:.22em;
-      text-transform:uppercase;
-      font-size:14px;
+      padding-top: calc(14px + env(safe-area-inset-top));
+      padding-bottom: 12px;
+      padding-inline: clamp(14px, 3vw, 44px);
+      pointer-events:none;
+      background: linear-gradient(to bottom, rgba(5,6,10,.80), rgba(5,6,10,0));
     }
 
-    /* Center statement */
+    .brand{
+      font-size:11px;
+      letter-spacing:.26em;
+      text-transform:uppercase;
+      color:rgba(245,248,255,.44);
+      margin-bottom:10px;
+      opacity:0;
+      transform: translateY(-8px);
+      transition: opacity 1.2s ease, transform 1.2s ease;
+    }
+
+    .systems{
+      font-size: clamp(13px, 1.2vw, 18px);
+      letter-spacing: .20em;
+      text-transform:uppercase;
+      font-weight: 720;
+      color: rgba(245,248,255,.84);
+      opacity:0;
+      transform: translateY(-8px);
+      transition: opacity 1.2s ease, transform 1.2s ease;
+      white-space: nowrap;
+      overflow:hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Center doctrine */
     .center{
       position:fixed;
       inset:0;
       display:grid;
       place-items:center;
       z-index:10;
+      pointer-events:none;
+      padding-inline: clamp(18px, 4vw, 60px);
       text-align:center;
-      padding:40px;
     }
-    .center h1{
-      font-size:48px;
-      letter-spacing:.18em;
+
+    .doctrine{
+      max-width: 980px;
+      opacity:0;
+      transform: translateY(12px);
+      transition: opacity 1.8s ease, transform 1.8s ease;
+    }
+
+    .doctrine h1{
       margin:0;
+      font-size: clamp(26px, 3.2vw, 54px);
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      font-weight: 760;
+      line-height: 1.12;
+      text-shadow: 0 0 26px rgba(170,240,255,.07);
     }
-    .center p{
-      max-width:700px;
-      margin-top:20px;
-      color:rgba(255,255,255,.7);
-      line-height:1.8;
+
+    .doctrine p{
+      margin: 16px auto 0 auto;
+      max-width: 820px;
+      font-size: clamp(13px, 1.2vw, 16px);
+      line-height: 1.9;
+      color: rgba(245,248,255,.74);
+      letter-spacing: .02em;
     }
 
     /* Bottom whisper */
     .bottom{
       position:fixed;
-      bottom:0;
-      width:100%;
+      left:0; right:0; bottom:0;
       z-index:10;
       text-align:center;
-      padding:16px;
+      padding-bottom: calc(14px + env(safe-area-inset-bottom));
+      padding-top: 10px;
+      padding-inline: clamp(14px, 3vw, 44px);
+      pointer-events:none;
+      background: linear-gradient(to top, rgba(5,6,10,.84), rgba(5,6,10,0));
+    }
+
+    .whisper{
       font-size:11px;
-      letter-spacing:.2em;
-      color:rgba(255,255,255,.5);
-      background:linear-gradient(to top, rgba(0,0,0,.8), rgba(0,0,0,0));
+      letter-spacing:.22em;
+      text-transform:uppercase;
+      color: rgba(245,248,255,.46);
+      opacity:0;
+      transform: translateY(8px);
+      transition: opacity 1.6s ease, transform 1.6s ease;
+    }
+
+    .on{ opacity:1 !important; transform: translateY(0) !important; }
+
+    @media (max-width: 720px){
+      .systems{ letter-spacing:.16em; font-size: 13px; }
+      .doctrine h1{ letter-spacing:.14em; }
+      .doctrine p{ line-height:1.75; }
     }
   </style>
 </head>
 
 <body>
-  <div id="mapLayer" class="mapLayer"></div>
-  <div class="grid"></div>
+  <div id="mapLayer" class="mapLayer" aria-hidden="true"></div>
+  <div class="grid" aria-hidden="true"></div>
+  <div class="vignette" aria-hidden="true"></div>
+  <div class="glow" aria-hidden="true"></div>
 
-  <div class="top">
-    BASINS • NETWORKS • CASCADING RISKS • EARLY WARNING • ECOSYSTEMS • HUMAN SECURITY
+  <div class="topbar">
+    <div id="brand" class="brand">GLOBAL WATER FUND</div>
+    <div id="systems" class="systems">
+      BASINS • NETWORKS • CASCADING RISKS • EARLY WARNING • ECOSYSTEMS • HUMAN SECURITY
+    </div>
   </div>
 
   <div class="center">
-    <div>
-      <h1>WATER IS EARTH’S OPERATING SYSTEM</h1>
-      <p>
-        We translate basin stress and cross-border dependencies into decision-ready
-        risk signals — and intervention pathways — for governments, investors,
-        and operators.
-      </p>
+    <div id="doctrine" class="doctrine">
+      <h1>WATER IS EARTH’S OPERATING SYSTEM.</h1>
+      <p>We translate basin stress and cross-border dependencies into decision-ready risk signals — and intervention pathways — for governments, investors, and operators.</p>
     </div>
   </div>
 
   <div class="bottom">
-    GLOBAL OPERATING PICTURE — WATER, FOOD, ENERGY, COASTS, SECURITY
+    <div id="whisper" class="whisper">GLOBAL OPERATING PICTURE — WATER, FOOD, ENERGY, COASTS, SECURITY</div>
   </div>
 
   <script>
-    const map = document.getElementById("mapLayer");
+    // Sequenced reveal + subtle drift (premium, not gimmicky)
+    const mapLayer = document.getElementById("mapLayer");
+    const brand    = document.getElementById("brand");
+    const systems  = document.getElementById("systems");
+    const doctrine = document.getElementById("doctrine");
+    const whisper  = document.getElementById("whisper");
+
     const img = new Image();
     img.src = "world.topo.bathy.200412.3x5400x2700.jpg";
-    img.onload = () => map.classList.add("on");
+
+    img.onload = () => {
+      requestAnimationFrame(() => mapLayer.classList.add("on"));
+      setTimeout(() => brand.classList.add("on"), 240);
+      setTimeout(() => systems.classList.add("on"), 340);
+      setTimeout(() => doctrine.classList.add("on"), 520);
+      setTimeout(() => whisper.classList.add("on"), 720);
+
+      // gentle parallax drift (very small)
+      let t = 0;
+      const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      function drift(){
+        if (prefersReduced) return;
+        t += 0.003;
+        const x = Math.sin(t) * 6;   // px
+        const y = Math.cos(t * 0.9) * 4;
+        mapLayer.style.transform = `translate(${x}px, ${y}px)`;
+        requestAnimationFrame(drift);
+      }
+      setTimeout(() => { mapLayer.classList.add("drift"); drift(); }, 1200);
+    };
+
+    img.onerror = () => {
+      // If this happens, the file name/path is wrong.
+      brand.classList.add("on");
+      systems.classList.add("on");
+      doctrine.classList.add("on");
+      whisper.classList.add("on");
+      mapLayer.style.opacity = "0.15";
+    };
   </script>
 </body>
 </html>
-
-    }
-
-    html,body{
-      margin:0;
-      height:100%;
-      background: radial-gradient(1200px 900px at 60% 30%, var(--bg2) 0%, var(--bg) 60%, #04050a 100%);
-      color:var(--ink);
