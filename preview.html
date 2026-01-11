@@ -14,6 +14,11 @@
       --muted2:rgba(245,248,255,.56);
     }
 
+    <div class="earthNav">
+  <a class="earthBtn" href="planetary.html">Enter</a>
+  <a class="earthBtn ghost" href="contact.html">Contact</a>
+</div>
+
     html,body{
       margin:0;
       height:100%;
@@ -144,6 +149,34 @@
       .labels tspan{ letter-spacing:.05em; }
     }
   </style>
+  .earthNav{
+  position:fixed;
+  left:16px;
+  bottom:16px;
+  z-index:9999;
+  display:flex;
+  gap:10px;
+}
+.earthBtn{
+  font-size:11px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:rgba(245,248,255,.86);
+  padding:10px 14px;
+  border-radius:999px;
+  border:1px solid rgba(245,248,255,.16);
+  background:rgba(0,0,0,.28);
+  backdrop-filter:blur(10px);
+}
+.earthBtn:hover{
+  border-color:rgba(245,248,255,.28);
+  background:rgba(0,0,0,.40);
+}
+.earthBtn.ghost{
+  color:rgba(245,248,255,.62);
+  border-color:rgba(245,248,255,.10);
+}
+
 </head>
 
 <body>
