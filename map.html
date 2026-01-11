@@ -26,35 +26,34 @@
       -webkit-text-size-adjust:100%;
     }
 
-    /* MAP LAYER (local file in repo) */
+    /* MAP IMAGE (LOCAL FILE IN REPO) */
     .mapLayer{
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-      pointer-events: none;
-      background-image: url("world_map.jpg"); /* <-- must exist in repo root */
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
+      position:fixed;
+      inset:0;
+      z-index:0;
+      pointer-events:none;
+      background-image:url("world_map.jpg");
+      background-size:cover;
+      background-position:center;
+      background-repeat:no-repeat;
 
-      /* Davos-grade grading */
       filter: contrast(1.06) saturate(0.92) brightness(0.62);
-      opacity: 0;
-      transform: translateY(14px);
+      opacity:0;
+      transform:translateY(14px);
       transition: opacity 1.6s ease, transform 1.6s ease, filter 1.6s ease;
     }
     .mapLayer.on{
-      opacity: 0.92;
-      transform: translateY(0);
+      opacity:0.92;
+      transform:translateY(0);
       filter: contrast(1.06) saturate(0.96) brightness(0.78);
     }
 
-    /* Subtle Mercator grid overlay */
+    /* MERCATOR GRID */
     .grid{
       position:fixed;
       inset:0;
-      pointer-events:none;
       z-index:2;
+      pointer-events:none;
       background:
         repeating-linear-gradient(90deg,
           transparent 0px,
@@ -70,31 +69,30 @@
       mix-blend-mode:screen;
     }
 
+    /* DEPTH */
     .vignette{
       position:fixed;
       inset:0;
-      pointer-events:none;
       z-index:3;
-      background:
-        radial-gradient(900px 650px at 50% 45%,
-          rgba(0,0,0,0) 0%,
-          rgba(0,0,0,.25) 60%,
-          rgba(0,0,0,.60) 100%);
+      pointer-events:none;
+      background: radial-gradient(900px 650px at 50% 45%,
+        rgba(0,0,0,0) 0%,
+        rgba(0,0,0,.25) 60%,
+        rgba(0,0,0,.60) 100%);
     }
 
-    /* Top systems bar */
+    /* TOP SYSTEMS BAR */
     .topbar{
       position:fixed;
       left:0; right:0; top:0;
       z-index:10;
       text-align:center;
-      padding-top: calc(14px + env(safe-area-inset-top));
-      padding-bottom: 12px;
-      padding-inline: clamp(14px, 3vw, 44px);
+      padding-top:calc(14px + env(safe-area-inset-top));
+      padding-bottom:12px;
+      padding-inline:clamp(14px, 3vw, 44px);
       pointer-events:none;
       background: linear-gradient(to bottom, rgba(5,6,10,.78), rgba(5,6,10,0));
     }
-
     .brand{
       font-size:11px;
       letter-spacing:.26em;
@@ -102,22 +100,21 @@
       color:rgba(245,248,255,.44);
       margin-bottom:10px;
     }
-
     .systems{
-      font-size: clamp(13px, 1.2vw, 18px);
-      letter-spacing: .20em;
+      font-size:clamp(13px, 1.2vw, 18px);
+      letter-spacing:.20em;
       text-transform:uppercase;
-      font-weight: 720;
-      color: rgba(245,248,255,.84);
+      font-weight:720;
+      color:rgba(245,248,255,.84);
       opacity:0;
-      transform: translateY(-8px);
+      transform:translateY(-8px);
       transition: opacity 1.2s ease, transform 1.2s ease;
-      white-space: nowrap;
+      white-space:nowrap;
       overflow:hidden;
-      text-overflow: ellipsis;
+      text-overflow:ellipsis;
     }
 
-    /* Center doctrine */
+    /* CENTER DOCTRINE */
     .center{
       position:fixed;
       inset:0;
@@ -125,63 +122,59 @@
       place-items:center;
       z-index:10;
       pointer-events:none;
-      padding-inline: clamp(18px, 4vw, 60px);
+      padding-inline:clamp(18px, 4vw, 60px);
       text-align:center;
     }
-
     .doctrine{
-      max-width: 980px;
+      max-width:980px;
       opacity:0;
-      transform: translateY(10px);
+      transform:translateY(10px);
       transition: opacity 1.6s ease, transform 1.6s ease;
     }
-
     .doctrine h1{
       margin:0;
-      font-size: clamp(26px, 3.2vw, 54px);
-      letter-spacing: .16em;
-      text-transform: uppercase;
-      font-weight: 760;
-      line-height: 1.12;
-      text-shadow: 0 0 24px rgba(170,240,255,.06);
+      font-size:clamp(26px, 3.2vw, 54px);
+      letter-spacing:.16em;
+      text-transform:uppercase;
+      font-weight:760;
+      line-height:1.12;
+      text-shadow:0 0 24px rgba(170,240,255,.06);
     }
-
     .doctrine p{
-      margin: 16px auto 0 auto;
-      max-width: 820px;
-      font-size: clamp(13px, 1.2vw, 16px);
-      line-height: 1.9;
-      color: rgba(245,248,255,.72);
-      letter-spacing: .02em;
+      margin:16px auto 0 auto;
+      max-width:820px;
+      font-size:clamp(13px, 1.2vw, 16px);
+      line-height:1.9;
+      color:rgba(245,248,255,.72);
+      letter-spacing:.02em;
     }
 
-    /* Bottom whisper line */
+    /* BOTTOM WHISPER */
     .bottom{
       position:fixed;
       left:0; right:0; bottom:0;
       z-index:10;
       text-align:center;
-      padding-bottom: calc(14px + env(safe-area-inset-bottom));
-      padding-top: 10px;
-      padding-inline: clamp(14px, 3vw, 44px);
+      padding-bottom:calc(14px + env(safe-area-inset-bottom));
+      padding-top:10px;
+      padding-inline:clamp(14px, 3vw, 44px);
       pointer-events:none;
       background: linear-gradient(to top, rgba(5,6,10,.80), rgba(5,6,10,0));
     }
-
     .whisper{
       font-size:11px;
       letter-spacing:.22em;
       text-transform:uppercase;
-      color: rgba(245,248,255,.46);
+      color:rgba(245,248,255,.46);
       opacity:0;
-      transform: translateY(8px);
+      transform:translateY(8px);
       transition: opacity 1.4s ease, transform 1.4s ease;
     }
 
-    .on{ opacity:1 !important; transform: translateY(0) !important; }
+    .on{ opacity:1 !important; transform:translateY(0) !important; }
 
     @media (max-width: 720px){
-      .systems{ letter-spacing:.16em; font-size: 13px; }
+      .systems{ letter-spacing:.16em; font-size:13px; }
       .doctrine h1{ letter-spacing:.14em; }
       .doctrine p{ line-height:1.75; }
     }
@@ -210,13 +203,13 @@
   <div class="bottom">
     <div id="whisper" class="whisper">GLOBAL OPERATING PICTURE — WATER, FOOD, ENERGY, COASTS, SECURITY</div>
   </div>
+
   <script>
     const mapLayer = document.getElementById("mapLayer");
     const systems  = document.getElementById("systems");
     const doctrine = document.getElementById("doctrine");
     const whisper  = document.getElementById("whisper");
 
-    // Preload the local map image, then reveal smoothly
     const img = new Image();
     img.src = "world_map.jpg";
 
@@ -228,7 +221,7 @@
     };
 
     img.onerror = () => {
-      // Still show typography even if the file path is wrong
+      // If you see no map after this, the image path is wrong (or file isn't uploaded)
       systems.classList.add("on");
       doctrine.classList.add("on");
       whisper.classList.add("on");
