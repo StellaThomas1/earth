@@ -1,280 +1,138 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
-<title>Global Water Fund — Global Operating Picture</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Global Operating Picture — Global Water Fund</title>
 
 <style>
-:root{
-  --bg:#04050a; --bg2:#0b0f1a;
-  --ink:rgba(245,248,255,.92);
-  --muted:rgba(245,248,255,.70);
-  --muted2:rgba(245,248,255,.50);
-  --line:rgba(255,255,255,.14);
-}
-
 html,body{
-  margin:0; height:100%;
-  background: radial-gradient(1100px 900px at 60% 30%, var(--bg2) 0%, var(--bg) 60%, #020308 100%);
-  color:var(--ink);
-  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-  overflow:hidden; /* cinematic instrument page */
+  margin:0;height:100%;
+  background:#05070d;
+  color:white;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
+  overflow:hidden;
 }
-a{color:inherit;text-decoration:none}
 
-/* Corner menu (AA) */
-.corner{
-  position:fixed; top:14px; right:14px; z-index:50;
-  display:flex; gap:10px; align-items:center;
-}
-.pill{
-  font-size:11px; letter-spacing:.18em; text-transform:uppercase;
-  padding:10px 12px; border-radius:999px;
-  border:1px solid rgba(255,255,255,.14);
-  background:rgba(0,0,0,.30); backdrop-filter:blur(10px);
-  color:rgba(245,248,255,.82);
-  user-select:none;
-}
-.pill:hover{ background:rgba(0,0,0,.46); border-color:rgba(255,255,255,.22); }
-.menu{ position:relative; }
-.dropdown{
-  position:absolute; right:0; top:44px;
-  min-width:230px;
-  border:1px solid rgba(255,255,255,.14);
-  border-radius:14px;
-  background:rgba(0,0,0,.65);
-  backdrop-filter:blur(14px);
-  padding:10px;
-  display:none;
-}
-.menu.open .dropdown{ display:block; }
-.dropdown a{
-  display:block;
-  padding:10px 10px;
-  border-radius:10px;
-  font-size:11px;
-  letter-spacing:.16em;
+/* minimal corner menu */
+.menu{
+  position:fixed;
+  top:14px;right:14px;
+  z-index:100;
+  font-size:12px;
+  letter-spacing:.2em;
   text-transform:uppercase;
-  color:rgba(245,248,255,.72);
 }
-.dropdown a:hover{ background:rgba(255,255,255,.06); color:rgba(245,248,255,.95); }
+.menu a{
+  color:#bbb;
+  text-decoration:none;
+  padding:10px 14px;
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:20px;
+  background:rgba(0,0,0,.5);
+}
 
-/* Stage */
+/* stage */
 .stage{
-  position:fixed; inset:0;
-  display:grid; place-items:center;
-  z-index:1;
-  pointer-events:none;
+  position:fixed;
+  inset:0;
+  display:grid;
+  place-items:center;
 }
 
+/* map panel */
 .panel{
-  width:min(92vw, 1180px);
-  height:min(72vh, 720px);
+  width:92vw;
+  height:70vh;
   border-radius:18px;
-  border:1px solid rgba(255,255,255,.10);
   overflow:hidden;
   position:relative;
-  background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
+  border:1px solid rgba(255,255,255,.1);
+  background:black;
 }
 
-/* Map layer (uses your local repo files, case-sensitive) */
-.mapLayer{
-  position:absolute; inset:0;
+/* map image (no huge file required) */
+.map{
+  position:absolute;
+  inset:0;
   background-image:
-    linear-gradient(180deg, rgba(0,0,0,.22), rgba(0,0,0,.64)),
-    url("WorldMap.jpg"),
-    url("world.topo.bathy.200412.3x5400x2700.jpg");
+    linear-gradient(rgba(0,0,0,.5),rgba(0,0,0,.6)),
+    url("https://eoimages.gsfc.nasa.gov/images/imagerecords/73000/73909/world.topo.bathy.200412.3x5400x2700.jpg");
   background-size:cover;
   background-position:center;
-  background-repeat:no-repeat;
-  filter:contrast(1.06) saturate(0.96) brightness(0.90);
-  opacity:0;
-  transform: translateY(12px);
-  transition: opacity 1.7s ease, transform 1.7s ease;
+  filter:contrast(1.1) brightness(.8);
 }
 
-/* engineered grid (quiet) */
-.grid{
-  position:absolute; inset:0;
-  background-image:
-    linear-gradient(rgba(255,255,255,.10) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,.10) 1px, transparent 1px);
-  background-size: 110px 110px;
-  opacity:0;
-  transition: opacity 2.0s ease;
-  mix-blend-mode: overlay;
-}
-
-/* currents shimmer (MOVES) */
+/* ocean currents */
 .currents{
-  position:absolute; inset:0;
+  position:absolute;
+  inset:0;
   background:
-    radial-gradient(900px 560px at 34% 56%, rgba(120,210,255,.12), rgba(0,0,0,0) 58%),
-    radial-gradient(880px 600px at 72% 44%, rgba(160,255,220,.10), rgba(0,0,0,0) 60%),
-    radial-gradient(820px 640px at 56% 78%, rgba(255,230,140,.08), rgba(0,0,0,0) 62%);
-  mix-blend-mode: screen;
-  filter: blur(1.2px);
-  opacity:0;
-  animation: glass 14s ease-in-out infinite;
+    radial-gradient(800px 500px at 30% 60%, rgba(120,200,255,.15), transparent 60%),
+    radial-gradient(900px 600px at 70% 40%, rgba(160,255,220,.12), transparent 60%);
+  mix-blend-mode:screen;
+  animation:drift 14s ease-in-out infinite;
 }
-@keyframes glass{
-  0%{ transform: translateX(-1.2%); opacity:.18; }
-  50%{ transform: translateX(1.2%); opacity:.30; }
-  100%{ transform: translateX(-1.2%); opacity:.18; }
+@keyframes drift{
+  0%{transform:translateX(-2%)}
+  50%{transform:translateX(2%)}
+  100%{transform:translateX(-2%)}
 }
 
-/* basin overlays (tasteful) */
-.basins{
-  position:absolute; inset:0;
-  opacity:0;
-  transition: opacity 2.2s ease;
-}
-.basins svg{ width:100%; height:100%; }
-.basins path{
-  fill:none;
-  stroke: rgba(170,240,255,.18);
-  stroke-width:2;
-  stroke-dasharray: 7 10;
-  filter: drop-shadow(0 0 10px rgba(120,210,255,.18));
-}
-
-/* Centered title + copy (engineered, not cramped) */
-.centerText{
+/* center text */
+.center{
   position:absolute;
   inset:0;
   display:grid;
   place-items:center;
-  padding:20px;
   text-align:center;
-  opacity:0;
-  transform: translateY(6px);
-  transition: opacity 1.6s ease, transform 1.6s ease;
 }
 .kicker{
   font-size:11px;
-  letter-spacing:.26em;
+  letter-spacing:.25em;
   text-transform:uppercase;
-  color:rgba(245,248,255,.60);
+  color:#9fb7ff;
 }
 .big{
-  margin:14px 0 0;
-  font-size:clamp(18px, 2.6vw, 40px);
+  font-size:clamp(20px,3vw,42px);
   letter-spacing:.12em;
   text-transform:uppercase;
-  line-height:1.10;
+  margin-top:10px;
 }
 .sub{
-  margin:12px auto 0;
-  max-width:68ch;
-  color:rgba(245,248,255,.66);
-  line-height:1.65;
-  font-size:clamp(12px, 1.05vw, 15px);
-}
-.tagline{
-  margin:14px 0 0;
-  font-size:11px;
-  letter-spacing:.18em;
-  text-transform:uppercase;
-  color:rgba(245,248,255,.50);
-}
-
-.on .mapLayer{ opacity:.96; transform: translateY(0); }
-.on .grid{ opacity:.18; }
-.on .currents{ opacity:1; }
-.on .basins{ opacity:1; }
-.on .centerText{ opacity:1; transform: translateY(0); }
-
-/* Mobile: keep it clean */
-@media (max-width:520px){
-  .panel{ width:94vw; height:76vh; }
-  .grid{ background-size: 140px 140px; opacity:.14; }
-  .sub{ max-width:38ch; }
-}
-
-/* Bottom cue for mobile */
-.cue{
-  position:fixed; left:50%; bottom:14px;
-  transform: translateX(-50%);
-  z-index:45;
-  font-size:11px;
-  letter-spacing:.18em;
-  text-transform:uppercase;
-  color:rgba(245,248,255,.55);
-  opacity:.0;
-  transition: opacity 1.2s ease;
-  pointer-events:none;
-}
-@media (max-width:520px){
-  body.active .cue{ opacity:.95; }
+  max-width:60ch;
+  margin:12px auto;
+  font-size:14px;
+  color:#ccc;
+  line-height:1.6;
 }
 </style>
 </head>
 
 <body>
 
-<div class="corner" style="pointer-events:auto">
-  <a class="pill" href="capabilities.html">Enter</a>
-  <div class="menu" id="menu">
-    <div class="pill" id="menuBtn">Menu</div>
-    <div class="dropdown">
-      <a href="preview.html">Earth</a>
-      <a href="planetary.html">Stability</a>
-      <a href="map.html">Map</a>
-      <a href="capabilities.html">Capabilities</a>
-      <a href="forecasting.html">Forecasting</a>
-      <a href="maritime.html">Maritime</a>
-      <a href="capital.html">Capital</a>
-      <a href="about.html">About</a>
-      <a href="contact.html">Contact</a>
-    </div>
-  </div>
+<div class="menu">
+  <a href="planetary.html">Stability</a>
 </div>
 
-<div class="cue">Scroll ↓</div>
-
-<div class="stage" aria-hidden="true">
-  <div class="panel" id="panel">
-    <div class="mapLayer"></div>
-    <div class="grid"></div>
+<div class="stage">
+  <div class="panel">
+    <div class="map"></div>
     <div class="currents"></div>
 
-    <div class="basins">
-      <svg viewBox="0 0 1000 600" preserveAspectRatio="none">
-        <path d="M110,320 C200,250 260,240 330,270 C410,305 450,310 530,270 C620,230 720,235 860,290"/>
-        <path d="M140,410 C260,350 320,345 410,375 C520,410 600,410 740,360 C840,330 900,335 960,360"/>
-        <path d="M80,240 C190,210 270,210 350,230 C470,268 560,268 680,220 C790,185 870,190 950,220"/>
-      </svg>
-    </div>
-
-    <div class="centerText">
+    <div class="center">
       <div>
         <div class="kicker">Global Operating Picture</div>
         <div class="big">Water Is Earth’s Operating System</div>
         <div class="sub">
-          We translate basin stress and cross-border dependencies into decision-ready risk signals — and intervention pathways —
-          for governments, investors, and operators.
+          We translate basin stress and cross-border dependencies into decision-ready intelligence for governments,
+          investors, and operators.
         </div>
-        <div class="tagline">BASINS • NETWORKS • CASCADING RISKS • EARLY WARNING • ECOSYSTEMS • HUMAN SECURITY</div>
       </div>
     </div>
 
   </div>
 </div>
-
-<script>
-  // menu
-  const menu = document.getElementById("menu");
-  const btn  = document.getElementById("menuBtn");
-  btn.addEventListener("click", ()=> menu.classList.toggle("open"));
-  window.addEventListener("click", (e)=>{ if(!menu.contains(e.target)) menu.classList.remove("open"); });
-
-  // reveal panel
-  setTimeout(()=>{
-    document.body.classList.add("active");
-    document.getElementById("panel").classList.add("on");
-  }, 420);
-</script>
 
 </body>
 </html>
