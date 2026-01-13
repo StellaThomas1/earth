@@ -1,126 +1,97 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
 <title>Global Water Fund — Planetary Stability</title>
 
 <style>
 :root{
-  --bg:#04050a;
-  --bg2:#0b0f1a;
+  --bg:#04050a; --bg2:#0b0f1a;
   --ink:rgba(245,248,255,.92);
   --muted:rgba(245,248,255,.70);
   --muted2:rgba(245,248,255,.50);
-  --line:rgba(245,248,255,.12);
+  --line:rgba(255,255,255,.14);
 }
 
 html,body{
-  margin:0;
-  min-height:100%;
+  margin:0; height:100%;
   background: radial-gradient(1100px 900px at 60% 30%, var(--bg2) 0%, var(--bg) 60%, #020308 100%);
   color:var(--ink);
   font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-  overflow-x:hidden;
-  overflow-y:auto;
+  overflow:hidden; /* cinematic instrument page */
 }
-
 a{color:inherit;text-decoration:none}
 
-/* NAV */
-.nav{
-  position:sticky; top:0; z-index:2000;
-  backdrop-filter:blur(12px);
-  background:linear-gradient(to bottom, rgba(0,0,0,.78), rgba(0,0,0,.30));
-  border-bottom:1px solid var(--line);
+/* ---------- Quiet Corner Menu (AA) ---------- */
+.corner{
+  position:fixed; top:14px; right:14px; z-index:50;
+  display:flex; gap:10px; align-items:center;
 }
-.navin{
-  max-width:1200px; margin:0 auto; padding:14px 18px;
-  display:flex; align-items:center; justify-content:space-between; gap:16px;
-}
-.brand{
-  font-size:11px; letter-spacing:.26em; text-transform:uppercase;
-  color:var(--muted2); white-space:nowrap;
-}
-.links{ display:flex; gap:14px; flex-wrap:wrap; justify-content:flex-end; }
-.links a{
+.pill{
   font-size:11px; letter-spacing:.18em; text-transform:uppercase;
-  color:rgba(245,248,255,.62);
+  padding:10px 12px; border-radius:999px;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(0,0,0,.30); backdrop-filter:blur(10px);
+  color:rgba(245,248,255,.82);
+  user-select:none;
 }
-.links a:hover{ color:rgba(245,248,255,.95); }
-
-/* PAGE LAYOUT */
-.wrap{
-  max-width:1200px;
-  margin:0 auto;
-  padding:30px 18px 70px;
-  display:grid;
-  grid-template-columns: 1.05fr 1fr;
-  gap:26px;
-  align-items:start;
+.pill:hover{ background:rgba(0,0,0,.46); border-color:rgba(255,255,255,.22); }
+.menu{ position:relative; }
+.dropdown{
+  position:absolute; right:0; top:44px;
+  min-width:230px;
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:14px;
+  background:rgba(0,0,0,.65);
+  backdrop-filter:blur(14px);
+  padding:10px;
+  display:none;
 }
-
-.kicker{ font-size:11px; letter-spacing:.26em; text-transform:uppercase; color:var(--muted2); }
-.h1{
-  margin:14px 0 0;
-  font-size:clamp(26px, 3.1vw, 44px);
-  letter-spacing:.14em;
+.menu.open .dropdown{ display:block; }
+.dropdown a{
+  display:block;
+  padding:10px 10px;
+  border-radius:10px;
+  font-size:11px;
+  letter-spacing:.16em;
   text-transform:uppercase;
-  line-height:1.10;
+  color:rgba(245,248,255,.72);
 }
-.copy{
-  margin:14px 0 0;
-  color:var(--muted);
-  line-height:1.85;
-  font-size:clamp(13px, 1.08vw, 16px);
-  max-width:52ch;
-}
-.hr{ margin:18px 0 0; border:0; border-top:1px solid rgba(255,255,255,.10); max-width:52ch; }
+.dropdown a:hover{ background:rgba(255,255,255,.06); color:rgba(245,248,255,.95); }
 
-/* STAGE */
+/* ---------- Stage ---------- */
 .stage{
-  position:relative;
-  min-height:560px;
-  border:1px solid rgba(255,255,255,.10);
-  border-radius:18px;
-  background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
-  overflow:hidden;
+  position:fixed; inset:0;
+  display:grid; place-items:center;
+  z-index:1;
+  pointer-events:none; /* protects scene; menu stays clickable */
 }
-
-.stageInner{
-  position:absolute;
-  inset:0;
-  display:grid;
-  place-items:center;
-}
-
-/* Globe (CSS-only, Safari-safe) */
-.globeWrap{
-  width:min(56vmin, 520px);
+.wrap{
+  width:min(88vmin, 760px);
   aspect-ratio:1/1;
   position:relative;
-  transform: translateY(-8px);
+  transform: translateY(-6px);
 }
+
+/* Globe (CSS, Safari-safe) */
 .globe{
-  width:100%;
-  height:100%;
+  position:absolute; inset:0;
   border-radius:50%;
-  position:relative;
   background:
     radial-gradient(circle at 35% 30%, rgba(255,255,255,.18), rgba(255,255,255,0) 38%),
     radial-gradient(circle at 30% 35%, rgba(120,200,255,.06), rgba(0,0,0,0) 52%),
-    radial-gradient(circle at 55% 65%, rgba(0,0,0,0), rgba(0,0,0,.78) 68%),
+    radial-gradient(circle at 55% 65%, rgba(0,0,0,0), rgba(0,0,0,.82) 68%),
     radial-gradient(circle at 50% 50%, rgba(10,12,18,1), rgba(2,3,8,1) 72%);
   box-shadow:
-    0 30px 90px rgba(0,0,0,.55),
+    0 30px 100px rgba(0,0,0,.58),
     0 0 0 1px rgba(255,255,255,.06) inset;
   overflow:hidden;
   transform: translateZ(0);
 }
 .globe:before{
   content:"";
-  position:absolute;
-  inset:-20%;
+  position:absolute; inset:-20%;
   border-radius:50%;
   background:
     radial-gradient(1200px 800px at 30% 45%, rgba(160,210,255,.10), rgba(0,0,0,0) 55%),
@@ -132,7 +103,7 @@ a{color:inherit;text-decoration:none}
       rgba(255,255,255,.06) 50%,
       rgba(255,255,255,.03) 80%,
       rgba(255,255,255,0) 100%);
-  filter: blur(.6px) contrast(1.05) saturate(.85) brightness(.85);
+  filter: blur(.6px) contrast(1.05) saturate(.85) brightness(.86);
   mix-blend-mode: screen;
   opacity:.70;
   animation: spin 26s linear infinite;
@@ -142,8 +113,7 @@ a{color:inherit;text-decoration:none}
   to{ transform: translateX(8%) rotate(360deg); }
 }
 .clouds{
-  position:absolute;
-  inset:-18%;
+  position:absolute; inset:-18%;
   border-radius:50%;
   background:
     radial-gradient(800px 520px at 35% 45%, rgba(255,255,255,.10), rgba(0,0,0,0) 60%),
@@ -153,7 +123,6 @@ a{color:inherit;text-decoration:none}
   opacity:.55;
   mix-blend-mode: screen;
   animation: drift 20s ease-in-out infinite;
-  pointer-events:none;
 }
 @keyframes drift{
   0%{ transform: translate(-1.6%,-1.0%) rotate(-1deg); }
@@ -161,135 +130,109 @@ a{color:inherit;text-decoration:none}
   100%{ transform: translate(-1.6%,-1.0%) rotate(-1deg); }
 }
 
-/* Cones + rings */
-.svg{
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
+/* Rings + Cones overlay */
+.overlay{
+  position:absolute; inset:0;
   pointer-events:none;
-}
-.ring{
-  fill:none;
-  stroke: rgba(170,240,255,.18);
-  stroke-width:1.5;
   opacity:0;
-  transition: opacity 2.2s ease;
+  transition: opacity 1.8s ease;
 }
-.slice{
-  opacity:0;
-  transition: opacity 2.0s ease;
-}
-body.active .ring{ opacity:1; }
-body.active .slice{ opacity:1; }
+body.active .overlay{ opacity:1; }
 
-/* Each wedge “lights” slowly (tide-like) */
+svg{ width:100%; height:100%; }
+.ring{ fill:none; stroke: rgba(170,240,255,.16); stroke-width:1.4; }
+.ring2{ fill:none; stroke: rgba(170,240,255,.10); stroke-width:1.2; }
+
+.slice{
+  opacity:.22;
+  filter: blur(.15px);
+}
 .glow{
+  opacity:.42;
   animation: pulse 7.5s ease-in-out infinite;
   transform-origin: 50% 50%;
-  opacity:.55;
 }
 @keyframes pulse{
-  0%,100%{ opacity:.38; filter: blur(0px); }
-  50%{ opacity:.70; filter: blur(.2px); }
+  0%,100%{ opacity:.34; }
+  50%{ opacity:.68; }
 }
 
-/* Labels */
-.labels{
-  position:absolute;
-  inset:0;
-  display:grid;
-  place-items:center;
-  pointer-events:none;
-}
+/* Sweep lighting (one cone at a time) */
+.slice.on{ opacity:.70; }
+.slice.on.glow{ opacity:.85; }
+
+/* Labels on engineered radial positions */
 .label{
   position:absolute;
   width:42%;
-  color: rgba(245,248,255,.82);
-  font-size:12px;
-  letter-spacing:.14em;
-  text-transform:uppercase;
-  line-height:1.12;
+  left:29%;
+  top:50%;
+  transform: translate(-50%,-50%);
   text-align:center;
+  text-transform:uppercase;
+  letter-spacing:.14em;
+  font-size:12px;
+  color:rgba(245,248,255,.86);
+  line-height:1.12;
   opacity:0;
-  transform: translateY(6px);
-  transition: opacity 1.8s ease, transform 1.8s ease;
+  transition: opacity 1.6s ease;
 }
-body.active .label{ opacity:1; transform: translateY(0); }
-.label small{
-  display:block;
-  font-size:10px;
-  letter-spacing:.08em;
-  text-transform:none;
-  color: rgba(245,248,255,.58);
-  margin-top:6px;
-  line-height:1.45;
-}
+body.active .label{ opacity:1; }
 
-/* positions on a perfect radial grid */
-.l1{ transform: translate(-0px,-155px); }
-.l2{ transform: translate(134px,-78px); }
-.l3{ transform: translate(134px,78px); }
-.l4{ transform: translate(0px,155px); }
-.l5{ transform: translate(-134px,78px); }
-.l6{ transform: translate(-134px,-78px); }
+.l1{ transform: translate(-50%,-50%) translate(0,-38%); }
+.l2{ transform: translate(-50%,-50%) translate(33%,-19%); }
+.l3{ transform: translate(-50%,-50%) translate(33%,19%); }
+.l4{ transform: translate(-50%,-50%) translate(0,38%); }
+.l5{ transform: translate(-50%,-50%) translate(-33%,19%); }
+.l6{ transform: translate(-50%,-50%) translate(-33%,-19%); }
 
-body.active .l1, body.active .l2, body.active .l3, body.active .l4, body.active .l5, body.active .l6{
-  transform: translate(var(--tx), var(--ty));
+@media (max-width:520px){
+  .wrap{ width:min(92vmin, 560px); transform: translateY(-10px); }
+  .label{ width:54%; font-size:12px; }
+  .l1{ transform: translate(-50%,-50%) translate(0,-34%); }
+  .l4{ transform: translate(-50%,-50%) translate(0,34%); }
 }
 
-/* use CSS vars so mobile can adjust cleanly */
-.l1{ --tx: 0px; --ty:-155px; }
-.l2{ --tx: 134px; --ty:-78px; }
-.l3{ --tx: 134px; --ty: 78px; }
-.l4{ --tx: 0px; --ty: 155px; }
-.l5{ --tx:-134px; --ty: 78px; }
-.l6{ --tx:-134px; --ty:-78px; }
-
-/* Footer */
-.footer{
-  border-top:1px solid rgba(255,255,255,.10);
-  padding:18px;
-  color:rgba(245,248,255,.50);
+/* Minimal title (quiet) */
+.title{
+  position:fixed;
+  left:14px; bottom:14px;
+  z-index:40;
+  pointer-events:none;
   font-size:11px;
   letter-spacing:.18em;
   text-transform:uppercase;
-  text-align:center;
+  color:rgba(245,248,255,.58);
 }
 
-/* MOBILE */
-@media (max-width: 920px){
-  .wrap{ grid-template-columns:1fr; }
-  .copy{ max-width:unset; }
-  .stage{ min-height:540px; }
-  .globeWrap{ width:min(78vmin, 520px); }
+/* Mobile scroll cue (not actual scroll) */
+.cue{
+  position:fixed;
+  left:50%; bottom:14px;
+  transform: translateX(-50%);
+  z-index:45;
+  font-size:11px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:rgba(245,248,255,.55);
+  opacity:.0;
+  transition: opacity 1.4s ease;
+  pointer-events:none;
 }
-
-@media (max-width: 520px){
-  .wrap{ padding-top:22px; }
-  .stage{ min-height:520px; }
-  .globeWrap{ transform: translateY(-2px); }
-  .label{ width:50%; font-size:12px; }
-  .label small{ font-size:10px; }
-  /* pull the circle up so nothing gets cut off */
-  .stageInner{ transform: translateY(-10px); }
-  /* tighter radial positions so labels stay on-screen */
-  .l1{ --ty:-142px; }
-  .l4{ --ty: 142px; }
-  .l2{ --tx: 120px; --ty:-70px; }
-  .l3{ --tx: 120px; --ty: 70px; }
-  .l5{ --tx:-120px; --ty: 70px; }
-  .l6{ --tx:-120px; --ty:-70px; }
+@media (max-width:520px){
+  body.active .cue{ opacity:.9; }
 }
 </style>
 </head>
 
 <body>
 
-<div class="nav">
-  <div class="navin">
-    <div class="brand">GLOBAL WATER FUND</div>
-    <div class="links">
+<!-- Corner controls -->
+<div class="corner" style="pointer-events:auto">
+  <a class="pill" href="map.html">Map</a>
+  <div class="menu" id="menu">
+    <div class="pill" id="menuBtn">Menu</div>
+    <div class="dropdown" aria-label="Site menu">
       <a href="preview.html">Earth</a>
       <a href="planetary.html">Stability</a>
       <a href="map.html">Map</a>
@@ -303,70 +246,65 @@ body.active .l1, body.active .l2, body.active .l3, body.active .l4, body.active 
   </div>
 </div>
 
-<div class="wrap">
-  <div>
-    <div class="kicker">Planetary Stability Thresholds</div>
-    <div class="h1">Water and Planetary Stability</div>
+<div class="title">Planetary Stability Thresholds</div>
+<div class="cue">Scroll ↓</div>
 
-    <div class="copy">
-      Planetary stability depends on a small number of critical thresholds. When crossed, systems shift — often abruptly and irreversibly.
-    </div>
+<!-- Scene -->
+<div class="stage" aria-hidden="true">
+  <div class="wrap">
+    <div class="globe"><div class="clouds"></div></div>
 
-    <div class="copy">
-      Water sits at the center of many thresholds, linking climate variability, ecosystems, food systems, coasts, and human security.
-      Global Water Fund focuses on where water stress pushes systems toward instability — and where intervention preserves resilience.
-    </div>
-
-    <hr class="hr"/>
-
-    <div class="copy" style="color:rgba(245,248,255,.60)">
-      This is a strategic lens: engineered, decision-ready, and designed for action — not academic display.
-    </div>
-  </div>
-
-  <div class="stage">
-    <div class="stageInner">
-      <div class="globeWrap" aria-hidden="true">
-        <div class="globe">
-          <div class="clouds"></div>
-        </div>
-      </div>
-
-      <!-- Cones + Ring overlay -->
-      <svg class="svg" viewBox="0 0 1000 1000" aria-hidden="true">
+    <div class="overlay">
+      <svg viewBox="0 0 1000 1000" aria-hidden="true">
         <circle class="ring" cx="500" cy="500" r="360"/>
-        <circle class="ring" cx="500" cy="500" r="310" style="stroke:rgba(170,240,255,.10)"/>
-        <circle class="ring" cx="500" cy="500" r="260" style="stroke:rgba(170,240,255,.08)"/>
+        <circle class="ring2" cx="500" cy="500" r="300"/>
+        <circle class="ring2" cx="500" cy="500" r="240"/>
 
-        <!-- 6 equal cones (wedge sectors) -->
+        <!-- 6 equal wedges -->
         <g id="slices">
-          <path class="slice glow" d="M500,500 L500,160 A340,340 0 0,1 794,330 Z" fill="rgba(120,210,255,.20)"/>
-          <path class="slice glow" d="M500,500 L794,330 A340,340 0 0,1 794,670 Z" fill="rgba(160,255,220,.18)" style="animation-delay:1.2s"/>
-          <path class="slice glow" d="M500,500 L794,670 A340,340 0 0,1 500,840 Z" fill="rgba(255,230,140,.18)" style="animation-delay:2.4s"/>
-          <path class="slice glow" d="M500,500 L500,840 A340,340 0 0,1 206,670 Z" fill="rgba(255,170,200,.16)" style="animation-delay:3.6s"/>
-          <path class="slice glow" d="M500,500 L206,670 A340,340 0 0,1 206,330 Z" fill="rgba(190,190,255,.16)" style="animation-delay:4.8s"/>
-          <path class="slice glow" d="M500,500 L206,330 A340,340 0 0,1 500,160 Z" fill="rgba(170,240,255,.14)" style="animation-delay:6.0s"/>
+          <path class="slice glow" data-i="0" d="M500,500 L500,160 A340,340 0 0,1 794,330 Z" fill="rgba(120,210,255,.22)"/>
+          <path class="slice glow" data-i="1" d="M500,500 L794,330 A340,340 0 0,1 794,670 Z" fill="rgba(160,255,220,.20)"/>
+          <path class="slice glow" data-i="2" d="M500,500 L794,670 A340,340 0 0,1 500,840 Z" fill="rgba(255,230,140,.20)"/>
+          <path class="slice glow" data-i="3" d="M500,500 L500,840 A340,340 0 0,1 206,670 Z" fill="rgba(255,170,200,.18)"/>
+          <path class="slice glow" data-i="4" d="M500,500 L206,670 A340,340 0 0,1 206,330 Z" fill="rgba(190,190,255,.18)"/>
+          <path class="slice glow" data-i="5" d="M500,500 L206,330 A340,340 0 0,1 500,160 Z" fill="rgba(170,240,255,.16)"/>
         </g>
       </svg>
 
-      <!-- Labels -->
-      <div class="labels" aria-hidden="true">
-        <div class="label l1">Climate<br/>Variability</div>
-        <div class="label l2">Freshwater<br/>Availability</div>
-        <div class="label l3">Food<br/>Systems</div>
-        <div class="label l4">Human<br/>Security</div>
-        <div class="label l5">Coastal<br/>Stability</div>
-        <div class="label l6">Ecosystems</div>
-      </div>
+      <div class="label l1">Climate<br/>Variability</div>
+      <div class="label l2">Freshwater<br/>Availability</div>
+      <div class="label l3">Food<br/>Systems</div>
+      <div class="label l4">Human<br/>Security</div>
+      <div class="label l5">Coastal<br/>Stability</div>
+      <div class="label l6">Ecosystems</div>
     </div>
   </div>
 </div>
 
-<div class="footer">GLOBAL WATER FUND — STABILITY • FORESIGHT • INTERVENTION</div>
-
 <script>
-  // Delay the overlay so the first impression is black earth + clouds (no "extra words", no clutter)
-  setTimeout(()=> document.body.classList.add("active"), 1700);
+  // menu toggle
+  const menu = document.getElementById("menu");
+  const btn  = document.getElementById("menuBtn");
+  btn.addEventListener("click", ()=> menu.classList.toggle("open"));
+  window.addEventListener("click", (e)=>{
+    if (!menu.contains(e.target)) menu.classList.remove("open");
+  });
+
+  // reveal overlay after the earth settles
+  setTimeout(()=> document.body.classList.add("active"), 1200);
+
+  // engineered sweep: light one cone at a time (slow, premium)
+  const slices = Array.from(document.querySelectorAll(".slice"));
+  let idx = 0;
+  function sweep(){
+    slices.forEach(s => s.classList.remove("on"));
+    slices[idx].classList.add("on");
+    idx = (idx + 1) % slices.length;
+  }
+  setTimeout(()=>{
+    sweep();
+    setInterval(sweep, 1800); // adjust speed here (slower = more premium)
+  }, 1500);
 </script>
 
 </body>
