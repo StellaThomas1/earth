@@ -107,9 +107,65 @@
       .heroText{ min-height: 88vh; padding: 22px; }
     }
   </style>
+  .nav{
+  position:sticky;
+  top:0;
+  z-index:1000;
+  backdrop-filter:blur(12px);
+  background:linear-gradient(to bottom, rgba(0,0,0,.75), rgba(0,0,0,.35));
+  border-bottom:1px solid rgba(255,255,255,.12);
+}
+.navin{
+  max-width:1200px;
+  margin:0 auto;
+  padding:14px 18px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+}
+.brand{
+  font-size:11px;
+  letter-spacing:.26em;
+  text-transform:uppercase;
+  color:rgba(245,248,255,.50);
+  white-space:nowrap;
+}
+.links{
+  display:flex;
+  gap:14px;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+}
+.links a{
+  font-size:11px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:rgba(245,248,255,.60);
+}
+.links a:hover{
+  color:rgba(245,248,255,.95);
+}
+
 </head>
 
 <body>
+  <div class="nav">
+  <div class="navin">
+    <div class="brand">GLOBAL WATER FUND</div>
+    <div class="links">
+      <a href="preview.html">Earth</a>
+      <a href="planetary.html">Stability</a>
+      <a href="map.html">Map</a>
+      <a href="capabilities.html">Capabilities</a>
+      <a href="forecasting.html">Forecasting</a>
+      <a href="maritime.html">Maritime</a>
+      <a href="capital.html">Capital</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </div>
+  </div>
+</div>
   <section class="stage" id="hero">
     <canvas id="globe"></canvas>
 
