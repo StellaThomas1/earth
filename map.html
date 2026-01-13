@@ -1,256 +1,258 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Global Water Fund — Systems Map</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>Global Water Fund — Global Operating Picture</title>
 
 <style>
-  .nav{
-  position:sticky;
-  top:0;
-  z-index:2000;
-  backdrop-filter:blur(12px);
-  background:linear-gradient(to bottom, rgba(0,0,0,.78), rgba(0,0,0,.30));
-  border-bottom:1px solid rgba(255,255,255,.12);
-}
-.navin{
-  max-width:1200px;
-  margin:0 auto;
-  padding:14px 18px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:16px;
-}
-.brand{
-  font-size:11px;
-  letter-spacing:.26em;
-  text-transform:uppercase;
-  color:rgba(245,248,255,.50);
-  white-space:nowrap;
-}
-.links{
-  display:flex;
-  gap:14px;
-  flex-wrap:wrap;
-  justify-content:flex-end;
-}
-.links a{
-  font-size:11px;
-  letter-spacing:.18em;
-  text-transform:uppercase;
-  color:rgba(245,248,255,.62);
-}
-.links a:hover{ color:rgba(245,248,255,.95); }
-
 :root{
-  --bg:#05060a;
+  --bg:#04050a;
   --bg2:#0b0f1a;
   --ink:rgba(245,248,255,.92);
   --muted:rgba(245,248,255,.70);
   --muted2:rgba(245,248,255,.50);
-  --grid:rgba(245,248,255,.06);
-  --grid2:rgba(245,248,255,.035);
+  --line:rgba(245,248,255,.12);
 }
 
-  html,body{
+html,body{
   margin:0;
-  height:auto;
   min-height:100%;
+  background: radial-gradient(1100px 900px at 60% 30%, var(--bg2) 0%, var(--bg) 60%, #020308 100%);
+  color:var(--ink);
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
   overflow-x:hidden;
   overflow-y:auto;
 }
 
+a{color:inherit;text-decoration:none}
 
-  margin:0;
-  height:100%;
-  background: radial-gradient(1200px 900px at 60% 30%, var(--bg2) 0%, var(--bg) 60%, #04050a 100%);
-  color:var(--ink);
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  overflow-x: hidden;
-  overflow-y: auto;
-}
-<div class="links">
-  <a href="preview.html">Earth</a>
-  <a href="planetary.html">Stability</a>
-  <a href="map.html">Map</a>
-  <a href="capabilities.html">Capabilities</a>
-  <a href="forecasting.html">Forecasting</a>
-  <a href="maritime.html">Maritime</a>
-  <a href="capital.html">Capital</a>
-  <a href="about.html">About</a>
-  <a href="contact.html">Contact</a>
-</div>
-
-/* BASE MAP */
-.mapLayer{
-  position:fixed;
-  inset:0;
-  background:url("world.topo.bathy.200412.3x5400x2700.jpg") center/cover no-repeat;
-  filter: contrast(1.05) saturate(.95) brightness(.6);
-  opacity:0;
-  transform:translateY(14px);
-  transition:opacity 2s ease, transform 2s ease, filter 2s ease;
-}
-.mapLayer.on{
-  opacity:.92;
-  transform:translateY(0);
-  filter: contrast(1.05) saturate(1) brightness(.78);
-}
-
-/* GRID */
-.grid{
-  position:fixed;
-  inset:0;
-  pointer-events:none;
-  background:
-    repeating-linear-gradient(90deg, transparent 0, transparent 84px, var(--grid) 85px, transparent 86px),
-    repeating-linear-gradient(0deg,  transparent 0, transparent 58px, var(--grid2) 59px, transparent 60px);
-}
-
-/* VIGNETTE */
-.vignette{
-  position:fixed;
-  inset:0;
-  background:radial-gradient(900px 650px at 50% 45%, rgba(0,0,0,0), rgba(0,0,0,.35), rgba(0,0,0,.75));
-}
-
-/* WATER FLOW */
-.water{
-  position:fixed;
-  inset:-12%;
-  pointer-events:none;
-  background:
-    linear-gradient(120deg, transparent, rgba(120,200,255,.08), transparent),
-    radial-gradient(900px 520px at 30% 55%, rgba(120,200,255,.05), transparent),
-    radial-gradient(760px 460px at 70% 40%, rgba(120,200,255,.04), transparent);
-  mix-blend-mode:screen;
-  opacity:.32;
-  animation:ocean 22s ease-in-out infinite;
-}
-
-@keyframes ocean{
-  0%{transform:translate(-3%,-2%);}
-  50%{transform:translate(3%,2%);}
-  100%{transform:translate(-3%,-2%);}
-}
-
-/* CITY LIGHTS */
-#lights{
-  position:fixed;
-  inset:0;
-  pointer-events:none;
-  mix-blend-mode:screen;
-  opacity:.55;
-}
-
-/* BASINS */
-#basins{
-  position:fixed;
-  inset:0;
-  pointer-events:none;
-}
-.basin{
-  fill:none;
-  stroke:rgba(120,220,255,.35);
-  stroke-width:1.4;
-  stroke-dasharray:6 10;
-  animation:flow 30s linear infinite;
-}
-@keyframes flow{ to{ stroke-dashoffset:-500; } }
-
-/* TEXT */
-.topbar{
-  position:fixed;
-  top:14px;
-  width:100%;
-  text-align:center;
-}
-.brand{
-  font-size:11px;
-  letter-spacing:.26em;
-  text-transform:uppercase;
-  color:var(--muted2);
-}
-.systems{
-  margin-top:10px;
-  letter-spacing:.2em;
-  text-transform:uppercase;
-  color:var(--muted);
-}
-
-.center{
-  position:fixed;
-  inset:0;
-  display:grid;
-  place-items:center;
-  text-align:center;
-}
-.center h1{
-  font-size:48px;
-  letter-spacing:.16em;
-  text-transform:uppercase;
-}
-.center p{
-  max-width:700px;
-  margin:20px auto;
-  color:var(--muted);
-}
-
-.bottom{
-  position:fixed;
-  bottom:0;
-  width:100%;
-  text-align:center;
-  font-size:11px;
-  letter-spacing:.2em;
-  color:var(--muted2);
-  padding:16px;
-}
-</style>
-  .nav{
-  position:sticky;
-  top:0;
-  z-index:2000;
+/* NAV */
+.nav{
+  position:sticky; top:0; z-index:2000;
   backdrop-filter:blur(12px);
   background:linear-gradient(to bottom, rgba(0,0,0,.78), rgba(0,0,0,.30));
-  border-bottom:1px solid rgba(255,255,255,.12);
+  border-bottom:1px solid var(--line);
 }
 .navin{
-  max-width:1200px;
-  margin:0 auto;
-  padding:14px 18px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:16px;
+  max-width:1200px; margin:0 auto; padding:14px 18px;
+  display:flex; align-items:center; justify-content:space-between; gap:16px;
 }
 .brand{
-  font-size:11px;
-  letter-spacing:.26em;
-  text-transform:uppercase;
-  color:rgba(245,248,255,.50);
-  white-space:nowrap;
+  font-size:11px; letter-spacing:.26em; text-transform:uppercase;
+  color:var(--muted2); white-space:nowrap;
 }
-.links{
-  display:flex;
-  gap:14px;
-  flex-wrap:wrap;
-  justify-content:flex-end;
-}
+.links{ display:flex; gap:14px; flex-wrap:wrap; justify-content:flex-end; }
 .links a{
-  font-size:11px;
-  letter-spacing:.18em;
-  text-transform:uppercase;
+  font-size:11px; letter-spacing:.18em; text-transform:uppercase;
   color:rgba(245,248,255,.62);
 }
 .links a:hover{ color:rgba(245,248,255,.95); }
 
+/* HERO */
+.hero{
+  max-width:1200px;
+  margin:0 auto;
+  padding:28px 18px 10px;
+}
+.kicker{ font-size:11px; letter-spacing:.26em; text-transform:uppercase; color:var(--muted2); }
+.h1{
+  margin:12px 0 0;
+  font-size:clamp(22px, 3.2vw, 44px);
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  line-height:1.10;
+}
+.topline{
+  margin:10px 0 0;
+  font-size:clamp(12px, 1.05vw, 14px);
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:rgba(245,248,255,.62);
+  line-height:1.35;
+}
+
+/* MAP STAGE */
+.stage{
+  max-width:1200px;
+  margin:16px auto 70px;
+  padding:0 18px;
+}
+.panel{
+  position:relative;
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:18px;
+  overflow:hidden;
+  min-height:64vh;
+  background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
+}
+
+/* Map image layer (GUARANTEED) */
+.mapLayer{
+  position:absolute;
+  inset:0;
+  background-image:
+    linear-gradient(180deg, rgba(0,0,0,.30), rgba(0,0,0,.66)),
+    url("WorldMap.jpg"),
+    url("world.topo.bathy.200412.3x5400x2700.jpg");
+  background-size: cover;
+  background-position:center;
+  background-repeat:no-repeat;
+  filter: contrast(1.06) saturate(0.92) brightness(0.82);
+  opacity:0;
+  transform: translateY(12px);
+  transition: opacity 1.7s ease, transform 1.7s ease, filter 1.7s ease;
+}
+
+/* engineered grid */
+.grid{
+  position:absolute;
+  inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.08) 1px, transparent 1px);
+  background-size: 90px 90px;
+  opacity:0;
+  transition: opacity 1.9s ease;
+  mix-blend-mode: overlay;
+  pointer-events:none;
+}
+
+/* subtle ocean current shimmer */
+.currents{
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(900px 520px at 35% 55%, rgba(120,210,255,.10), rgba(0,0,0,0) 58%),
+    radial-gradient(880px 560px at 70% 45%, rgba(160,255,220,.08), rgba(0,0,0,0) 60%),
+    radial-gradient(720px 560px at 55% 75%, rgba(255,230,140,.06), rgba(0,0,0,0) 62%);
+  opacity:0;
+  mix-blend-mode: screen;
+  filter: blur(1.2px);
+  transform: translateX(-1.2%);
+  transition: opacity 2.1s ease;
+  pointer-events:none;
+  animation: glass 14s ease-in-out infinite;
+}
+@keyframes glass{
+  0%{ transform: translateX(-1.2%); opacity:.18; }
+  50%{ transform: translateX(1.2%); opacity:.28; }
+  100%{ transform: translateX(-1.2%); opacity:.18; }
+}
+
+/* city lights (very subtle) */
+.lights{
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(10px 10px at 63% 40%, rgba(255,255,255,.22), rgba(0,0,0,0) 70%),
+    radial-gradient(10px 10px at 67% 42%, rgba(255,255,255,.18), rgba(0,0,0,0) 70%),
+    radial-gradient(10px 10px at 32% 44%, rgba(255,255,255,.16), rgba(0,0,0,0) 70%),
+    radial-gradient(10px 10px at 28% 52%, rgba(255,255,255,.14), rgba(0,0,0,0) 70%),
+    radial-gradient(10px 10px at 74% 58%, rgba(255,255,255,.14), rgba(0,0,0,0) 70%);
+  opacity:0;
+  transition: opacity 2.2s ease;
+  mix-blend-mode: screen;
+  filter: blur(.2px);
+  pointer-events:none;
+}
+
+/* basin overlays (suggestive arcs, not a busy infographic) */
+.basins{
+  position:absolute;
+  inset:0;
+  opacity:0;
+  transition: opacity 2.0s ease;
+  pointer-events:none;
+}
+.basins svg{ width:100%; height:100%; }
+.basins path{
+  fill:none;
+  stroke: rgba(170,240,255,.18);
+  stroke-width:2;
+  stroke-dasharray: 7 10;
+  filter: drop-shadow(0 0 10px rgba(120,210,255,.18));
+}
+
+/* typography overlay */
+.overlay{
+  position:absolute;
+  inset:0;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  padding:22px;
+  pointer-events:none;
+}
+.systems{
+  opacity:0;
+  transform: translateY(8px);
+  transition: opacity 1.6s ease, transform 1.6s ease;
+}
+.systems .big{
+  font-size:clamp(18px, 2.6vw, 38px);
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  line-height:1.05;
+  margin:0;
+}
+.systems .sub{
+  margin-top:10px;
+  color:rgba(245,248,255,.66);
+  line-height:1.7;
+  font-size:clamp(12px, 1.1vw, 15px);
+  max-width:64ch;
+}
+.bottomline{
+  opacity:0;
+  transform: translateY(8px);
+  transition: opacity 1.6s ease, transform 1.6s ease;
+  font-size:11px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:rgba(245,248,255,.55);
+}
+
+/* ON state */
+.panel.on .mapLayer{
+  opacity:.95;
+  transform: translateY(0);
+  filter: contrast(1.06) saturate(0.96) brightness(0.90);
+}
+.panel.on .grid{ opacity:.20; }
+.panel.on .currents{ opacity:1; }
+.panel.on .lights{ opacity:.22; }
+.panel.on .basins{ opacity:1; }
+.panel.on .systems, .panel.on .bottomline{
+  opacity:1;
+  transform: translateY(0);
+}
+
+/* Footer */
+.footer{
+  border-top:1px solid rgba(255,255,255,.10);
+  padding:18px;
+  color:rgba(245,248,255,.50);
+  font-size:11px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  text-align:center;
+}
+
+/* MOBILE TUNING */
+@media (max-width: 520px){
+  .overlay{ padding:16px; }
+  .topline{ letter-spacing:.14em; }
+  .grid{ background-size: 120px 120px; opacity:.14; }
+  .systems .sub{ line-height:1.62; }
+  .panel{ min-height:72vh; }
+}
+</style>
 </head>
 
 <body>
-   <div class="nav">
+
+<div class="nav">
   <div class="navin">
     <div class="brand">GLOBAL WATER FUND</div>
     <div class="links">
@@ -267,65 +269,46 @@
   </div>
 </div>
 
-<div id="map" class="mapLayer"></div>
-<div class="grid"></div>
-<div class="vignette"></div>
-<div class="water"></div>
-<canvas id="lights"></canvas>
-
-<svg id="basins" viewBox="0 0 1000 500" preserveAspectRatio="none">
-  <path class="basin" d="M120,210 C300,140 500,140 700,210"/>
-  <path class="basin" d="M200,350 C350,300 600,300 800,350"/>
-</svg>
-
-<div class="topbar">
-  <div class="brand">GLOBAL WATER FUND</div>
-  <div class="systems">BASINS • NETWORKS • CASCADING RISKS • EARLY WARNING • ECOSYSTEMS • HUMAN SECURITY</div>
+<div class="hero">
+  <div class="kicker">Global Operating Picture</div>
+  <div class="h1">Water Is Earth’s Operating System</div>
+  <div class="topline">BASINS • NETWORKS • CASCADING RISKS • EARLY WARNING • ECOSYSTEMS • HUMAN SECURITY</div>
 </div>
 
-<div class="center">
-  <div>
-    <h1>WATER IS EARTH’S OPERATING SYSTEM</h1>
-    <p>We translate basin stress and cross-border dependencies into decision-ready risk signals for governments, investors and operators.</p>
+<div class="stage">
+  <div class="panel" id="panel">
+    <div class="mapLayer" aria-hidden="true"></div>
+    <div class="grid" aria-hidden="true"></div>
+    <div class="currents" aria-hidden="true"></div>
+    <div class="lights" aria-hidden="true"></div>
+
+    <div class="basins" aria-hidden="true">
+      <svg viewBox="0 0 1000 600" preserveAspectRatio="none">
+        <path d="M110,320 C200,250 260,240 330,270 C410,305 450,310 530,270 C620,230 720,235 860,290"/>
+        <path d="M140,410 C260,350 320,345 410,375 C520,410 600,410 740,360 C840,330 900,335 960,360"/>
+        <path d="M80,240 C190,210 270,210 350,230 C470,268 560,268 680,220 C790,185 870,190 950,220"/>
+      </svg>
+    </div>
+
+    <div class="overlay">
+      <div class="systems">
+        <p class="big">GLOBAL OPERATING PICTURE</p>
+        <div class="sub">
+          We translate basin stress and cross-border dependencies into decision-ready risk signals — and intervention pathways —
+          for governments, investors, and operators.
+        </div>
+      </div>
+      <div class="bottomline">WATER • FOOD • ENERGY • COASTS • SECURITY</div>
+    </div>
   </div>
 </div>
 
-<div class="bottom">
-  GLOBAL OPERATING PICTURE — WATER, FOOD, ENERGY, COASTS, SECURITY
-</div>
+<div class="footer">GLOBAL WATER FUND — MAP • MONITOR • ACT</div>
 
 <script>
-const map=document.getElementById("map");
-const img=new Image();
-img.src="world.topo.bathy.200412.3x5400x2700.jpg";
-img.onload=()=>map.classList.add("on");
-
-// City lights
-const c=document.getElementById("lights");
-const ctx=c.getContext("2d");
-function resize(){
-  const d=Math.min(devicePixelRatio||1,2);
-  c.width=innerWidth*d;
-  c.height=innerHeight*d;
-  c.style.width=innerWidth+"px";
-  c.style.height=innerHeight+"px";
-  ctx.setTransform(d,0,0,d,0,0);
-}
-resize(); window.onresize=resize;
-
-function drawLights(){
-  ctx.clearRect(0,0,innerWidth,innerHeight);
-  const clusters=[[22,28],[48,26],[62,34],[74,28],[30,42],[78,44]];
-  clusters.forEach(p=>{
-    for(let i=0;i<800;i++){
-      const x=(p[0]+(Math.random()-.5)*8)*innerWidth/100;
-      const y=(p[1]+(Math.random()-.5)*6)*innerHeight/100;
-      ctx.fillStyle="rgba(255,200,140,.08)";
-      ctx.fillRect(x,y,1,1);
-    }
-  });
-}
-drawLights();
+  // Turn on the cinematic stack once loaded (prevents “missing layers” flashing)
+  const panel = document.getElementById("panel");
+  requestAnimationFrame(()=> setTimeout(()=> panel.classList.add("on"), 280));
 </script>
 
 </body>
