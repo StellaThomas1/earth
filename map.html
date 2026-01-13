@@ -1,178 +1,134 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
 <title>Global Water Fund — Global Operating Picture</title>
 
 <style>
 :root{
-  --bg:#04050a;
-  --bg2:#0b0f1a;
+  --bg:#04050a; --bg2:#0b0f1a;
   --ink:rgba(245,248,255,.92);
   --muted:rgba(245,248,255,.70);
   --muted2:rgba(245,248,255,.50);
-  --line:rgba(245,248,255,.12);
+  --line:rgba(255,255,255,.14);
 }
 
 html,body{
-  margin:0;
-  min-height:100%;
+  margin:0; height:100%;
   background: radial-gradient(1100px 900px at 60% 30%, var(--bg2) 0%, var(--bg) 60%, #020308 100%);
   color:var(--ink);
   font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-  overflow-x:hidden;
-  overflow-y:auto;
+  overflow:hidden; /* cinematic instrument page */
 }
-
 a{color:inherit;text-decoration:none}
 
-/* NAV */
-.nav{
-  position:sticky; top:0; z-index:2000;
-  backdrop-filter:blur(12px);
-  background:linear-gradient(to bottom, rgba(0,0,0,.78), rgba(0,0,0,.30));
-  border-bottom:1px solid var(--line);
+/* Corner menu (AA) */
+.corner{
+  position:fixed; top:14px; right:14px; z-index:50;
+  display:flex; gap:10px; align-items:center;
 }
-.navin{
-  max-width:1200px; margin:0 auto; padding:14px 18px;
-  display:flex; align-items:center; justify-content:space-between; gap:16px;
-}
-.brand{
-  font-size:11px; letter-spacing:.26em; text-transform:uppercase;
-  color:var(--muted2); white-space:nowrap;
-}
-.links{ display:flex; gap:14px; flex-wrap:wrap; justify-content:flex-end; }
-.links a{
+.pill{
   font-size:11px; letter-spacing:.18em; text-transform:uppercase;
-  color:rgba(245,248,255,.62);
+  padding:10px 12px; border-radius:999px;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(0,0,0,.30); backdrop-filter:blur(10px);
+  color:rgba(245,248,255,.82);
+  user-select:none;
 }
-.links a:hover{ color:rgba(245,248,255,.95); }
-
-/* HERO */
-.hero{
-  max-width:1200px;
-  margin:0 auto;
-  padding:28px 18px 10px;
+.pill:hover{ background:rgba(0,0,0,.46); border-color:rgba(255,255,255,.22); }
+.menu{ position:relative; }
+.dropdown{
+  position:absolute; right:0; top:44px;
+  min-width:230px;
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:14px;
+  background:rgba(0,0,0,.65);
+  backdrop-filter:blur(14px);
+  padding:10px;
+  display:none;
 }
-.kicker{ font-size:11px; letter-spacing:.26em; text-transform:uppercase; color:var(--muted2); }
-.h1{
-  margin:12px 0 0;
-  font-size:clamp(22px, 3.0vw, 44px);
-  letter-spacing:.10em;      /* less spaced out */
+.menu.open .dropdown{ display:block; }
+.dropdown a{
+  display:block;
+  padding:10px 10px;
+  border-radius:10px;
+  font-size:11px;
+  letter-spacing:.16em;
   text-transform:uppercase;
-  line-height:1.12;          /* calmer */
+  color:rgba(245,248,255,.72);
 }
+.dropdown a:hover{ background:rgba(255,255,255,.06); color:rgba(245,248,255,.95); }
 
-.topline{
-  margin:10px 0 0;
-  font-size:clamp(11px, 1.0vw, 14px);
-  letter-spacing:.14em;
-  text-transform:uppercase;
-  color:rgba(245,248,255,.58);
-  line-height:1.35;
-}
-
-.systems .sub{
-  margin-top:10px;
-  color:rgba(245,248,255,.64);
-  line-height:1.62;
-  font-size:clamp(12px, 1.05vw, 15px);
-  max-width:60ch;
-}
-
-/* MAP STAGE */
+/* Stage */
 .stage{
-  max-width:1200px;
-  margin:16px auto 70px;
-  padding:0 18px;
+  position:fixed; inset:0;
+  display:grid; place-items:center;
+  z-index:1;
+  pointer-events:none;
 }
+
 .panel{
-  position:relative;
-  border:1px solid rgba(255,255,255,.10);
+  width:min(92vw, 1180px);
+  height:min(72vh, 720px);
   border-radius:18px;
+  border:1px solid rgba(255,255,255,.10);
   overflow:hidden;
-  min-height:64vh;
+  position:relative;
   background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
 }
 
-/* Map image layer (GUARANTEED) */
+/* Map layer (uses your local repo files, case-sensitive) */
 .mapLayer{
-  position:absolute;
-  inset:0;
+  position:absolute; inset:0;
   background-image:
-    linear-gradient(180deg, rgba(0,0,0,.30), rgba(0,0,0,.66)),
+    linear-gradient(180deg, rgba(0,0,0,.22), rgba(0,0,0,.64)),
     url("WorldMap.jpg"),
     url("world.topo.bathy.200412.3x5400x2700.jpg");
-  background-size: cover;
+  background-size:cover;
   background-position:center;
   background-repeat:no-repeat;
-  filter: contrast(1.06) saturate(0.92) brightness(0.82);
+  filter:contrast(1.06) saturate(0.96) brightness(0.90);
   opacity:0;
   transform: translateY(12px);
-  transition: opacity 1.7s ease, transform 1.7s ease, filter 1.7s ease;
+  transition: opacity 1.7s ease, transform 1.7s ease;
 }
 
-/* engineered grid */
+/* engineered grid (quiet) */
 .grid{
-  position:absolute;
-  inset:0;
+  position:absolute; inset:0;
   background-image:
-    linear-gradient(rgba(255,255,255,.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,.08) 1px, transparent 1px);
-  background-size: 90px 90px;
+    linear-gradient(rgba(255,255,255,.10) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.10) 1px, transparent 1px);
+  background-size: 110px 110px;
   opacity:0;
-  transition: opacity 1.9s ease;
+  transition: opacity 2.0s ease;
   mix-blend-mode: overlay;
-  pointer-events:none;
 }
 
-/* subtle ocean current shimmer */
+/* currents shimmer (MOVES) */
 .currents{
-  position:absolute;
-  inset:0;
+  position:absolute; inset:0;
   background:
-    radial-gradient(900px 520px at 35% 55%, rgba(120,210,255,.10), rgba(0,0,0,0) 58%),
-    radial-gradient(880px 560px at 70% 45%, rgba(160,255,220,.08), rgba(0,0,0,0) 60%),
-    radial-gradient(720px 560px at 55% 75%, rgba(255,230,140,.06), rgba(0,0,0,0) 62%);
-  opacity:0;
+    radial-gradient(900px 560px at 34% 56%, rgba(120,210,255,.12), rgba(0,0,0,0) 58%),
+    radial-gradient(880px 600px at 72% 44%, rgba(160,255,220,.10), rgba(0,0,0,0) 60%),
+    radial-gradient(820px 640px at 56% 78%, rgba(255,230,140,.08), rgba(0,0,0,0) 62%);
   mix-blend-mode: screen;
   filter: blur(1.2px);
-  transform: translateX(-1.2%);
-  transition: opacity 2.1s ease;
-  pointer-events:none;
+  opacity:0;
   animation: glass 14s ease-in-out infinite;
 }
 @keyframes glass{
   0%{ transform: translateX(-1.2%); opacity:.18; }
-  50%{ transform: translateX(1.2%); opacity:.28; }
+  50%{ transform: translateX(1.2%); opacity:.30; }
   100%{ transform: translateX(-1.2%); opacity:.18; }
 }
 
-/* city lights (very subtle) */
-.lights{
-  position:absolute;
-  inset:0;
-  background:
-    radial-gradient(10px 10px at 63% 40%, rgba(255,255,255,.22), rgba(0,0,0,0) 70%),
-    radial-gradient(10px 10px at 67% 42%, rgba(255,255,255,.18), rgba(0,0,0,0) 70%),
-    radial-gradient(10px 10px at 32% 44%, rgba(255,255,255,.16), rgba(0,0,0,0) 70%),
-    radial-gradient(10px 10px at 28% 52%, rgba(255,255,255,.14), rgba(0,0,0,0) 70%),
-    radial-gradient(10px 10px at 74% 58%, rgba(255,255,255,.14), rgba(0,0,0,0) 70%);
+/* basin overlays (tasteful) */
+.basins{
+  position:absolute; inset:0;
   opacity:0;
   transition: opacity 2.2s ease;
-  mix-blend-mode: screen;
-  filter: blur(.2px);
-  pointer-events:none;
-}
-
-/* basin overlays (suggestive arcs, not a busy infographic) */
-.basins{
-  position:absolute;
-  inset:0;
-  opacity:0;
-  transition: opacity 2.0s ease;
-  pointer-events:none;
 }
 .basins svg{ width:100%; height:100%; }
 .basins path{
@@ -183,88 +139,85 @@ a{color:inherit;text-decoration:none}
   filter: drop-shadow(0 0 10px rgba(120,210,255,.18));
 }
 
-/* typography overlay */
-.overlay{
+/* Centered title + copy (engineered, not cramped) */
+.centerText{
   position:absolute;
   inset:0;
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
-  padding:22px;
-  pointer-events:none;
-}
-.systems{
+  display:grid;
+  place-items:center;
+  padding:20px;
+  text-align:center;
   opacity:0;
-  transform: translateY(8px);
+  transform: translateY(6px);
   transition: opacity 1.6s ease, transform 1.6s ease;
 }
-.systems .big{
-  font-size:clamp(18px, 2.6vw, 38px);
-  letter-spacing:.14em;
+.kicker{
+  font-size:11px;
+  letter-spacing:.26em;
   text-transform:uppercase;
-  line-height:1.05;
-  margin:0;
+  color:rgba(245,248,255,.60);
 }
-.systems .sub{
-  margin-top:10px;
+.big{
+  margin:14px 0 0;
+  font-size:clamp(18px, 2.6vw, 40px);
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  line-height:1.10;
+}
+.sub{
+  margin:12px auto 0;
+  max-width:68ch;
   color:rgba(245,248,255,.66);
-  line-height:1.7;
-  font-size:clamp(12px, 1.1vw, 15px);
-  max-width:64ch;
+  line-height:1.65;
+  font-size:clamp(12px, 1.05vw, 15px);
 }
-.bottomline{
-  opacity:0;
-  transform: translateY(8px);
-  transition: opacity 1.6s ease, transform 1.6s ease;
+.tagline{
+  margin:14px 0 0;
+  font-size:11px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:rgba(245,248,255,.50);
+}
+
+.on .mapLayer{ opacity:.96; transform: translateY(0); }
+.on .grid{ opacity:.18; }
+.on .currents{ opacity:1; }
+.on .basins{ opacity:1; }
+.on .centerText{ opacity:1; transform: translateY(0); }
+
+/* Mobile: keep it clean */
+@media (max-width:520px){
+  .panel{ width:94vw; height:76vh; }
+  .grid{ background-size: 140px 140px; opacity:.14; }
+  .sub{ max-width:38ch; }
+}
+
+/* Bottom cue for mobile */
+.cue{
+  position:fixed; left:50%; bottom:14px;
+  transform: translateX(-50%);
+  z-index:45;
   font-size:11px;
   letter-spacing:.18em;
   text-transform:uppercase;
   color:rgba(245,248,255,.55);
+  opacity:.0;
+  transition: opacity 1.2s ease;
+  pointer-events:none;
 }
-
-/* ON state */
-.panel.on .mapLayer{
-  opacity:.95;
-  transform: translateY(0);
-  filter: contrast(1.06) saturate(0.96) brightness(0.90);
-}
-.panel.on .grid{ opacity:.20; }
-.panel.on .currents{ opacity:1; }
-.panel.on .lights{ opacity:.22; }
-.panel.on .basins{ opacity:1; }
-.panel.on .systems, .panel.on .bottomline{
-  opacity:1;
-  transform: translateY(0);
-}
-
-/* Footer */
-.footer{
-  border-top:1px solid rgba(255,255,255,.10);
-  padding:18px;
-  color:rgba(245,248,255,.50);
-  font-size:11px;
-  letter-spacing:.18em;
-  text-transform:uppercase;
-  text-align:center;
-}
-
-/* MOBILE TUNING */
-@media (max-width: 520px){
-  .overlay{ padding:16px; }
-  .topline{ letter-spacing:.14em; }
-  .grid{ background-size: 120px 120px; opacity:.14; }
-  .systems .sub{ line-height:1.62; }
-  .panel{ min-height:72vh; }
+@media (max-width:520px){
+  body.active .cue{ opacity:.95; }
 }
 </style>
 </head>
 
 <body>
 
-<div class="nav">
-  <div class="navin">
-    <div class="brand">GLOBAL WATER FUND</div>
-    <div class="links">
+<div class="corner" style="pointer-events:auto">
+  <a class="pill" href="capabilities.html">Enter</a>
+  <div class="menu" id="menu">
+    <div class="pill" id="menuBtn">Menu</div>
+    <div class="dropdown">
       <a href="preview.html">Earth</a>
       <a href="planetary.html">Stability</a>
       <a href="map.html">Map</a>
@@ -278,20 +231,15 @@ a{color:inherit;text-decoration:none}
   </div>
 </div>
 
-<div class="hero">
-  <div class="kicker">Global Operating Picture</div>
-  <div class="h1">Water Is Earth’s Operating System</div>
-  <div class="topline">BASINS • NETWORKS • CASCADING RISKS • EARLY WARNING • ECOSYSTEMS • HUMAN SECURITY</div>
-</div>
+<div class="cue">Scroll ↓</div>
 
-<div class="stage">
+<div class="stage" aria-hidden="true">
   <div class="panel" id="panel">
-    <div class="mapLayer" aria-hidden="true"></div>
-    <div class="grid" aria-hidden="true"></div>
-    <div class="currents" aria-hidden="true"></div>
-    <div class="lights" aria-hidden="true"></div>
+    <div class="mapLayer"></div>
+    <div class="grid"></div>
+    <div class="currents"></div>
 
-    <div class="basins" aria-hidden="true">
+    <div class="basins">
       <svg viewBox="0 0 1000 600" preserveAspectRatio="none">
         <path d="M110,320 C200,250 260,240 330,270 C410,305 450,310 530,270 C620,230 720,235 860,290"/>
         <path d="M140,410 C260,350 320,345 410,375 C520,410 600,410 740,360 C840,330 900,335 960,360"/>
@@ -299,25 +247,33 @@ a{color:inherit;text-decoration:none}
       </svg>
     </div>
 
-    <div class="overlay">
-      <div class="systems">
-        <p class="big">GLOBAL OPERATING PICTURE</p>
+    <div class="centerText">
+      <div>
+        <div class="kicker">Global Operating Picture</div>
+        <div class="big">Water Is Earth’s Operating System</div>
         <div class="sub">
           We translate basin stress and cross-border dependencies into decision-ready risk signals — and intervention pathways —
           for governments, investors, and operators.
         </div>
+        <div class="tagline">BASINS • NETWORKS • CASCADING RISKS • EARLY WARNING • ECOSYSTEMS • HUMAN SECURITY</div>
       </div>
-      <div class="bottomline">WATER • FOOD • ENERGY • COASTS • SECURITY</div>
     </div>
+
   </div>
 </div>
 
-<div class="footer">GLOBAL WATER FUND — MAP • MONITOR • ACT</div>
-
 <script>
-  // Turn on the cinematic stack once loaded (prevents “missing layers” flashing)
-  const panel = document.getElementById("panel");
-  requestAnimationFrame(()=> setTimeout(()=> panel.classList.add("on"), 280));
+  // menu
+  const menu = document.getElementById("menu");
+  const btn  = document.getElementById("menuBtn");
+  btn.addEventListener("click", ()=> menu.classList.toggle("open"));
+  window.addEventListener("click", (e)=>{ if(!menu.contains(e.target)) menu.classList.remove("open"); });
+
+  // reveal panel
+  setTimeout(()=>{
+    document.body.classList.add("active");
+    document.getElementById("panel").classList.add("on");
+  }, 420);
 </script>
 
 </body>
