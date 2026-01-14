@@ -1,158 +1,414 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
-<title>Planetary Stability — Global Water Fund</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Global Water Fund — Preview</title>
 
-<style>
-html,body{
-  margin:0;height:100%;
-  background:#05070d;
-  color:white;
-  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
-  overflow:hidden;
-}
+  <style>
+    :root{
+      --bg:#05060a;
+      --bg2:#0b0f1a;
+      --ink:rgba(245,248,255,.92);
+      --muted:rgba(245,248,255,.76);
+      --muted2:rgba(245,248,255,.56);
+    }
 
-/* two tabs only */
-.tabs{
-  position:fixed;
-  top:14px;right:14px;
-  z-index:10;
-  display:flex;
-  gap:10px;
-}
-.tabs a{
-  font-size:11px;
-  letter-spacing:.2em;
-  text-transform:uppercase;
-  padding:10px 14px;
-  border-radius:999px;
-  border:1px solid rgba(255,255,255,.15);
-  background:rgba(0,0,0,.45);
-  color:#ddd;
-  text-decoration:none;
-}
+    html,body{
+      margin:0;
+      height:100%;
+      background: radial-gradient(1200px 900px at 60% 30%, var(--bg2) 0%, var(--bg) 60%, #04050a 100%);
+      color:var(--ink);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      overflow-x:hidden;
+      -webkit-text-size-adjust:100%;
+    }
 
-/* center stage */
-.stage{
-  position:fixed;
-  inset:0;
-  display:grid;
-  place-items:center;
-}
+    /* Earth canvas behind everything */
+    canvas{
+      position:fixed;
+      inset:0;
+      width:100%;
+      height:100%;
+      display:block;
+      pointer-events:none;
+    }
 
-/* COLOR EARTH */
-.earth{
-  width:70vmin;
-  height:70vmin;
-  border-radius:50%;
-  background:
-    radial-gradient(circle at 30% 30%, #2b6cff, #001126 60%);
-  box-shadow:0 0 120px rgba(0,0,0,.8);
-  position:relative;
-  overflow:hidden;
-}
+    .wrap{ min-height:150vh; }
+    .hero{
+      min-height:100vh;
+      min-height:100svh;
+      min-height:100dvh;
+      position:relative;
+      overflow:hidden;
+    }
 
-/* rotating light band */
-.earth:before{
-  content:"";
-  position:absolute;
-  inset:-40%;
-  background:
-    linear-gradient(90deg,
-      rgba(255,255,255,0) 0%,
-      rgba(120,200,255,.35) 40%,
-      rgba(255,255,255,0) 70%);
-  animation:spin 22s linear infinite;
-}
-@keyframes spin{
-  from{transform:translateX(-30%)}
-  to{transform:translateX(30%)}
-}
+    .overlay{
+      position:relative;
+      z-index:10;
+      min-height:100vh;
+      display:grid;
+      grid-template-columns:minmax(280px,540px) 1fr;
+      gap:clamp(16px,3vw,44px);
+      align-items:center;
+      padding-top:calc(18px + env(safe-area-inset-top));
+      padding-bottom:calc(18px + env(safe-area-inset-bottom));
+      padding-left:calc(18px + env(safe-area-inset-left));
+      padding-right:calc(18px + env(safe-area-inset-right));
+      padding-inline:clamp(18px,4.5vw,64px);
+      pointer-events:none;
+    }
 
-/* stability cones */
-.cones{
-  position:absolute;
-  inset:0;
-}
-.cone{
-  position:absolute;
-  inset:0;
-  clip-path:polygon(50% 50%,50% 0%,100% 0%,100% 100%);
-  background:rgba(120,220,255,.35);
-  opacity:.15;
-  animation:pulse 12s infinite;
-}
-.cone:nth-child(2){transform:rotate(60deg);animation-delay:2s}
-.cone:nth-child(3){transform:rotate(120deg);animation-delay:4s}
-.cone:nth-child(4){transform:rotate(180deg);animation-delay:6s}
-.cone:nth-child(5){transform:rotate(240deg);animation-delay:8s}
-.cone:nth-child(6){transform:rotate(300deg);animation-delay:10s}
+    .kicker{
+      text-transform:uppercase;
+      letter-spacing:.20em;
+      font-size:12px;
+      color:var(--muted2);
+      margin-bottom:14px;
+    }
 
-@keyframes pulse{
-  0%,100%{opacity:.15}
-  50%{opacity:.65}
-}
+    h1{
+      margin:0 0 12px 0;
+      font-size:clamp(22px,2.4vw,34px);
+      line-height:1.15;
+      font-weight:700;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+    }
 
-/* labels */
-.label{
-  position:absolute;
-  width:100%;
-  text-align:center;
-  font-size:12px;
-  letter-spacing:.18em;
-  text-transform:uppercase;
-  color:#9fb7ff;
-}
-.l1{top:-40px}
-.l2{right:-60px;top:30%}
-.l3{right:-60px;bottom:30%}
-.l4{bottom:-40px}
-.l5{left:-60px;bottom:30%}
-.l6{left:-60px;top:30%}
+    .sectionTitle{
+      margin-top:10px;
+      font-size:12px;
+      letter-spacing:.18em;
+      text-transform:uppercase;
+      color:rgba(245,248,255,.62);
+    }
 
-.title{
-  position:fixed;
-  bottom:16px;
-  left:50%;
-  transform:translateX(-50%);
-  font-size:11px;
-  letter-spacing:.25em;
-  text-transform:uppercase;
-  color:#9fb7ff;
-}
-</style>
+    .copy{ max-width:520px; }
+    .copy p{
+      margin:10px 0;
+      font-size:clamp(13px,1.15vw,15px);
+      line-height:1.92;
+      text-align:justify;
+      text-justify:inter-word;
+      color:var(--muted);
+    }
+
+    .revealLine{
+      margin-top:18px;
+      font-size:12px;
+      letter-spacing:.20em;
+      text-transform:uppercase;
+      color:rgba(245,248,255,.64);
+      opacity:0;
+      transform:translateY(8px);
+      transition:opacity 1.4s ease, transform 1.4s ease;
+    }
+    .revealLine.on{ opacity:1; transform:translateY(0); }
+
+    .viz{
+      width:min(84vh,880px);
+      height:min(84vh,880px);
+      justify-self:center;
+    }
+    .viz svg{ width:100%; height:100%; display:block; overflow:visible; }
+
+    .labels{
+      font-weight:750;
+      font-size:20px;
+      letter-spacing:.10em;
+      fill:rgba(245,248,255,.92);
+      text-transform:uppercase;
+    }
+    .labels tspan{ letter-spacing:.08em; }
+
+    .cone{ opacity:.10; transition:opacity 150ms linear; }
+
+    @media (max-width: 980px){
+      .overlay{
+        grid-template-columns:1fr;
+        align-content:start;
+        gap:14px;
+        padding-inline:18px;
+        padding-top:calc(18px + env(safe-area-inset-top));
+        padding-bottom:calc(30px + env(safe-area-inset-bottom));
+      }
+      .copy p{ text-align:left; line-height:1.75; margin:8px 0; }
+      .viz{
+        width:min(92vw,620px);
+        height:min(92vw,620px);
+        margin:0 auto;
+        padding-bottom:46px; /* protect bottom label on iPhone */
+      }
+      .labels{ font-size:19px; letter-spacing:.06em; }
+      .labels tspan{ letter-spacing:.05em; }
+    }
+  </style>
 </head>
 
 <body>
+<div class="wrap">
+  <section class="hero" id="hero">
+    <canvas id="globe"></canvas>
 
-<div class="tabs">
-  <a href="map.html">Map</a>
-  <a href="capabilities.html">Enter</a>
-</div>
+    <div class="overlay">
+      <div class="copy">
+        <div class="kicker">GLOBAL WATER FUND</div>
+        <h1>PLANETARY STABILITY THRESHOLDS</h1>
 
-<div class="stage">
-  <div class="earth">
-    <div class="cones">
-      <div class="cone"></div>
-      <div class="cone"></div>
-      <div class="cone"></div>
-      <div class="cone"></div>
-      <div class="cone"></div>
-      <div class="cone"></div>
+        <div class="sectionTitle">WATER AND PLANETARY STABILITY</div>
+        <p>Planetary stability depends on a small number of critical thresholds. When crossed, systems shift — often abruptly and irreversibly.</p>
+        <p>Water sits at the center of multiple thresholds, linking climate variability, ecosystems, food systems, coastlines, and human security.</p>
+        <p>Global Water Fund focuses on where water-related stress pushes systems toward instability — and how strategic intervention preserves resilience.</p>
+
+        <div id="revealLine" class="revealLine">FROM PLANET TO POLICY — BEFORE THE SHOCK.</div>
+      </div>
+
+      <div class="viz" aria-label="Planetary Stability Cones">
+        <svg viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+          <defs>
+            <radialGradient id="halo" cx="50%" cy="50%" r="62%">
+              <stop offset="0%" stop-color="rgba(170,240,255,.26)"/>
+              <stop offset="42%" stop-color="rgba(100,200,255,.12)"/>
+              <stop offset="72%" stop-color="rgba(10,14,24,0)"/>
+            </radialGradient>
+          </defs>
+
+          <g id="chartGroup">
+            <circle cx="500" cy="500" r="430" fill="url(#halo)"/>
+            <circle cx="500" cy="500" r="210" fill="none" stroke="rgba(255,255,255,.14)" stroke-width="2"/>
+            <circle cx="500" cy="500" r="300" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="2"/>
+            <circle cx="500" cy="500" r="390" fill="none" stroke="rgba(255,255,255,.10)" stroke-width="2"/>
+            <circle cx="500" cy="500" r="460" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="2"/>
+
+            <!-- 6 equal cones (clockwise from top) -->
+            <path class="cone" d="M500 500 L500 120 A380 380 0 0 1 829.1 310 Z" fill="rgba(160,220,255,.42)"/>
+            <path class="cone" d="M500 500 L829.1 310 A380 380 0 0 1 829.1 690 Z" fill="rgba(130,255,230,.34)"/>
+            <path class="cone" d="M500 500 L829.1 690 A380 380 0 0 1 500 880 Z" fill="rgba(255,210,120,.32)"/>
+            <path class="cone" d="M500 500 L500 880 A380 380 0 0 1 170.9 690 Z" fill="rgba(140,170,255,.32)"/>
+            <path class="cone" d="M500 500 L170.9 690 A380 380 0 0 1 170.9 310 Z" fill="rgba(155,255,170,.32)"/>
+            <path class="cone" d="M500 500 L170.9 310 A380 380 0 0 1 500 120 Z" fill="rgba(255,150,200,.30)"/>
+
+            <circle cx="500" cy="500" r="74" fill="rgba(10,14,24,.58)" stroke="rgba(255,255,255,.14)" stroke-width="2"/>
+            <text x="500" y="510" text-anchor="middle" font-size="26" font-weight="800" letter-spacing="4" fill="rgba(245,248,255,.92)">WATER</text>
+
+            <g class="labels">
+              <text x="500" y="92" text-anchor="middle">
+                <tspan x="500" dy="0">CLIMATE</tspan><tspan x="500" dy="30">VARIABILITY</tspan>
+              </text>
+              <text x="735" y="250" text-anchor="start">
+                <tspan x="735" dy="0">FRESHWATER</tspan><tspan x="735" dy="30">AVAILABILITY</tspan>
+              </text>
+              <text x="735" y="775" text-anchor="start">
+                <tspan x="735" dy="0">FOOD</tspan><tspan x="735" dy="30">SYSTEMS</tspan>
+              </text>
+              <text x="500" y="940" text-anchor="middle">
+                <tspan x="500" dy="0">MARITIME</tspan><tspan x="500" dy="30">STABILITY</tspan>
+              </text>
+              <text x="265" y="775" text-anchor="end">
+                <tspan x="265" dy="0">HUMAN</tspan><tspan x="265" dy="30">SECURITY</tspan>
+              </text>
+              <text x="265" y="250" text-anchor="end">
+                <tspan x="265" dy="0">ECOSYSTEMS</tspan><tspan x="265" dy="30">INTEGRITY</tspan>
+              </text>
+            </g>
+          </g>
+        </svg>
+      </div>
     </div>
-
-    <div class="label l1">Climate Variability</div>
-    <div class="label l2">Freshwater Availability</div>
-    <div class="label l3">Food Systems</div>
-    <div class="label l4">Human Security</div>
-    <div class="label l5">Coastal Stability</div>
-    <div class="label l6">Ecosystems</div>
-  </div>
+  </section>
 </div>
 
-<div class="title">Planetary Stability Thresholds</div>
+<script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
+<script>
+(() => {
+  const canvas = document.getElementById("globe");
+  const hero = document.getElementById("hero");
+  const revealLine = document.getElementById("revealLine");
+  const chartGroup = document.getElementById("chartGroup");
+  const cones = Array.from(document.querySelectorAll(".cone"));
 
+  const isMobile = matchMedia("(max-width: 980px)").matches;
+  const prefersReduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // lift chart on mobile so bottom label isn't clipped
+  if (isMobile && chartGroup) chartGroup.setAttribute("transform","translate(0,-110)");
+
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha:true, antialias: !isMobile });
+  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, isMobile ? 1.5 : 2));
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 200);
+  camera.position.set(0.35, 0.10, 6.35);
+
+  scene.add(new THREE.AmbientLight(0xffffff, 0.34));
+  const key = new THREE.DirectionalLight(0xffffff, 1.25);
+  key.position.set(6, 3.2, 6);
+  scene.add(key);
+  const rim = new THREE.DirectionalLight(0xaaf0ff, 0.85);
+  rim.position.set(-8, -2, 3);
+  scene.add(rim);
+
+  const smooth = x => x*x*(3-2*x);
+  const lerp = (a,b,t) => a+(b-a)*t;
+
+  function resize(){
+    const w = canvas.clientWidth, h = canvas.clientHeight;
+    if(!w || !h) return;
+    renderer.setSize(w, h, false);
+    camera.aspect = w/h;
+    camera.updateProjectionMatrix();
+  }
+  addEventListener("resize", resize);
+
+  // Mouse drift (desktop)
+  let targetPX=0, targetPY=0, px=0, py=0;
+  addEventListener("mousemove", (e)=>{
+    const nx = (e.clientX / innerWidth) * 2 - 1;
+    const ny = (e.clientY / innerHeight) * 2 - 1;
+    targetPX = nx * 0.08;
+    targetPY = ny * 0.08;
+  }, { passive:true });
+
+  function scrollInfluence(){
+    const r = hero.getBoundingClientRect();
+    return Math.max(0, Math.min(1, (-r.top) / (innerHeight * 0.7)));
+  }
+
+  // Textures (trusted, fast CDN from threejs.org)
+  const loader = new THREE.TextureLoader();
+  loader.crossOrigin = "anonymous";
+  const loadTex = url => new Promise((res, rej)=>{
+    loader.load(url, t => { t.colorSpace = THREE.SRGBColorSpace; res(t); }, undefined, rej);
+  });
+
+  const TEX = {
+    day:    "https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg",
+    clouds: "https://threejs.org/examples/textures/planets/earth_clouds_1024.png"
+  };
+
+  const seg = isMobile ? 96 : 128;
+  let earth, clouds, veil;
+  let revealT = 0, revealShown = false;
+  let glowClock = 0;
+  let tick = 0;
+  let veilTriggered=false, veilT=0;
+
+  Promise.all([loadTex(TEX.day), loadTex(TEX.clouds)]).then(([day, cloudsTex]) => {
+    const earthMat = new THREE.MeshPhongMaterial({
+      map: day,
+      shininess: 12,
+      specular: new THREE.Color(0x2b5a7a)
+    });
+
+    earth = new THREE.Mesh(new THREE.SphereGeometry(2.0, seg, seg), earthMat);
+    earth.rotation.y = 0.9;
+    scene.add(earth);
+
+    clouds = new THREE.Mesh(
+      new THREE.SphereGeometry(2.02, seg, seg),
+      new THREE.MeshLambertMaterial({ map: cloudsTex, transparent:true, opacity:0.22, depthWrite:false })
+    );
+    clouds.rotation.y = earth.rotation.y + 0.35;
+    scene.add(clouds);
+
+    veil = new THREE.Mesh(
+      new THREE.SphereGeometry(2.12, seg, seg),
+      new THREE.MeshBasicMaterial({ color:0xaaf0ff, transparent:true, opacity:0.0, blending:THREE.AdditiveBlending, depthWrite:false })
+    );
+    scene.add(veil);
+
+    resize();
+    animate();
+  });
+
+  function animate(){
+    requestAnimationFrame(animate);
+    resize();
+    if(!earth) return;
+
+    px += (targetPX - px) * 0.03;
+    py += (targetPY - py) * 0.03;
+
+    const sScroll = scrollInfluence();
+    camera.position.x = 0.35 + (isMobile ? 0 : px*0.9);
+    camera.position.y = 0.10 + sScroll*0.10 - (isMobile ? 0 : py*0.7);
+    camera.position.z = 6.35 + sScroll*0.30;
+
+    // rotation
+    earth.rotation.y += prefersReduced ? 0 : 0.0024;
+    clouds.rotation.y += prefersReduced ? 0 : 0.0030;
+
+    tick += 0.006;
+    earth.rotation.x = Math.sin(tick) * 0.012;
+
+    // reveal ramp (also used to drive cone intensity)
+    revealT = prefersReduced ? 1 : Math.min(1, revealT + 0.0062);
+    const s = smooth(revealT);
+
+    // Subtle brighten as it "turns to color"
+    earth.material.color.setRGB(lerp(0.78, 1.0, s), lerp(0.78, 1.0, s), lerp(0.80, 1.0, s));
+
+    // --- Cones: ONE active + soft trailing neighbors, synced to Earth rotation ---
+    glowClock += 0.012;
+    const breath = 0.5 + 0.5*Math.sin(glowClock * 0.55);
+
+    const base = 0.10 + 0.62 * s;
+
+    const rotDeg = ((earth.rotation.y * 180 / Math.PI) % 360 + 360) % 360;
+    const spotDeg = (rotDeg + 90 + 40) % 360;  // small bias so it feels aligned to lit hemisphere
+    const idx = Math.floor(spotDeg / 60);      // 0..5
+
+    const glowMain = 12 + 18 * s;
+    const glowTrail = 6 + 10 * s;
+    const alphaMain = (0.08 + 0.10 * s) * (0.7 + 0.3 * breath);
+    const alphaTrail = (0.03 + 0.06 * s) * (0.7 + 0.3 * breath);
+
+    for (let i=0; i<cones.length; i++){
+      const c = cones[i];
+      const d = Math.min((i - idx + 6) % 6, (idx - i + 6) % 6);
+
+      if (d === 0){
+        c.style.opacity = String(Math.min(0.98, base + 0.28));
+        c.style.filter = `drop-shadow(0 0 ${glowMain.toFixed(1)}px rgba(170,240,255,${alphaMain.toFixed(3)}))`;
+      } else if (d === 1){
+        c.style.opacity = String(Math.min(0.70, base*0.35 + 0.10*s));
+        c.style.filter = `drop-shadow(0 0 ${glowTrail.toFixed(1)}px rgba(170,240,255,${alphaTrail.toFixed(3)}))`;
+      } else {
+        c.style.opacity = String(Math.max(0.08, base*0.18));
+        c.style.filter = "none";
+      }
+    }
+
+    // copy reveal near completion
+    if(!revealShown && revealT > 0.965){
+      revealShown = true;
+      revealLine.classList.add("on");
+    }
+
+    // gentle "water veil" moment
+    if(!prefersReduced && !veilTriggered && revealT > 0.978){
+      veilTriggered = true;
+      veilT = 0.0001;
+      veil.material.opacity = 0.06;
+      veil.position.y = 0.02;
+      veil.scale.set(1,1,1);
+    }
+    if(veilTriggered && veilT > 0){
+      veilT = Math.min(1, veilT + 0.0056);
+      const vv = smooth(veilT);
+      veil.position.y = lerp(0.02, -0.25, vv);
+      const sc = lerp(1.0, 1.040, vv);
+      veil.scale.set(sc, sc, sc);
+      const peakv = vv < 0.40 ? (vv/0.40) : (1 - (vv-0.40)/0.60);
+      veil.material.opacity = 0.090 * Math.max(0, peakv);
+      if(veilT >= 1){ veil.material.opacity = 0.0; veilT = 0; }
+    }
+
+    renderer.render(scene, camera);
+  }
+})();
+</script>
 </body>
 </html>
