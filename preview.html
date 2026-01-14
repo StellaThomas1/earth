@@ -107,11 +107,9 @@
       .heroText{ min-height: 88vh; padding: 22px; }
     }
   </style>
-
 </head>
 
 <body>
-  
   <section class="stage" id="hero">
     <canvas id="globe"></canvas>
 
@@ -497,22 +495,6 @@
 
 
     
-  
- <script>
-  (function(){
-    const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReduced) return;
-
-    let cancelled = false;
-    const cancel = () => { cancelled = true; };
-
-    // If the user interacts, don't auto-jump
-    ['wheel','touchstart','keydown','mousedown'].forEach(evt =>
-      window.addEventListener(evt, cancel, { passive:true, once:true })
-    );
-
-    setTimeout(()=>{
-      if (!cancelled) window.location.href = 'planetary.html';
-    }, 5200); // 5.2s feels cinematic; change if you want faster/slower
-  })();
-</script>
+  </script>
+ 
+</body>
