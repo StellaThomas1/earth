@@ -468,6 +468,12 @@
     renderer.render(scene, camera);
   }
 })();
+  <script>
+  const cm = document.getElementById('cornerMenu');
+  const btn = document.getElementById('menuBtn');
+  btn.onclick = e => { e.stopPropagation(); cm.classList.toggle('open'); };
+  window.onclick = () => cm.classList.remove('open');
 </script>
+
 </body>
 </html>
