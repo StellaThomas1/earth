@@ -1,124 +1,295 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Planetary Stability — Global Water Fund</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>Global Water Fund — Planetary Stability</title>
 
 <style>
+:root{
+  --bg:#04050a; --bg2:#0b0f1a;
+  --ink:rgba(245,248,255,.92);
+  --muted:rgba(245,248,255,.70);
+  --muted2:rgba(245,248,255,.50);
+  --line:rgba(255,255,255,.14);
+}
+
 html,body{
-  margin:0;height:100%;
-  background:#05070d;
-  color:white;
-  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
-  overflow:hidden;
+  margin:0; height:100%;
+  background: radial-gradient(1100px 900px at 60% 30%, var(--bg2) 0%, var(--bg) 60%, #020308 100%);
+  color:var(--ink);
+  font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  overflow:hidden; /* cinematic */
 }
+a{color:inherit;text-decoration:none}
 
-/* minimal corner menu */
-.menu{
-  position:fixed;
-  top:14px;right:14px;
-  z-index:100;
-  font-size:12px;
-  letter-spacing:.2em;
+/* Quiet corner menu (AA) */
+.corner{
+  position:fixed; top:14px; right:14px; z-index:100;
+  display:flex; gap:10px; align-items:center;
+  pointer-events:auto;
+}
+.pill{
+  font-size:11px; letter-spacing:.18em; text-transform:uppercase;
+  padding:10px 12px; border-radius:999px;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(0,0,0,.30); backdrop-filter:blur(10px);
+  color:rgba(245,248,255,.82);
+  user-select:none;
+}
+.pill:hover{ background:rgba(0,0,0,.46); border-color:rgba(255,255,255,.22); }
+.menu{ position:relative; }
+.dropdown{
+  position:absolute; right:0; top:44px;
+  min-width:230px;
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:14px;
+  background:rgba(0,0,0,.65);
+  backdrop-filter:blur(14px);
+  padding:10px;
+  display:none;
+}
+.menu.open .dropdown{ display:block; }
+.dropdown a{
+  display:block;
+  padding:10px 10px;
+  border-radius:10px;
+  font-size:11px;
+  letter-spacing:.16em;
   text-transform:uppercase;
+  color:rgba(245,248,255,.72);
 }
-.menu a{
-  color:#bbb;
-  text-decoration:none;
-  padding:10px 14px;
-  border:1px solid rgba(255,255,255,.15);
-  border-radius:20px;
-  background:rgba(0,0,0,.5);
+.dropdown a:hover{ background:rgba(255,255,255,.06); color:rgba(245,248,255,.95); }
+
+/* Scene */
+.stage{
+  position:fixed; inset:0;
+  display:grid; place-items:center;
+  z-index:1;
+  pointer-events:none; /* keep scene inert */
 }
 
-/* globe */
-.stage{
-  position:fixed;
-  inset:0;
-  display:grid;
-  place-items:center;
+.wrap{
+  width:min(88vmin, 760px);
+  aspect-ratio:1/1;
+  position:relative;
+  transform: translateY(-6px);
 }
+
+/* Globe (no blue lines; black + clouds) */
 .globe{
-  width:70vmin;
-  height:70vmin;
+  position:absolute; inset:0;
   border-radius:50%;
   background:
-    radial-gradient(circle at 30% 30%, #1b2a44, #03050a 60%);
-  box-shadow:0 0 120px rgba(0,0,0,.8);
-  position:relative;
+    radial-gradient(circle at 35% 30%, rgba(255,255,255,.12), rgba(255,255,255,0) 38%),
+    radial-gradient(circle at 55% 68%, rgba(0,0,0,0), rgba(0,0,0,.86) 70%),
+    radial-gradient(circle at 50% 50%, rgba(10,12,18,1), rgba(2,3,8,1) 72%);
+  box-shadow:
+    0 30px 110px rgba(0,0,0,.62),
+    0 0 0 1px rgba(255,255,255,.06) inset;
   overflow:hidden;
+  transform: translateZ(0);
 }
-.globe::before{
+.globe:before{
   content:"";
-  position:absolute;
-  inset:-40%;
+  position:absolute; inset:-20%;
+  border-radius:50%;
   background:
+    radial-gradient(1200px 800px at 30% 45%, rgba(160,210,255,.07), rgba(0,0,0,0) 58%),
+    radial-gradient(900px 700px at 65% 35%, rgba(255,255,255,.06), rgba(0,0,0,0) 60%),
     linear-gradient(90deg,
       rgba(255,255,255,0) 0%,
-      rgba(120,180,255,.15) 40%,
-      rgba(255,255,255,0) 70%);
-  animation:spin 18s linear infinite;
+      rgba(255,255,255,.02) 28%,
+      rgba(255,255,255,.04) 50%,
+      rgba(255,255,255,.02) 72%,
+      rgba(255,255,255,0) 100%);
+  filter: blur(.7px) contrast(1.04) saturate(.75) brightness(.84);
+  mix-blend-mode: screen;
+  opacity:.62;
+  animation: spin 26s linear infinite;
 }
 @keyframes spin{
-  from{transform:translateX(-30%)}
-  to{transform:translateX(30%)}
+  from{ transform: translateX(-8%) rotate(0deg); }
+  to{ transform: translateX(8%) rotate(360deg); }
+}
+.clouds{
+  position:absolute; inset:-18%;
+  border-radius:50%;
+  background:
+    radial-gradient(800px 520px at 35% 45%, rgba(255,255,255,.10), rgba(0,0,0,0) 60%),
+    radial-gradient(720px 520px at 65% 40%, rgba(255,255,255,.08), rgba(0,0,0,0) 60%),
+    radial-gradient(660px 520px at 50% 70%, rgba(255,255,255,.06), rgba(0,0,0,0) 62%);
+  filter: blur(1.2px) contrast(1.05);
+  opacity:.50;
+  mix-blend-mode: screen;
+  animation: drift 20s ease-in-out infinite;
+}
+@keyframes drift{
+  0%{ transform: translate(-1.6%,-1.0%) rotate(-1deg); }
+  50%{ transform: translate(1.6%,1.0%) rotate(1deg); }
+  100%{ transform: translate(-1.6%,-1.0%) rotate(-1deg); }
 }
 
-/* six stability cones */
-.cones{
-  position:absolute;
-  inset:0;
+/* Rings + Cones overlay */
+.overlay{
+  position:absolute; inset:0;
+  pointer-events:none;
+  opacity:0;
+  transition: opacity 1.8s ease;
 }
-.cone{
-  position:absolute;
-  inset:0;
-  clip-path:polygon(50% 50%,50% 0%,100% 0%,100% 100%);
-  background:rgba(120,200,255,.15);
-  opacity:.2;
-  animation:pulse 12s infinite;
-}
-.cone:nth-child(2){transform:rotate(60deg);animation-delay:2s}
-.cone:nth-child(3){transform:rotate(120deg);animation-delay:4s}
-.cone:nth-child(4){transform:rotate(180deg);animation-delay:6s}
-.cone:nth-child(5){transform:rotate(240deg);animation-delay:8s}
-.cone:nth-child(6){transform:rotate(300deg);animation-delay:10s}
+body.active .overlay{ opacity:1; }
+svg{ width:100%; height:100%; }
+.ring{ fill:none; stroke: rgba(255,255,255,.12); stroke-width:1.2; }
+.ring2{ fill:none; stroke: rgba(255,255,255,.08); stroke-width:1.1; }
 
-@keyframes pulse{
-  0%,100%{opacity:.2}
-  50%{opacity:.6}
+.slice{
+  opacity:.20;
+  filter: blur(.12px);
+  transition: opacity .9s ease;
+}
+.slice.on{ opacity:.78; }
+.slice.glow{
+  filter: drop-shadow(0 0 22px rgba(120,210,255,.20));
 }
 
+/* Labels */
 .label{
   position:absolute;
-  width:100%;
+  width:44%;
+  left:50%;
+  top:50%;
+  transform: translate(-50%,-50%);
   text-align:center;
-  bottom:-70px;
+  text-transform:uppercase;
+  letter-spacing:.14em;
   font-size:12px;
-  letter-spacing:.15em;
-  color:#9fb7ff;
+  color:rgba(245,248,255,.86);
+  line-height:1.12;
+  opacity:0;
+  transition: opacity 1.6s ease;
+}
+body.active .label{ opacity:1; }
+.l1{ transform: translate(-50%,-50%) translate(0,-38%); }
+.l2{ transform: translate(-50%,-50%) translate(33%,-19%); }
+.l3{ transform: translate(-50%,-50%) translate(33%,19%); }
+.l4{ transform: translate(-50%,-50%) translate(0,38%); }
+.l5{ transform: translate(-50%,-50%) translate(-33%,19%); }
+.l6{ transform: translate(-50%,-50%) translate(-33%,-19%); }
+
+@media (max-width:520px){
+  .wrap{ width:min(92vmin, 560px); transform: translateY(-10px); }
+  .label{ width:56%; font-size:12px; }
+  .l1{ transform: translate(-50%,-50%) translate(0,-34%); }
+  .l4{ transform: translate(-50%,-50%) translate(0,34%); }
+}
+
+/* Title + cue */
+.title{
+  position:fixed;
+  left:14px; bottom:14px;
+  z-index:40;
+  pointer-events:none;
+  font-size:11px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:rgba(245,248,255,.58);
+}
+.cue{
+  position:fixed;
+  left:50%; bottom:14px;
+  transform: translateX(-50%);
+  z-index:45;
+  font-size:11px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:rgba(245,248,255,.55);
+  opacity:0;
+  transition: opacity 1.4s ease;
+  pointer-events:none;
+}
+@media (max-width:520px){
+  body.active .cue{ opacity:.9; }
 }
 </style>
 </head>
 
 <body>
 
-<div class="menu">
-  <a href="map.html">Map</a>
-</div>
-
-<div class="stage">
-  <div class="globe">
-    <div class="cones">
-      <div class="cone"></div>
-      <div class="cone"></div>
-      <div class="cone"></div>
-      <div class="cone"></div>
-      <div class="cone"></div>
-      <div class="cone"></div>
+<div class="corner">
+  <a class="pill" href="map.html">Map</a>
+  <div class="menu" id="menu">
+    <div class="pill" id="menuBtn">Menu</div>
+    <div class="dropdown">
+      <a href="preview.html">Earth</a>
+      <a href="planetary.html">Stability</a>
+      <a href="map.html">Map</a>
+      <a href="capabilities.html">Capabilities</a>
+      <a href="forecasting.html">Forecasting</a>
+      <a href="maritime.html">Maritime</a>
+      <a href="capital.html">Capital</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
     </div>
-    <div class="label">PLANETARY STABILITY THRESHOLDS</div>
   </div>
 </div>
 
-</body
+<div class="title">Planetary Stability Thresholds</div>
+<div class="cue">Scroll ↓</div>
+
+<div class="stage" aria-hidden="true">
+  <div class="wrap">
+    <div class="globe"><div class="clouds"></div></div>
+
+    <div class="overlay">
+      <svg viewBox="0 0 1000 1000" aria-hidden="true">
+        <circle class="ring" cx="500" cy="500" r="360"/>
+        <circle class="ring2" cx="500" cy="500" r="300"/>
+        <circle class="ring2" cx="500" cy="500" r="240"/>
+
+        <!-- 6 equal wedges (different hues; no lines) -->
+        <g id="slices">
+          <path class="slice glow" data-i="0" d="M500,500 L500,160 A340,340 0 0,1 794,330 Z" fill="rgba(120,210,255,.22)"/>
+          <path class="slice glow" data-i="1" d="M500,500 L794,330 A340,340 0 0,1 794,670 Z" fill="rgba(160,255,220,.20)"/>
+          <path class="slice glow" data-i="2" d="M500,500 L794,670 A340,340 0 0,1 500,840 Z" fill="rgba(255,230,140,.20)"/>
+          <path class="slice glow" data-i="3" d="M500,500 L500,840 A340,340 0 0,1 206,670 Z" fill="rgba(255,170,200,.18)"/>
+          <path class="slice glow" data-i="4" d="M500,500 L206,670 A340,340 0 0,1 206,330 Z" fill="rgba(190,190,255,.18)"/>
+          <path class="slice glow" data-i="5" d="M500,500 L206,330 A340,340 0 0,1 500,160 Z" fill="rgba(170,240,255,.16)"/>
+        </g>
+      </svg>
+
+      <div class="label l1">Climate<br/>Variability</div>
+      <div class="label l2">Freshwater<br/>Availability</div>
+      <div class="label l3">Food<br/>Systems</div>
+      <div class="label l4">Human<br/>Security</div>
+      <div class="label l5">Coastal<br/>Stability</div>
+      <div class="label l6">Ecosystems</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // menu toggle
+  const menu = document.getElementById("menu");
+  const btn  = document.getElementById("menuBtn");
+  btn.addEventListener("click", ()=> menu.classList.toggle("open"));
+  window.addEventListener("click", (e)=>{ if (!menu.contains(e.target)) menu.classList.remove("open"); });
+
+  // reveal overlay after a beat
+  setTimeout(()=> document.body.classList.add("active"), 1200);
+
+  // sweep: light one cone at a time (premium pace)
+  const slices = Array.from(document.querySelectorAll(".slice"));
+  let idx = 0;
+  function sweep(){
+    slices.forEach(s => s.classList.remove("on"));
+    slices[idx].classList.add("on");
+    idx = (idx + 1) % slices.length;
+  }
+  setTimeout(()=>{
+    sweep();
+    setInterval(sweep, 1800); // slower = calmer
+  }, 1500);
+</script>
+
+</body>
+</html>
