@@ -151,9 +151,76 @@ html,body{
   padding:16px;
 }
 </style>
+  
+  /* ===== Corner MENU (Map) ===== */
+.cornerMenu{
+  position:fixed;
+  top:14px; right:14px;
+  z-index:9999;
+  pointer-events:auto;
+}
+.menuPill{
+  font:inherit;
+  font-size:11px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  padding:10px 12px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(0,0,0,.30);
+  color:rgba(245,248,255,.82);
+  cursor:pointer;
+  backdrop-filter:blur(10px);
+}
+.menuPill:hover{ background:rgba(0,0,0,.46); border-color:rgba(255,255,255,.22); }
+
+.menuDrop{
+  position:absolute;
+  right:0;
+  top:44px;
+  min-width:230px;
+  padding:10px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(0,0,0,.65);
+  backdrop-filter:blur(14px);
+  display:none;
+}
+.cornerMenu.open .menuDrop{ display:block; }
+
+.menuDrop a{
+  display:block;
+  padding:10px 10px;
+  border-radius:10px;
+  font-size:11px;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:rgba(245,248,255,.72);
+  text-decoration:none;
+}
+.menuDrop a:hover{
+  background:rgba(255,255,255,.06);
+  color:rgba(245,248,255,.95);
+}
+
 </head>
 
 <body>
+  <!-- MENU dropdown -->
+<div class="cornerMenu" id="cornerMenu">
+  <button class="menuPill" id="menuBtn" type="button">MENU</button>
+  <div class="menuDrop" id="menuDrop" role="menu" aria-label="Site menu">
+    <a href="preview.html">Earth</a>
+    <a href="planetary.html">Stability</a>
+    <a href="map.html">Map</a>
+    <a href="capabilities.html">Capabilities</a>
+    <a href="forecasting.html">Strategic Forecasting</a>
+    <a href="maritime.html">Maritime</a>
+    <a href="capital.html">Capital</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+</div>
+
 
 <div id="map" class="mapLayer"></div>
 <div class="grid"></div>
@@ -214,6 +281,25 @@ function drawLights(){
   });
 }
 drawLights();
+</script>
+<script>
+  (function(){
+    const menu = document.getElementById('cornerMenu');
+    const btn  = document.getElementById('menuBtn');
+
+    btn.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      menu.classList.toggle('open');
+    });
+
+    window.addEventListener('click', (e)=>{
+      if (!menu.contains(e.target)) menu.classList.remove('open');
+    });
+
+    window.addEventListener('keydown', (e)=>{
+      if (e.key === 'Escape') menu.classList.remove('open');
+    });
+  })();
 </script>
 
 </body>
