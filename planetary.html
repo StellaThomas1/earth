@@ -201,6 +201,64 @@
       .labels{ font-size:19px; letter-spacing:.06em; }
       .labels tspan{ letter-spacing:.05em; }
     }
+    /* ===== Corner MENU (works on all pages) ===== */
+.cornerMenu{
+  position: fixed;
+  top: calc(12px + env(safe-area-inset-top));
+  right: calc(12px + env(safe-area-inset-right));
+  z-index: 99999;
+  pointer-events: auto;
+}
+
+.cornerMenu .menuPill{
+  font: inherit;
+  font-size: 11px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  padding: 9px 11px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(0,0,0,.62);
+  color: rgba(245,248,255,.84);
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+}
+
+.cornerMenu .menuPill:hover{
+  background: rgba(0,0,0,.78);
+}
+
+.cornerMenu .menuDrop{
+  position: absolute;
+  right: 0;
+  top: 44px;
+  min-width: 220px;
+  padding: 10px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(0,0,0,.72);
+  backdrop-filter: blur(14px);
+  display: none;
+}
+
+.cornerMenu.open .menuDrop{ display:block; }
+
+.cornerMenu .menuDrop a{
+  display: block;
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 11px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: rgba(245,248,255,.74);
+  text-decoration: none;
+}
+
+.cornerMenu .menuDrop a:hover{
+  background: rgba(255,255,255,.06);
+  color: rgba(245,248,255,.95);
+}
+
   </style>
 </head>
 
