@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Global Water Fund — Planetary</title>
+  <title>Global Water Fund — Planetary Stability</title>
 
   <style>
     :root{
@@ -12,7 +12,6 @@
       --ink:rgba(245,248,255,.92);
       --muted:rgba(245,248,255,.76);
       --muted2:rgba(245,248,255,.56);
-      --line:rgba(255,255,255,.14);
     }
 
     html,body{
@@ -25,7 +24,7 @@
       -webkit-text-size-adjust:100%;
     }
 
-    /* Three.js canvas behind everything */
+    /* Earth canvas behind everything */
     canvas{
       position:fixed;
       inset:0;
@@ -57,7 +56,7 @@
       padding-left:calc(18px + env(safe-area-inset-left));
       padding-right:calc(18px + env(safe-area-inset-right));
       padding-inline:clamp(18px,4.5vw,64px);
-      pointer-events:none;
+      pointer-events:none; /* keep hero content non-clickable; MENU re-enables clicks */
     }
 
     .kicker{
@@ -123,64 +122,7 @@
     }
     .labels tspan{ letter-spacing:.08em; }
 
-    .cone{
-      opacity:.10;
-      transition:opacity 150ms linear;
-      will-change: opacity, filter;
-    }
-
-    /* ===== MENU (top-right) ===== */
-    .menuCorner{
-      position:fixed;
-      top:12px;
-      right:12px;
-      z-index:9999;
-      pointer-events:auto;
-    }
-    .menuBtn{
-      font:inherit;
-      font-size:11px;
-      letter-spacing:.18em;
-      text-transform:uppercase;
-      padding:8px 10px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(0,0,0,.62);
-      color:rgba(245,248,255,.82);
-      cursor:pointer;
-      backdrop-filter:blur(10px);
-    }
-    .menuBtn:hover{
-      background:rgba(0,0,0,.78);
-      border-color:rgba(255,255,255,.18);
-    }
-    .menuList{
-      position:absolute;
-      right:0;
-      top:38px;
-      min-width:220px;
-      padding:10px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(0,0,0,.72);
-      backdrop-filter:blur(14px);
-      display:none;
-    }
-    .menuCorner.open .menuList{ display:block; }
-    .menuList a{
-      display:block;
-      padding:10px 10px;
-      border-radius:10px;
-      font-size:11px;
-      letter-spacing:.16em;
-      text-transform:uppercase;
-      color:rgba(245,248,255,.72);
-      text-decoration:none;
-    }
-    .menuList a:hover{
-      background:rgba(255,255,255,.06);
-      color:rgba(245,248,255,.95);
-    }
+    .cone{ opacity:.10; transition:opacity 150ms linear; }
 
     @media (max-width: 980px){
       .overlay{
@@ -201,105 +143,85 @@
       .labels{ font-size:19px; letter-spacing:.06em; }
       .labels tspan{ letter-spacing:.05em; }
     }
-   
+
+    /* =========================
+       MENU (top-right)
+       ========================= */
+    .menuCorner{
+      position:fixed;
+      top:12px;
+      right:12px;
+      z-index:9999;
+      pointer-events:auto; /* clickable even though overlay is not */
+    }
+
+    .menuBtn{
+      font:inherit;
+      font-size:11px;
+      letter-spacing:.18em;
+      text-transform:uppercase;
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(0,0,0,.62); /* small + black */
+      color:rgba(245,248,255,.82);
+      cursor:pointer;
+      backdrop-filter:blur(10px);
+      -webkit-backdrop-filter:blur(10px);
+    }
+    .menuBtn:hover{
+      background:rgba(0,0,0,.78);
+      border-color:rgba(255,255,255,.18);
+      color:rgba(245,248,255,.92);
+    }
+
+    .menuList{
+      position:absolute;
+      right:0;
+      top:38px;
+      min-width:220px;
+      padding:10px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(0,0,0,.72);
+      backdrop-filter:blur(14px);
+      -webkit-backdrop-filter:blur(14px);
+      display:none;
+    }
+    .menuCorner.open .menuList{ display:block; }
+
+    .menuList a{
+      display:block;
+      padding:10px 10px;
+      border-radius:10px;
+      font-size:11px;
+      letter-spacing:.16em;
+      text-transform:uppercase;
+      color:rgba(245,248,255,.72);
+      text-decoration:none;
+    }
+    .menuList a:hover{
+      background:rgba(255,255,255,.06);
+      color:rgba(245,248,255,.95);
+    }
   </style>
 </head>
-  <script>
-(function(){
-  const menu = document.getElementById("cornerMenu");
-  const btn  = document.getElementById("menuPill");
-
-  if(!menu || !btn) return;
-
-  btn.addEventListener("click", (e)=>{
-    e.preventDefault();
-    e.stopPropagation();
-    menu.classList.toggle("open");
-  });
-
-  window.addEventListener("click", (e)=>{
-    if(!menu.contains(e.target)) menu.classList.remove("open");
-  });
-
-  window.addEventListener("keydown", (e)=>{
-    if(e.key === "Escape") menu.classList.remove("open");
-  });
-})();
-</script>
-   /* ===== Corner MENU (works on all pages) ===== */
-.cornerMenu{
-  position: fixed;
-  top: calc(12px + env(safe-area-inset-top));
-  right: calc(12px + env(safe-area-inset-right));
-  z-index: 99999;
-  pointer-events: auto;
-}
-
-.cornerMenu .menuPill{
-  font: inherit;
-  font-size: 11px;
-  letter-spacing: .18em;
-  text-transform: uppercase;
-  padding: 9px 11px;
-  border-radius: 999px;
-  border: 1px solid rgba(255,255,255,.14);
-  background: rgba(0,0,0,.62);
-  color: rgba(245,248,255,.84);
-  cursor: pointer;
-  backdrop-filter: blur(10px);
-}
-
-.cornerMenu .menuPill:hover{
-  background: rgba(0,0,0,.78);
-}
-
-.cornerMenu .menuDrop{
-  position: absolute;
-  right: 0;
-  top: 44px;
-  min-width: 220px;
-  padding: 10px;
-  border-radius: 14px;
-  border: 1px solid rgba(255,255,255,.14);
-  background: rgba(0,0,0,.72);
-  backdrop-filter: blur(14px);
-  display: none;
-}
-
-.cornerMenu.open .menuDrop{ display:block; }
-
-.cornerMenu .menuDrop a{
-  display: block;
-  padding: 10px;
-  border-radius: 10px;
-  font-size: 11px;
-  letter-spacing: .16em;
-  text-transform: uppercase;
-  color: rgba(245,248,255,.74);
-  text-decoration: none;
-}
-
-.cornerMenu .menuDrop a:hover{
-  background: rgba(255,255,255,.06);
-  color: rgba(245,248,255,.95);
-}
 
 <body>
-  <div class="cornerMenu" id="cornerMenu">
-  <button class="menuPill" id="menuPill" type="button">MENU</button>
+  <!-- MENU (top-right) -->
+  <div class="menuList" id="menuList">
+  <a href="preview.html">Earth</a>
+  <a href="planetary.html">Planetary</a>
+  <a href="map.html">Map</a>
+  <a href="capabilities.html">Capabilities</a>
+  <a href="forecasting.html">Strategic Forecasting</a>
+  <a href="maritime.html">Maritime</a>
+  <a href="capital.html">Capital</a>
+  <a href="about.html">About</a>
+  <a href="contact.html">Contact</a>
 
-  <div class="menuDrop" id="menuDrop">
-    <a href="index.html">Earth</a>
-    <a href="planetary.html">Stability</a>
-    <a href="map.html">Map</a>
-    <a href="capabilities.html">Capabilities</a>
-    <a href="forecasting.html">Strategic Forecasting</a>
-    <a href="maritime.html">Maritime</a>
-    <a href="capital.html">Capital</a>
-    <a href="about.html">About</a>
-    <a href="contact.html">Contact</a>
+    </div>
   </div>
-</div>
 
   <div class="wrap">
     <section class="hero" id="hero">
@@ -318,7 +240,7 @@
           <div id="revealLine" class="revealLine">FROM PLANET TO POLICY — BEFORE THE SHOCK.</div>
         </div>
 
-        <div class="viz" aria-label="Planetary Stability Dial">
+        <div class="viz" aria-label="Planetary Stability Cones">
           <svg viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
             <defs>
               <radialGradient id="halo" cx="50%" cy="50%" r="62%">
@@ -374,7 +296,6 @@
   </div>
 
   <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
-
   <script>
   (() => {
     const canvas = document.getElementById("globe");
@@ -406,4 +327,196 @@
     scene.add(rim);
 
     const smooth = x => x*x*(3-2*x);
-    const lerp = (a
+    const lerp = (a,b,t) => a+(b-a)*t;
+
+    function resize(){
+      const w = canvas.clientWidth, h = canvas.clientHeight;
+      if(!w || !h) return;
+      renderer.setSize(w, h, false);
+      camera.aspect = w/h;
+      camera.updateProjectionMatrix();
+    }
+    addEventListener("resize", resize);
+
+    // Mouse drift (desktop)
+    let targetPX=0, targetPY=0, px=0, py=0;
+    addEventListener("mousemove", (e)=>{
+      const nx = (e.clientX / innerWidth) * 2 - 1;
+      const ny = (e.clientY / innerHeight) * 2 - 1;
+      targetPX = nx * 0.08;
+      targetPY = ny * 0.08;
+    }, { passive:true });
+
+    function scrollInfluence(){
+      const r = hero.getBoundingClientRect();
+      return Math.max(0, Math.min(1, (-r.top) / (innerHeight * 0.7)));
+    }
+
+    // Textures (threejs.org CDN)
+    const loader = new THREE.TextureLoader();
+    loader.crossOrigin = "anonymous";
+    const loadTex = url => new Promise((res, rej)=>{
+      loader.load(url, t => { t.colorSpace = THREE.SRGBColorSpace; res(t); }, undefined, rej);
+    });
+
+    const TEX = {
+      day:    "https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg",
+      clouds: "https://threejs.org/examples/textures/planets/earth_clouds_1024.png"
+    };
+
+    const seg = isMobile ? 96 : 128;
+    let earth, clouds, veil;
+    let revealT = 0, revealShown = false;
+    let glowClock = 0;
+    let tick = 0;
+    let veilTriggered=false, veilT=0;
+
+    Promise.all([loadTex(TEX.day), loadTex(TEX.clouds)]).then(([day, cloudsTex]) => {
+      const earthMat = new THREE.MeshPhongMaterial({
+        map: day,
+        shininess: 12,
+        specular: new THREE.Color(0x2b5a7a)
+      });
+
+      earth = new THREE.Mesh(new THREE.SphereGeometry(2.0, seg, seg), earthMat);
+      earth.rotation.y = 0.9;
+      scene.add(earth);
+
+      clouds = new THREE.Mesh(
+        new THREE.SphereGeometry(2.02, seg, seg),
+        new THREE.MeshLambertMaterial({ map: cloudsTex, transparent:true, opacity:0.22, depthWrite:false })
+      );
+      clouds.rotation.y = earth.rotation.y + 0.35;
+      scene.add(clouds);
+
+      veil = new THREE.Mesh(
+        new THREE.SphereGeometry(2.12, seg, seg),
+        new THREE.MeshBasicMaterial({ color:0xaaf0ff, transparent:true, opacity:0.0, blending:THREE.AdditiveBlending, depthWrite:false })
+      );
+      scene.add(veil);
+
+      resize();
+      animate();
+    });
+
+    function animate(){
+      requestAnimationFrame(animate);
+      resize();
+      if(!earth) return;
+
+      px += (targetPX - px) * 0.03;
+      py += (targetPY - py) * 0.03;
+
+      const sScroll = scrollInfluence();
+      camera.position.x = 0.35 + (isMobile ? 0 : px*0.9);
+      camera.position.y = 0.10 + sScroll*0.10 - (isMobile ? 0 : py*0.7);
+      camera.position.z = 6.35 + sScroll*0.30;
+
+      // rotation
+      earth.rotation.y += prefersReduced ? 0 : 0.0024;
+      clouds.rotation.y += prefersReduced ? 0 : 0.0030;
+
+      tick += 0.006;
+      earth.rotation.x = Math.sin(tick) * 0.012;
+
+      // reveal ramp (also used to drive cone intensity)
+      revealT = prefersReduced ? 1 : Math.min(1, revealT + 0.0062);
+      const s = smooth(revealT);
+
+      // Subtle brighten as it "turns to color"
+      earth.material.color.setRGB(lerp(0.78, 1.0, s), lerp(0.78, 1.0, s), lerp(0.80, 1.0, s));
+
+      // --- Cones: ONE active + soft trailing neighbors, synced to Earth rotation ---
+      glowClock += 0.012;
+      const breath = 0.5 + 0.5*Math.sin(glowClock * 0.55);
+
+      const base = 0.10 + 0.62 * s;
+
+      const rotDeg = ((earth.rotation.y * 180 / Math.PI) % 360 + 360) % 360;
+      const spotDeg = (rotDeg + 90 + 40) % 360;  // bias so it feels aligned to lit hemisphere
+      const idx = Math.floor(spotDeg / 60);      // 0..5
+
+      const glowMain = 12 + 18 * s;
+      const glowTrail = 6 + 10 * s;
+      const alphaMain = (0.08 + 0.10 * s) * (0.7 + 0.3 * breath);
+      const alphaTrail = (0.03 + 0.06 * s) * (0.7 + 0.3 * breath);
+
+      for (let i=0; i<cones.length; i++){
+        const c = cones[i];
+        const d = Math.min((i - idx + 6) % 6, (idx - i + 6) % 6);
+
+        if (d === 0){
+          c.style.opacity = String(Math.min(0.98, base + 0.28));
+          c.style.filter = `drop-shadow(0 0 ${glowMain.toFixed(1)}px rgba(170,240,255,${alphaMain.toFixed(3)}))`;
+        } else if (d === 1){
+          c.style.opacity = String(Math.min(0.70, base*0.35 + 0.10*s));
+          c.style.filter = `drop-shadow(0 0 ${glowTrail.toFixed(1)}px rgba(170,240,255,${alphaTrail.toFixed(3)}))`;
+        } else {
+          c.style.opacity = String(Math.max(0.08, base*0.18));
+          c.style.filter = "none";
+        }
+      }
+
+      // copy reveal near completion
+      if(!revealShown && revealT > 0.965){
+        revealShown = true;
+        revealLine.classList.add("on");
+      }
+
+      // gentle "water veil" moment
+      if(!prefersReduced && !veilTriggered && revealT > 0.978){
+        veilTriggered = true;
+        veilT = 0.0001;
+        veil.material.opacity = 0.06;
+        veil.position.y = 0.02;
+        veil.scale.set(1,1,1);
+      }
+      if(veilTriggered && veilT > 0){
+        veilT = Math.min(1, veilT + 0.0056);
+        const vv = smooth(veilT);
+        veil.position.y = lerp(0.02, -0.25, vv);
+        const sc = lerp(1.0, 1.040, vv);
+        veil.scale.set(sc, sc, sc);
+        const peakv = vv < 0.40 ? (vv/0.40) : (1 - (vv-0.40)/0.60);
+        veil.material.opacity = 0.090 * Math.max(0, peakv);
+        if(veilT >= 1){ veil.material.opacity = 0.0; veilT = 0; }
+      }
+
+      renderer.render(scene, camera);
+    }
+  })();
+  </script>
+
+  <script>
+  // MENU interactions
+  (function(){
+    const box = document.getElementById('menuCorner');
+    const btn = document.getElementById('menuBtn');
+
+    function setExpanded(){
+      btn.setAttribute('aria-expanded', box.classList.contains('open') ? 'true' : 'false');
+    }
+
+    btn.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      box.classList.toggle('open');
+      setExpanded();
+    });
+
+    window.addEventListener('click', (e)=>{
+      if(!box.contains(e.target)) {
+        box.classList.remove('open');
+        setExpanded();
+      }
+    });
+
+    window.addEventListener('keydown', (e)=>{
+      if(e.key === 'Escape') {
+        box.classList.remove('open');
+        setExpanded();
+      }
+    });
+  })();
+  </script>
+</body>
+</html>
