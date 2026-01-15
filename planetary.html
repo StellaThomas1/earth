@@ -201,7 +201,32 @@
       .labels{ font-size:19px; letter-spacing:.06em; }
       .labels tspan{ letter-spacing:.05em; }
     }
-    /* ===== Corner MENU (works on all pages) ===== */
+   
+  </style>
+</head>
+  <script>
+(function(){
+  const menu = document.getElementById("cornerMenu");
+  const btn  = document.getElementById("menuPill");
+
+  if(!menu || !btn) return;
+
+  btn.addEventListener("click", (e)=>{
+    e.preventDefault();
+    e.stopPropagation();
+    menu.classList.toggle("open");
+  });
+
+  window.addEventListener("click", (e)=>{
+    if(!menu.contains(e.target)) menu.classList.remove("open");
+  });
+
+  window.addEventListener("keydown", (e)=>{
+    if(e.key === "Escape") menu.classList.remove("open");
+  });
+})();
+</script>
+   /* ===== Corner MENU (works on all pages) ===== */
 .cornerMenu{
   position: fixed;
   top: calc(12px + env(safe-area-inset-top));
@@ -258,32 +283,6 @@
   background: rgba(255,255,255,.06);
   color: rgba(245,248,255,.95);
 }
-
-  </style>
-</head>
-  <script>
-(function(){
-  const menu = document.getElementById("cornerMenu");
-  const btn  = document.getElementById("menuPill");
-
-  if(!menu || !btn) return;
-
-  btn.addEventListener("click", (e)=>{
-    e.preventDefault();
-    e.stopPropagation();
-    menu.classList.toggle("open");
-  });
-
-  window.addEventListener("click", (e)=>{
-    if(!menu.contains(e.target)) menu.classList.remove("open");
-  });
-
-  window.addEventListener("keydown", (e)=>{
-    if(e.key === "Escape") menu.classList.remove("open");
-  });
-})();
-</script>
-
 
 <body>
   <div class="cornerMenu" id="cornerMenu">
