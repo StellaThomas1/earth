@@ -32,9 +32,10 @@
       height:100%;
       display:block;
       pointer-events:none;
+      z-index:0;
     }
 
-    .wrap{ min-height:150vh; }
+    .wrap{ min-height:150vh; position:relative; z-index:1; }
     .hero{
       min-height:100vh;
       min-height:100svh;
@@ -56,7 +57,7 @@
       padding-left:calc(18px + env(safe-area-inset-left));
       padding-right:calc(18px + env(safe-area-inset-right));
       padding-inline:clamp(18px,4.5vw,64px);
-      pointer-events:none; /* keep hero content non-clickable; MENU re-enables clicks */
+      pointer-events:none;
     }
 
     .kicker{
@@ -102,7 +103,7 @@
       color:rgba(245,248,255,.64);
       opacity:0;
       transform:translateY(8px);
-      transition:opacity 1.4s ease, transform 1.4s ease;
+     
     }
     .revealLine.on{ opacity:1; transform:translateY(0); }
 
@@ -144,17 +145,14 @@
       .labels tspan{ letter-spacing:.05em; }
     }
 
-    /* =========================
-       MENU (top-right)
-       ========================= */
+    /* ===== MENU (single pill, top-right) ===== */
     .menuCorner{
       position:fixed;
       top:12px;
       right:12px;
       z-index:9999;
-      pointer-events:auto; /* clickable even though overlay is not */
+      pointer-events:auto;
     }
-
     .menuBtn{
       font:inherit;
       font-size:11px;
@@ -163,18 +161,15 @@
       padding:8px 10px;
       border-radius:999px;
       border:1px solid rgba(255,255,255,.12);
-      background:rgba(0,0,0,.62); /* small + black */
+      background:rgba(0,0,0,.62);
       color:rgba(245,248,255,.82);
       cursor:pointer;
       backdrop-filter:blur(10px);
-      -webkit-backdrop-filter:blur(10px);
     }
     .menuBtn:hover{
       background:rgba(0,0,0,.78);
       border-color:rgba(255,255,255,.18);
-      color:rgba(245,248,255,.92);
     }
-
     .menuList{
       position:absolute;
       right:0;
@@ -185,11 +180,9 @@
       border:1px solid rgba(255,255,255,.12);
       background:rgba(0,0,0,.72);
       backdrop-filter:blur(14px);
-      -webkit-backdrop-filter:blur(14px);
       display:none;
     }
     .menuCorner.open .menuList{ display:block; }
-
     .menuList a{
       display:block;
       padding:10px 10px;
@@ -208,18 +201,20 @@
 </head>
 
 <body>
-  <!-- MENU (top-right) -->
-  <div class="menuList" id="menuList">
-  <a href="preview.html">Earth</a>
-  <a href="planetary.html">Planetary</a>
-  <a href="map.html">Map</a>
-  <a href="capabilities.html">Capabilities</a>
-  <a href="forecasting.html">Strategic Forecasting</a>
-  <a href="maritime.html">Maritime</a>
-  <a href="capital.html">Capital</a>
-  <a href="about.html">About</a>
-  <a href="contact.html">Contact</a>
 
+  <!-- MENU pill -->
+  <div class="menuCorner" id="menuCorner">
+    <button class="menuBtn" id="menuBtn" type="button">MENU</button>
+    <div class="menuList" id="menuList">
+      <a href="preview.html">Earth</a>
+      <a href="planetary.html">Planetary</a>
+      <a href="map.html">Map</a>
+      <a href="capabilities.html">Capabilities</a>
+      <a href="forecasting.html">Strategic Forecasting</a>
+      <a href="maritime.html">Maritime</a>
+      <a href="capital.html">Capital</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
     </div>
   </div>
 
@@ -257,11 +252,13 @@
               <circle cx="500" cy="500" r="390" fill="none" stroke="rgba(255,255,255,.10)" stroke-width="2"/>
               <circle cx="500" cy="500" r="460" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="2"/>
 
-              <!-- 6 equal cones (clockwise from top) -->
+              <!-- 6 cones -->
               <path class="cone" d="M500 500 L500 120 A380 380 0 0 1 829.1 310 Z" fill="rgba(160,220,255,.42)"/>
               <path class="cone" d="M500 500 L829.1 310 A380 380 0 0 1 829.1 690 Z" fill="rgba(130,255,230,.34)"/>
               <path class="cone" d="M500 500 L829.1 690 A380 380 0 0 1 500 880 Z" fill="rgba(255,210,120,.32)"/>
-              <path class="cone" d="M500 500 L500 880 A380 380 0 0 1 170.9 690 Z" fill="rgba(140,170,255,.32)"/>
+              <path class="cone" d="M500 500 L500
+
+                 880 A380 380 0 0 1 170.9 690 Z" fill="rgba(140,170,255,.32)"/>
               <path class="cone" d="M500 500 L170.9 690 A380 380 0 0 1 170.9 310 Z" fill="rgba(155,255,170,.32)"/>
               <path class="cone" d="M500 500 L170.9 310 A380 380 0 0 1 500 120 Z" fill="rgba(255,150,200,.30)"/>
 
@@ -295,228 +292,165 @@
     </section>
   </div>
 
-  <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
-  <script>
-  (() => {
-    const canvas = document.getElementById("globe");
-    const hero = document.getElementById("hero");
-    const revealLine = document.getElementById("revealLine");
-    const chartGroup = document.getElementById("chartGroup");
-    const cones = Array.from(document.querySelectorAll(".cone"));
+<script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
 
-    const isMobile = matchMedia("(max-width: 980px)").matches;
-    const prefersReduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+<script>
+(() => {
+  const canvas = document.getElementById("globe");
+  const hero = document.getElementById("hero");
+  const revealLine = document.getElementById("revealLine");
+  const chartGroup = document.getElementById("chartGroup");
+  const cones = Array.from(document.querySelectorAll(".cone"));
 
-    // lift chart on mobile so bottom label isn't clipped
-    if (isMobile && chartGroup) chartGroup.setAttribute("transform","translate(0,-110)");
+  const isMobile = matchMedia("(max-width: 980px)").matches;
+  const prefersReduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    const renderer = new THREE.WebGLRenderer({ canvas, alpha:true, antialias: !isMobile });
-    renderer.setPixelRatio(Math.min(devicePixelRatio || 1, isMobile ? 1.5 : 2));
-    renderer.outputColorSpace = THREE.SRGBColorSpace;
+  if (isMobile && chartGroup) chartGroup.setAttribute("transform","translate(0,-110)");
 
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 200);
-    camera.position.set(0.35, 0.10, 6.35);
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha:true, antialias: !isMobile });
+  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, isMobile ? 1.5 : 2));
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
 
-    scene.add(new THREE.AmbientLight(0xffffff, 0.34));
-    const key = new THREE.DirectionalLight(0xffffff, 1.25);
-    key.position.set(6, 3.2, 6);
-    scene.add(key);
-    const rim = new THREE.DirectionalLight(0xaaf0ff, 0.85);
-    rim.position.set(-8, -2, 3);
-    scene.add(rim);
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 200);
+  camera.position.set(0.35, 0.10, 6.35);
 
-    const smooth = x => x*x*(3-2*x);
-    const lerp = (a,b,t) => a+(b-a)*t;
+  scene.add(new THREE.AmbientLight(0xffffff, 0.34));
+  const key = new THREE.DirectionalLight(0xffffff, 1.25);
+  key.position.set(6, 3.2, 6);
+  scene.add(key);
+  const rim = new THREE.DirectionalLight(0xaaf0ff, 0.85);
+  rim.position.set(-8, -2, 3);
+  scene.add(rim);
 
-    function resize(){
-      const w = canvas.clientWidth, h = canvas.clientHeight;
-      if(!w || !h) return;
-      renderer.setSize(w, h, false);
-      camera.aspect = w/h;
-      camera.updateProjectionMatrix();
-    }
-    addEventListener("resize", resize);
+  const smooth = x => x*x*(3-2*x);
+  const lerp = (a,b,t) => a+(b-a)*t;
 
-    // Mouse drift (desktop)
-    let targetPX=0, targetPY=0, px=0, py=0;
-    addEventListener("mousemove", (e)=>{
-      const nx = (e.clientX / innerWidth) * 2 - 1;
-      const ny = (e.clientY / innerHeight) * 2 - 1;
-      targetPX = nx * 0.08;
-      targetPY = ny * 0.08;
-    }, { passive:true });
+  function resize(){
+    const w = canvas.clientWidth, h = canvas.clientHeight;
+    if(!w || !h) return;
+    renderer.setSize(w, h, false);
+    camera.aspect = w/h;
+    camera.updateProjectionMatrix();
+  }
+  addEventListener("resize", resize);
 
-    function scrollInfluence(){
-      const r = hero.getBoundingClientRect();
-      return Math.max(0, Math.min(1, (-r.top) / (innerHeight * 0.7)));
-    }
+  let targetPX=0, targetPY=0, px=0, py=0;
+  addEventListener("mousemove", (e)=>{
+    const nx = (e.clientX / innerWidth) * 2 - 1;
+    const ny = (e.clientY / innerHeight) * 2 - 1;
+    targetPX = nx * 0.08;
+    targetPY = ny * 0.08;
+  }, { passive:true });
 
-    // Textures (threejs.org CDN)
-    const loader = new THREE.TextureLoader();
-    loader.crossOrigin = "anonymous";
-    const loadTex = url => new Promise((res, rej)=>{
-      loader.load(url, t => { t.colorSpace = THREE.SRGBColorSpace; res(t); }, undefined, rej);
+  function scrollInfluence(){
+    const r = hero.getBoundingClientRect();
+    return Math.max(0, Math.min(1, (-r.top) / (innerHeight * 0.7)));
+  }
+
+  const loader = new THREE.TextureLoader();
+  loader.crossOrigin = "anonymous";
+  const loadTex = url => new Promise((res, rej)=>{
+    loader.load(url, t => { t.colorSpace = THREE.SRGBColorSpace; res(t); }, undefined, rej);
+  });
+
+  const TEX = {
+    day:    "https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg",
+    clouds: "https://threejs.org/examples/textures/planets/earth_clouds_1024.png"
+  };
+
+  const seg = isMobile ? 96 : 128;
+  let earth, clouds;
+  let revealT = 0, revealShown = false;
+  let glowClock = 0;
+  let tick = 0;
+
+  Promise.all([loadTex(TEX.day), loadTex(TEX.clouds)]).then(([day, cloudsTex]) => {
+    const earthMat = new THREE.MeshPhongMaterial({ map: day, shininess: 12 });
+    earth = new THREE.Mesh(new THREE.SphereGeometry(2.0, seg, seg), earthMat);
+    earth.rotation.y = 0.9;
+    scene.add(earth);
+
+    clouds = new THREE.Mesh(
+      new THREE.SphereGeometry(2.02, seg, seg),
+      new THREE.MeshLambertMaterial({ map: cloudsTex, transparent:true, opacity:0.22, depthWrite:false })
+    );
+    clouds.rotation.y = earth.rotation.y + 0.35;
+    scene.add(clouds);
+
+    resize();
+    animate();
+  });
+
+  function animate(){
+    requestAnimationFrame(animate);
+    resize();
+    if(!earth) return;
+
+    px += (targetPX - px) * 0.03;
+    py += (targetPY - py) * 0.03;
+
+    const sScroll = scrollInfluence();
+    camera.position.x = 0.35 + px*0.9;
+    camera.position.y = 0.10 + sScroll*0.10 - py*0.7;
+    camera.position.z = 6.35 + sScroll*0.30;
+
+    earth.rotation.y += 0.0024;
+    clouds.rotation.y += 0.0030;
+
+    tick += 0.006;
+    earth.rotation.x = Math.sin(tick) * 0.012;
+
+    revealT = Math.min(1, revealT + 0.0062);
+    const s = smooth(revealT);
+
+    glowClock += 0.012;
+    const breath = 0.5 + 0.5*Math.sin(glowClock * 0.55);
+
+    const base = 0.10 + 0.62 * s;
+    const rotDeg = ((earth.rotation.y * 180 / Math.PI) % 360 + 360) % 360;
+    const idx = Math.floor(rotDeg / 60);
+
+    cones.forEach((c,i)=>{
+      const d = Math.min((i - idx + 6) % 6, (idx - i + 6) % 6);
+      if(d === 0){
+        c.style.opacity = "0.9";
+        c.style.filter = "drop-shadow(0 0 22px rgba(170,240,255,.45))";
+      } else if(d === 1){
+        c.style.opacity = "0.45";
+        c.style.filter = "drop-shadow(0 0 12px rgba(170,240,255,.25))";
+      } else {
+        c.style.opacity = base * 0.2;
+        c.style.filter = "none";
+      }
     });
 
-    const TEX = {
-      day:    "https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg",
-      clouds: "https://threejs.org/examples/textures/planets/earth_clouds_1024.png"
-    };
-
-    const seg = isMobile ? 96 : 128;
-    let earth, clouds, veil;
-    let revealT = 0, revealShown = false;
-    let glowClock = 0;
-    let tick = 0;
-    let veilTriggered=false, veilT=0;
-
-    Promise.all([loadTex(TEX.day), loadTex(TEX.clouds)]).then(([day, cloudsTex]) => {
-      const earthMat = new THREE.MeshPhongMaterial({
-        map: day,
-        shininess: 12,
-        specular: new THREE.Color(0x2b5a7a)
-      });
-
-      earth = new THREE.Mesh(new THREE.SphereGeometry(2.0, seg, seg), earthMat);
-      earth.rotation.y = 0.9;
-      scene.add(earth);
-
-      clouds = new THREE.Mesh(
-        new THREE.SphereGeometry(2.02, seg, seg),
-        new THREE.MeshLambertMaterial({ map: cloudsTex, transparent:true, opacity:0.22, depthWrite:false })
-      );
-      clouds.rotation.y = earth.rotation.y + 0.35;
-      scene.add(clouds);
-
-      veil = new THREE.Mesh(
-        new THREE.SphereGeometry(2.12, seg, seg),
-        new THREE.MeshBasicMaterial({ color:0xaaf0ff, transparent:true, opacity:0.0, blending:THREE.AdditiveBlending, depthWrite:false })
-      );
-      scene.add(veil);
-
-      resize();
-      animate();
-    });
-
-    function animate(){
-      requestAnimationFrame(animate);
-      resize();
-      if(!earth) return;
-
-      px += (targetPX - px) * 0.03;
-      py += (targetPY - py) * 0.03;
-
-      const sScroll = scrollInfluence();
-      camera.position.x = 0.35 + (isMobile ? 0 : px*0.9);
-      camera.position.y = 0.10 + sScroll*0.10 - (isMobile ? 0 : py*0.7);
-      camera.position.z = 6.35 + sScroll*0.30;
-
-      // rotation
-      earth.rotation.y += prefersReduced ? 0 : 0.0024;
-      clouds.rotation.y += prefersReduced ? 0 : 0.0030;
-
-      tick += 0.006;
-      earth.rotation.x = Math.sin(tick) * 0.012;
-
-      // reveal ramp (also used to drive cone intensity)
-      revealT = prefersReduced ? 1 : Math.min(1, revealT + 0.0062);
-      const s = smooth(revealT);
-
-      // Subtle brighten as it "turns to color"
-      earth.material.color.setRGB(lerp(0.78, 1.0, s), lerp(0.78, 1.0, s), lerp(0.80, 1.0, s));
-
-      // --- Cones: ONE active + soft trailing neighbors, synced to Earth rotation ---
-      glowClock += 0.012;
-      const breath = 0.5 + 0.5*Math.sin(glowClock * 0.55);
-
-      const base = 0.10 + 0.62 * s;
-
-      const rotDeg = ((earth.rotation.y * 180 / Math.PI) % 360 + 360) % 360;
-      const spotDeg = (rotDeg + 90 + 40) % 360;  // bias so it feels aligned to lit hemisphere
-      const idx = Math.floor(spotDeg / 60);      // 0..5
-
-      const glowMain = 12 + 18 * s;
-      const glowTrail = 6 + 10 * s;
-      const alphaMain = (0.08 + 0.10 * s) * (0.7 + 0.3 * breath);
-      const alphaTrail = (0.03 + 0.06 * s) * (0.7 + 0.3 * breath);
-
-      for (let i=0; i<cones.length; i++){
-        const c = cones[i];
-        const d = Math.min((i - idx + 6) % 6, (idx - i + 6) % 6);
-
-        if (d === 0){
-          c.style.opacity = String(Math.min(0.98, base + 0.28));
-          c.style.filter = `drop-shadow(0 0 ${glowMain.toFixed(1)}px rgba(170,240,255,${alphaMain.toFixed(3)}))`;
-        } else if (d === 1){
-          c.style.opacity = String(Math.min(0.70, base*0.35 + 0.10*s));
-          c.style.filter = `drop-shadow(0 0 ${glowTrail.toFixed(1)}px rgba(170,240,255,${alphaTrail.toFixed(3)}))`;
-        } else {
-          c.style.opacity = String(Math.max(0.08, base*0.18));
-          c.style.filter = "none";
-        }
-      }
-
-      // copy reveal near completion
-      if(!revealShown && revealT > 0.965){
-        revealShown = true;
-        revealLine.classList.add("on");
-      }
-
-      // gentle "water veil" moment
-      if(!prefersReduced && !veilTriggered && revealT > 0.978){
-        veilTriggered = true;
-        veilT = 0.0001;
-        veil.material.opacity = 0.06;
-        veil.position.y = 0.02;
-        veil.scale.set(1,1,1);
-      }
-      if(veilTriggered && veilT > 0){
-        veilT = Math.min(1, veilT + 0.0056);
-        const vv = smooth(veilT);
-        veil.position.y = lerp(0.02, -0.25, vv);
-        const sc = lerp(1.0, 1.040, vv);
-        veil.scale.set(sc, sc, sc);
-        const peakv = vv < 0.40 ? (vv/0.40) : (1 - (vv-0.40)/0.60);
-        veil.material.opacity = 0.090 * Math.max(0, peakv);
-        if(veilT >= 1){ veil.material.opacity = 0.0; veilT = 0; }
-      }
-
-      renderer.render(scene, camera);
-    }
-  })();
-  </script>
-
-  <script>
-  // MENU interactions
-  (function(){
-    const box = document.getElementById('menuCorner');
-    const btn = document.getElementById('menuBtn');
-
-    function setExpanded(){
-      btn.setAttribute('aria-expanded', box.classList.contains('open') ? 'true' : 'false');
+    if(!revealShown && revealT > 0.95){
+      revealShown = true;
+      revealLine.classList.add("on");
     }
 
-    btn.addEventListener('click', (e)=>{
-      e.stopPropagation();
-      box.classList.toggle('open');
-      setExpanded();
-    });
+    renderer.render(scene, camera);
+  }
+})();
+</script>
 
-    window.addEventListener('click', (e)=>{
-      if(!box.contains(e.target)) {
-        box.classList.remove('open');
-        setExpanded();
-      }
-    });
+<script>
+(function(){
+  const box = document.getElementById('menuCorner');
+  const btn = document.getElementById('menuBtn');
 
-    window.addEventListener('keydown', (e)=>{
-      if(e.key === 'Escape') {
-        box.classList.remove('open');
-        setExpanded();
-      }
-    });
-  })();
-  </script>
+  btn.addEventListener('click', (e)=>{
+    e.stopPropagation();
+    box.classList.toggle('open');
+  });
+
+  window.addEventListener('click', ()=>{
+    box.classList.remove('open');
+  });
+})();
+</script>
+
 </body>
 </html>
+
