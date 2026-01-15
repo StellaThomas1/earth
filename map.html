@@ -104,3 +104,317 @@
         calc(18px + env(safe-area-inset-right))
         calc(18px + env(safe-area-inset-bottom))
         calc(18px + env(safe-area-inset-left
+
+                              );
+      display:flex;
+      flex-direction:column;
+      justify-content:flex-start;
+      gap:clamp(14px,2.2vh,22px);
+      pointer-events:none; /* content is display-only; menu will override */
+    }
+
+    .topBlock{
+      max-width:1100px;
+      margin:0 auto;
+      text-align:center;
+      padding-top:clamp(6px,1.8vh,14px);
+    }
+
+    .brand{
+      font-size:12px;
+      letter-spacing:.22em;
+      text-transform:uppercase;
+      color:var(--muted2);
+      margin-bottom:10px;
+    }
+
+    .systemsLine{
+      font-weight:800;
+      letter-spacing:.16em;
+      text-transform:uppercase;
+      font-size:clamp(14px,1.55vw,20px);
+      line-height:1.2;
+      margin:0 0 10px 0;
+    }
+
+    .tagline{
+      font-size:clamp(13px,1.05vw,15px);
+      line-height:1.75;
+      color:var(--muted);
+      max-width:920px;
+      margin:0 auto;
+    }
+
+    /* Capability rail */
+    .rail{
+      max-width:1200px;
+      margin:0 auto;
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:center;
+      gap:10px;
+      padding:10px 0 0 0;
+    }
+    .pill{
+      font-size:11px;
+      letter-spacing:.18em;
+      text-transform:uppercase;
+      padding:10px 12px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.28);
+      color:rgba(245,248,255,.82);
+      backdrop-filter: blur(10px);
+      white-space:nowrap;
+    }
+
+    .bottomTitle{
+      max-width:1200px;
+      margin:0 auto;
+      text-align:center;
+      padding-top:clamp(10px,2.6vh,22px);
+    }
+    .bottomTitle .h{
+      font-size:12px;
+      letter-spacing:.22em;
+      text-transform:uppercase;
+      color:rgba(245,248,255,.70);
+    }
+
+    /* ---- MENU (TOP-RIGHT) ---- */
+    .menuCorner{
+      position:fixed;
+      top:12px;
+      right:12px;
+      z-index:9999;
+      pointer-events:auto;
+    }
+    .menuBtn{
+      font:inherit;
+      font-size:11px;
+      letter-spacing:.18em;
+      text-transform:uppercase;
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(0,0,0,.62);
+      color:rgba(245,248,255,.82);
+      cursor:pointer;
+      backdrop-filter:blur(10px);
+    }
+    .menuBtn:hover{
+      background:rgba(0,0,0,.78);
+      border-color:rgba(255,255,255,.18);
+    }
+    .menuList{
+      position:absolute;
+      right:0;
+      top:38px;
+      min-width:220px;
+      padding:10px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(0,0,0,.72);
+      backdrop-filter:blur(14px);
+      display:none;
+    }
+    .menuCorner.open .menuList{ display:block; }
+    .menuList a{
+      display:block;
+      padding:10px 10px;
+      border-radius:10px;
+      font-size:11px;
+      letter-spacing:.16em;
+      text-transform:uppercase;
+      color:rgba(245,248,255,.72);
+      text-decoration:none;
+    }
+    .menuList a:hover{
+      background:rgba(255,255,255,.06);
+      color:rgba(245,248,255,.95);
+    }
+
+    /* ---- MOBILE TUNING ---- */
+    @media (max-width: 980px){
+      .gridLayer{
+        background-size: 96px 96px;
+        opacity:.45;
+      }
+      #currents{ opacity:.48; }
+      .pill{
+        padding:9px 10px;
+        font-size:10px;
+        letter-spacing:.16em;
+      }
+      .tagline{
+        line-height:1.65;
+      }
+      .rail{
+        gap:8px;
+        padding-top:8px;
+      }
+      .bottomTitle{
+        padding-top:14px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- MENU (top-right) -->
+  <div class="menuCorner" id="menuCorner">
+    <button class="menuBtn" id="menuBtn" type="button">MENU</button>
+    <div class="menuList" id="menuList">
+      <a href="preview.html">Earth</a>
+      <a href="planetary.html">Planetary</a>
+      <a href="map.html">Map</a>
+      <a href="capabilities.html">Capabilities</a>
+      <a href="forecasting.html">Strategic Forecasting</a>
+      <a href="maritime.html">Maritime</a>
+      <a href="capital.html">Capital</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </div>
+  </div>
+
+  <!-- LAYERS -->
+  <div class="mapLayer" id="mapLayer"></div>
+  <div class="gridLayer"></div>
+  <canvas id="currents"></canvas>
+  <div class="vignette"></div>
+
+  <!-- CONTENT -->
+  <div class="stage">
+    <div class="content">
+      <div class="topBlock">
+        <div class="brand">GLOBAL WATER FUND</div>
+
+        <h1 class="systemsLine">WATER IS EARTH’S OPERATING SYSTEM.</h1>
+
+        <div class="tagline">
+          We translate basin stress and cross-border dependencies into decision-ready risk signals —
+          and intervention pathways — for governments, investors, and operators.
+        </div>
+
+        <div class="rail" aria-label="Capabilities rail">
+          <div class="pill">BASINS</div>
+          <div class="pill">NETWORKS</div>
+          <div class="pill">CASCADING RISKS</div>
+          <div class="pill">EARLY WARNING</div>
+          <div class="pill">ECOSYSTEMS</div>
+          <div class="pill">HUMAN SECURITY</div>
+        </div>
+      </div>
+
+      <div class="bottomTitle" aria-label="Map subtitle">
+        <div class="h">GLOBAL OPERATING PICTURE — WATER, FOOD, ENERGY, COASTS, SECURITY</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ---- MENU TOGGLE ----
+    (function(){
+      const box = document.getElementById('menuCorner');
+      const btn = document.getElementById('menuBtn');
+
+      btn.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        box.classList.toggle('open');
+      });
+
+      window.addEventListener('click', (e)=>{
+        if(!box.contains(e.target)) box.classList.remove('open');
+      });
+
+      window.addEventListener('keydown', (e)=>{
+        if(e.key === 'Escape') box.classList.remove('open');
+      });
+    })();
+
+    // ---- FADE IN MAP ----
+    (function(){
+      const mapLayer = document.getElementById('mapLayer');
+      // let the browser paint first
+      requestAnimationFrame(()=> requestAnimationFrame(()=> mapLayer.classList.add('on')));
+    })();
+
+    // ---- OCEAN CURRENT SHIMMER (slow, subtle, "glass") ----
+    (function(){
+      const c = document.getElementById('currents');
+      const ctx = c.getContext('2d', { alpha:true });
+
+      let W=0, H=0, dpr=1;
+      function resize(){
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+        W = Math.floor(window.innerWidth);
+        H = Math.floor(window.innerHeight);
+        c.width = Math.floor(W * dpr);
+        c.height = Math.floor(H * dpr);
+        c.style.width = W + "px";
+        c.style.height = H + "px";
+        ctx.setTransform(dpr,0,0,dpr,0,0);
+      }
+      window.addEventListener('resize', resize, { passive:true });
+      resize();
+
+      // A very light noise field built from layered sine bands
+      // (keeps it elegant + performant, no heavy perlin libs)
+      let t = 0;
+
+      function draw(){
+        t += 0.0038; // speed (slow)
+        ctx.clearRect(0,0,W,H);
+
+        // soft global wash to keep shimmer constrained
+        const vign = ctx.createRadialGradient(W*0.55, H*0.45, 0, W*0.55, H*0.45, Math.max(W,H)*0.75);
+        vign.addColorStop(0, "rgba(170,240,255,0.10)");
+        vign.addColorStop(1, "rgba(170,240,255,0.00)");
+        ctx.fillStyle = vign;
+        ctx.fillRect(0,0,W,H);
+
+        // banded currents
+        const bands = 7;
+        for(let i=0;i<bands;i++){
+          const k = i / (bands-1);
+          const yBase = H * (0.18 + 0.64*k);
+          const amp = 14 + 18*(1-k);
+          const freq = 0.006 + 0.004*k;
+          const phase = t*(0.9 + k*0.6);
+
+          ctx.beginPath();
+          const step = 18;
+          for(let x=0; x<=W+step; x+=step){
+            const y = yBase
+              + Math.sin(x*freq + phase) * amp
+              + Math.sin(x*(freq*1.8) - phase*1.1) * (amp*0.35);
+            if(x===0) ctx.moveTo(x,y);
+            else ctx.lineTo(x,y);
+          }
+
+          const alpha = 0.020 + 0.030*(1-k);
+          ctx.strokeStyle = `rgba(170,240,255,${alpha.toFixed(3)})`;
+          ctx.lineWidth = 1.2;
+          ctx.stroke();
+
+          // trailing twin line (glass feel)
+          ctx.globalAlpha = 0.9;
+          ctx.translate(0, 5.5);
+          ctx.strokeStyle = `rgba(255,255,255,${(alpha*0.55).toFixed(3)})`;
+          ctx.stroke();
+          ctx.translate(0, -5.5);
+          ctx.globalAlpha = 1;
+        }
+
+        // micro sparkle is intentionally NOT used (keeps it premium)
+        requestAnimationFrame(draw);
+      }
+
+      // respect reduced motion
+      const prefersReduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if(!prefersReduced) draw();
+    })();
+  </script>
+</body>
+</html>
+
