@@ -107,11 +107,9 @@
       .heroText{ min-height: 88vh; padding: 22px; }
     }
   </style>
-
 </head>
 
 <body>
-  
   <section class="stage" id="hero">
     <canvas id="globe"></canvas>
 
@@ -497,6 +495,12 @@
 
 
     
-  </script>
+  <script>
+  let cancel=false;
+  ['wheel','touchstart','keydown','mousedown'].forEach(e =>
+    window.addEventListener(e,()=>cancel=true,{once:true,passive:true})
+  );
+  setTimeout(()=>{ if(!cancel) window.location.href='planetary.html'; }, 5200);
+</script>
  
 </body>
