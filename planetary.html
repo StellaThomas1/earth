@@ -96,16 +96,20 @@
     }
 
     .revealLine{
-      margin-top:18px;
-      font-size:12px;
-      letter-spacing:.20em;
-      text-transform:uppercase;
-      color:rgba(245,248,255,.64);
-      opacity:0;
-      transform:translateY(8px);
-     
-    }
-    .revealLine.on{ opacity:1; transform:translateY(0); }
+  margin-top:18px;
+  font-size:12px;
+  letter-spacing:.20em;
+  text-transform:uppercase;
+  color:rgba(245,248,255,.64);
+  opacity:0;
+  transform:translateY(8px);
+  transition: opacity 1.4s ease, transform 1.4s ease;
+}
+.revealLine.on{
+  opacity:1;
+  transform:translateY(0);
+}
+
 
     .viz{
       width:min(84vh,880px);
