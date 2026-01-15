@@ -1,420 +1,338 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Global Water Fund — Map</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Global Water Fund — Systems Map</title>
 
-  <style>
-    :root{
-      --bg:#05060a;
-      --ink:rgba(245,248,255,.92);
-      --muted:rgba(245,248,255,.72);
-      --muted2:rgba(245,248,255,.56);
-      --line:rgba(255,255,255,.085);
-      --line2:rgba(255,255,255,.055);
-      --aqua:rgba(170,240,255,.30);
-    }
+<style>
+:root{
+  --bg:#05060a;
+  --bg2:#0b0f1a;
+  --ink:rgba(245,248,255,.92);
+  --muted:rgba(245,248,255,.70);
+  --muted2:rgba(245,248,255,.50);
+  --grid:rgba(245,248,255,.06);
+  --grid2:rgba(245,248,255,.035);
+}
 
-    html,body{
-      margin:0;
-      height:100%;
-      background:var(--bg);
-      color:var(--ink);
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      -webkit-text-size-adjust:100%;
-      overflow-x:hidden;
-    }
+html,body{
+  margin:0;
+  height:100%;
+  background: radial-gradient(1200px 900px at 60% 30%, var(--bg2) 0%, var(--bg) 60%, #04050a 100%);
+  color:var(--ink);
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  overflow:hidden;
+}
 
-    /* ---- LAYERS ---- */
-    .stage{
-      position:relative;
-      min-height:100vh;
-      min-height:100svh;
-      min-height:100dvh;
-      overflow:hidden;
-    }
+/* BASE MAP */
+.mapLayer{
+  position:fixed;
+  inset:0;
+  background:url("world.topo.bathy.200412.3x5400x2700.jpg") center/cover no-repeat;
+  filter: contrast(1.05) saturate(.95) brightness(.6);
+  opacity:0;
+  transform:translateY(14px);
+  transition:opacity 2s ease, transform 2s ease, filter 2s ease;
+}
+.mapLayer.on{
+  opacity:.92;
+  transform:translateY(0);
+  filter: contrast(1.05) saturate(1) brightness(.78);
+}
 
-    /* Fullscreen map image */
-    .mapLayer{
-      position:fixed;
-      inset:0;
-      z-index:0;
-      pointer-events:none;
-      background-image:url("world.topo.bathy.200412.3x5400x2700.jpg");
-      background-size:cover;
-      background-position:center;
-      background-repeat:no-repeat;
+/* GRID */
+.grid{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  background:
+    repeating-linear-gradient(90deg, transparent 0, transparent 84px, var(--grid) 85px, transparent 86px),
+    repeating-linear-gradient(0deg,  transparent 0, transparent 58px, var(--grid2) 59px, transparent 60px);
+}
 
-      /* cinematic grading */
-      filter: contrast(1.06) saturate(0.95) brightness(0.78);
-      opacity:0;
-      transform: translateY(12px);
-      transition: opacity 1.4s ease, transform 1.4s ease, filter 1.4s ease;
-    }
-    .mapLayer.on{
-      opacity:0.92;
-      transform:translateY(0);
-      filter: contrast(1.06) saturate(0.98) brightness(0.82);
-    }
+/* VIGNETTE */
+.vignette{
+  position:fixed;
+  inset:0;
+  background:radial-gradient(900px 650px at 50% 45%, rgba(0,0,0,0), rgba(0,0,0,.35), rgba(0,0,0,.75));
+}
 
-    /* Subtle engineered grid */
-    .gridLayer{
-      position:fixed;
-      inset:0;
-      z-index:1;
-      pointer-events:none;
-      opacity:.55;
-      background:
-        linear-gradient(to right, var(--line) 1px, transparent 1px),
-        linear-gradient(to bottom, var(--line2) 1px, transparent 1px);
-      background-size: 84px 84px;
-      mix-blend-mode: overlay;
-      transform: translateZ(0);
-    }
+/* WATER FLOW */
+.water{
+  position:fixed;
+  inset:-12%;
+  pointer-events:none;
+  background:
+    linear-gradient(120deg, transparent, rgba(120,200,255,.08), transparent),
+    radial-gradient(900px 520px at 30% 55%, rgba(120,200,255,.05), transparent),
+    radial-gradient(760px 460px at 70% 40%, rgba(120,200,255,.04), transparent);
+  mix-blend-mode:screen;
+  opacity:.32;
+  animation:ocean 22s ease-in-out infinite;
+}
 
-    /* Vignette + mood */
-    .vignette{
-      position:fixed;
-      inset:0;
-      z-index:4;
-      pointer-events:none;
-      background:
-        radial-gradient(1100px 800px at 55% 35%, rgba(0,0,0,.08) 0%, rgba(0,0,0,.55) 62%, rgba(0,0,0,.82) 100%),
-        radial-gradient(900px 680px at 40% 70%, rgba(20,30,55,.22) 0%, rgba(0,0,0,0) 60%);
-    }
+@keyframes ocean{
+  0%{transform:translate(-3%,-2%);}
+  50%{transform:translate(3%,2%);}
+  100%{transform:translate(-3%,-2%);}
+}
 
-    /* Animated currents canvas */
-    #currents{
-      position:fixed;
-      inset:0;
-      z-index:3;
-      pointer-events:none;
-      opacity:.55;
-      mix-blend-mode: screen;
-    }
+/* CITY LIGHTS */
+#lights{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  mix-blend-mode:screen;
+  opacity:.55;
+}
 
-    /* ---- CONTENT ---- */
-    .content{
-      position:relative;
-      z-index:10;
-      min-height:100vh;
-      padding:
-        calc(18px + env(safe-area-inset-top))
-        calc(18px + env(safe-area-inset-right))
-        calc(18px + env(safe-area-inset-bottom))
-        calc(18px + env(safe-area-inset-left
+/* BASINS */
+#basins{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+}
+.basin{
+  fill:none;
+  stroke:rgba(120,220,255,.35);
+  stroke-width:1.4;
+  stroke-dasharray:6 10;
+  animation:flow 30s linear infinite;
+}
+@keyframes flow{ to{ stroke-dashoffset:-500; } }
 
-                              );
-      display:flex;
-      flex-direction:column;
-      justify-content:flex-start;
-      gap:clamp(14px,2.2vh,22px);
-      pointer-events:none; /* content is display-only; menu will override */
-    }
+/* TEXT */
+.topbar{
+  position:fixed;
+  top:14px;
+  width:100%;
+  text-align:center;
+}
+.brand{
+  font-size:11px;
+  letter-spacing:.26em;
+  text-transform:uppercase;
+  color:var(--muted2);
+}
+.systems{
+  margin-top:10px;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:var(--muted);
+}
 
-    .topBlock{
-      max-width:1100px;
-      margin:0 auto;
-      text-align:center;
-      padding-top:clamp(6px,1.8vh,14px);
-    }
+.center{
+  position:fixed;
+  inset:0;
+  display:grid;
+  place-items:center;
+  text-align:center;
+}
+.center h1{
+  font-size:48px;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+}
+.center p{
+  max-width:700px;
+  margin:20px auto;
+  color:var(--muted);
+}
 
-    .brand{
-      font-size:12px;
-      letter-spacing:.22em;
-      text-transform:uppercase;
-      color:var(--muted2);
-      margin-bottom:10px;
-    }
+.bottom{
+  position:fixed;
+  bottom:0;
+  width:100%;
+  text-align:center;
+  font-size:11px;
+  letter-spacing:.2em;
+  color:var(--muted2);
+  padding:16px;
+}
+</style>
+  
+  /* ===== Corner MENU (Map) ===== */
+.cornerMenu{
+  position:fixed;
+  top:14px; right:14px;
+  z-index:9999;
+  pointer-events:auto;
+}
+.menuPill{
+  font:inherit;
+  font-size:11px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  padding:10px 12px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(0,0,0,.30);
+  color:rgba(245,248,255,.82);
+  cursor:pointer;
+  backdrop-filter:blur(10px);
+}
+.menuPill:hover{ background:rgba(0,0,0,.46); border-color:rgba(255,255,255,.22); }
 
-    .systemsLine{
-      font-weight:800;
-      letter-spacing:.16em;
-      text-transform:uppercase;
-      font-size:clamp(14px,1.55vw,20px);
-      line-height:1.2;
-      margin:0 0 10px 0;
-    }
+.menuDrop{
+  position:absolute;
+  right:0;
+  top:44px;
+  min-width:230px;
+  padding:10px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(0,0,0,.65);
+  backdrop-filter:blur(14px);
+  display:none;
+}
+.cornerMenu.open .menuDrop{ display:block; }
 
-    .tagline{
-      font-size:clamp(13px,1.05vw,15px);
-      line-height:1.75;
-      color:var(--muted);
-      max-width:920px;
-      margin:0 auto;
-    }
+.menuDrop a{
+  display:block;
+  padding:10px 10px;
+  border-radius:10px;
+  font-size:11px;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:rgba(245,248,255,.72);
+  text-decoration:none;
+}
+.menuDrop a:hover{
+  background:rgba(255,255,255,.06);
+  color:rgba(245,248,255,.95);
+}
 
-    /* Capability rail */
-    .rail{
-      max-width:1200px;
-      margin:0 auto;
-      display:flex;
-      flex-wrap:wrap;
-      justify-content:center;
-      gap:10px;
-      padding:10px 0 0 0;
-    }
-    .pill{
-      font-size:11px;
-      letter-spacing:.18em;
-      text-transform:uppercase;
-      padding:10px 12px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.14);
-      background:rgba(0,0,0,.28);
-      color:rgba(245,248,255,.82);
-      backdrop-filter: blur(10px);
-      white-space:nowrap;
-    }
-
-    .bottomTitle{
-      max-width:1200px;
-      margin:0 auto;
-      text-align:center;
-      padding-top:clamp(10px,2.6vh,22px);
-    }
-    .bottomTitle .h{
-      font-size:12px;
-      letter-spacing:.22em;
-      text-transform:uppercase;
-      color:rgba(245,248,255,.70);
-    }
-
-    /* ---- MENU (TOP-RIGHT) ---- */
-    .menuCorner{
-      position:fixed;
-      top:12px;
-      right:12px;
-      z-index:9999;
-      pointer-events:auto;
-    }
-    .menuBtn{
-      font:inherit;
-      font-size:11px;
-      letter-spacing:.18em;
-      text-transform:uppercase;
-      padding:8px 10px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(0,0,0,.62);
-      color:rgba(245,248,255,.82);
-      cursor:pointer;
-      backdrop-filter:blur(10px);
-    }
-    .menuBtn:hover{
-      background:rgba(0,0,0,.78);
-      border-color:rgba(255,255,255,.18);
-    }
-    .menuList{
-      position:absolute;
-      right:0;
-      top:38px;
-      min-width:220px;
-      padding:10px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(0,0,0,.72);
-      backdrop-filter:blur(14px);
-      display:none;
-    }
-    .menuCorner.open .menuList{ display:block; }
-    .menuList a{
-      display:block;
-      padding:10px 10px;
-      border-radius:10px;
-      font-size:11px;
-      letter-spacing:.16em;
-      text-transform:uppercase;
-      color:rgba(245,248,255,.72);
-      text-decoration:none;
-    }
-    .menuList a:hover{
-      background:rgba(255,255,255,.06);
-      color:rgba(245,248,255,.95);
-    }
-
-    /* ---- MOBILE TUNING ---- */
-    @media (max-width: 980px){
-      .gridLayer{
-        background-size: 96px 96px;
-        opacity:.45;
-      }
-      #currents{ opacity:.48; }
-      .pill{
-        padding:9px 10px;
-        font-size:10px;
-        letter-spacing:.16em;
-      }
-      .tagline{
-        line-height:1.65;
-      }
-      .rail{
-        gap:8px;
-        padding-top:8px;
-      }
-      .bottomTitle{
-        padding-top:14px;
-      }
-    }
-  </style>
 </head>
 
 <body>
-  <!-- MENU (top-right) -->
-  <div class="menuCorner" id="menuCorner">
-    <button class="menuBtn" id="menuBtn" type="button">MENU</button>
-    <div class="menuList" id="menuList">
-      <a href="preview.html">Earth</a>
-      <a href="planetary.html">Planetary</a>
-      <a href="map.html">Map</a>
-      <a href="capabilities.html">Capabilities</a>
-      <a href="forecasting.html">Strategic Forecasting</a>
-      <a href="maritime.html">Maritime</a>
-      <a href="capital.html">Capital</a>
-      <a href="about.html">About</a>
-      <a href="contact.html">Contact</a>
-    </div>
+  <!-- MENU dropdown -->
+<div class="cornerMenu" id="cornerMenu">
+  <button class="menuPill" id="menuBtn" type="button">MENU</button>
+  <div class="menuDrop" id="menuDrop" role="menu" aria-label="Site menu">
+    <a href="preview.html">Earth</a>
+    <a href="planetary.html">Stability</a>
+    <a href="map.html">Map</a>
+    <a href="capabilities.html">Capabilities</a>
+    <a href="forecasting.html">Strategic Forecasting</a>
+    <a href="maritime.html">Maritime</a>
+    <a href="capital.html">Capital</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+</div>
+
+
+<div id="map" class="mapLayer"></div>
+<div class="grid"></div>
+<div class="vignette"></div>
+<div class="water"></div>
+<canvas id="lights"></canvas>
+
+<svg id="basins" viewBox="0 0 1000 500" preserveAspectRatio="none">
+  <path class="basin" d="M120,210 C300,140 500,140 700,210"/>
+  <path class="basin" d="M200,350 C350,300 600,300 800,350"/>
+</svg>
+
+<div class="topbar">
+  <div class="brand">GLOBAL WATER FUND</div>
+  <div class="systems">BASINS • NETWORKS • CASCADING RISKS • EARLY WARNING • ECOSYSTEMS • HUMAN SECURITY</div>
+</div>
+
+<div class="center">
+  <div>
+    <h1>WATER IS EARTH’S OPERATING SYSTEM</h1>
+    <p>We translate basin stress and cross-border dependencies into decision-ready risk signals for governments, investors and operators.</p>
   </div>
+</div>
 
-  <!-- LAYERS -->
-  <div class="mapLayer" id="mapLayer"></div>
-  <div class="gridLayer"></div>
-  <canvas id="currents"></canvas>
-  <div class="vignette"></div>
+<div class="bottom">
+  GLOBAL OPERATING PICTURE — WATER, FOOD, ENERGY, COASTS, SECURITY
+</div>
+/* ===== Headline: match opening feel (tracking + calmer weight) ===== */
+.big{
+  letter-spacing:.16em !important;  /* was .12-ish; this matches your opening vibe */
+  font-weight:600 !important;
+  margin-top:14px !important;
+}
 
-  <!-- CONTENT -->
-  <div class="stage">
-    <div class="content">
-      <div class="topBlock">
-        <div class="brand">GLOBAL WATER FUND</div>
+/* ===== Capabilities sentence under headline ===== */
+.sub{
+  font-size:clamp(13px, 1.2vw, 17px) !important;
+  line-height:1.7 !important;
+  margin-top:18px !important;  /* more separation from headline */
+  color:rgba(245,248,255,.72) !important;
+  max-width:72ch !important;
+}
 
-        <h1 class="systemsLine">WATER IS EARTH’S OPERATING SYSTEM.</h1>
+/* ===== The cascading risks bar: better type + moved down a touch ===== */
+.tagline{
+  margin-top:22px !important;      /* moves it down */
+  padding-top:2px !important;
+  font-size:12px !important;
+  letter-spacing:.14em !important; /* less “shouty,” more museum-grade */
+  color:rgba(245,248,255,.56) !important;
+}
 
-        <div class="tagline">
-          We translate basin stress and cross-border dependencies into decision-ready risk signals —
-          and intervention pathways — for governments, investors, and operators.
-        </div>
+/* On mobile: keep it readable but not busy */
+@media (max-width:520px){
+  .big{ letter-spacing:.14em !important; }
+  .sub{ margin-top:16px !important; font-size:14px !important; }
+  .tagline{ margin-top:18px !important; font-size:11px !important; }
+}
 
-        <div class="rail" aria-label="Capabilities rail">
-          <div class="pill">BASINS</div>
-          <div class="pill">NETWORKS</div>
-          <div class="pill">CASCADING RISKS</div>
-          <div class="pill">EARLY WARNING</div>
-          <div class="pill">ECOSYSTEMS</div>
-          <div class="pill">HUMAN SECURITY</div>
-        </div>
-      </div>
+<script>
+const map=document.getElementById("map");
+const img=new Image();
+img.src="world.topo.bathy.200412.3x5400x2700.jpg";
+img.onload=()=>map.classList.add("on");
 
-      <div class="bottomTitle" aria-label="Map subtitle">
-        <div class="h">GLOBAL OPERATING PICTURE — WATER, FOOD, ENERGY, COASTS, SECURITY</div>
-      </div>
-    </div>
-  </div>
+// City lights
+const c=document.getElementById("lights");
+const ctx=c.getContext("2d");
+function resize(){
+  const d=Math.min(devicePixelRatio||1,2);
+  c.width=innerWidth*d;
+  c.height=innerHeight*d;
+  c.style.width=innerWidth+"px";
+  c.style.height=innerHeight+"px";
+  ctx.setTransform(d,0,0,d,0,0);
+}
+resize(); window.onresize=resize;
 
-  <script>
-    // ---- MENU TOGGLE ----
-    (function(){
-      const box = document.getElementById('menuCorner');
-      const btn = document.getElementById('menuBtn');
+function drawLights(){
+  ctx.clearRect(0,0,innerWidth,innerHeight);
+  const clusters=[[22,28],[48,26],[62,34],[74,28],[30,42],[78,44]];
+  clusters.forEach(p=>{
+    for(let i=0;i<800;i++){
+      const x=(p[0]+(Math.random()-.5)*8)*innerWidth/100;
+      const y=(p[1]+(Math.random()-.5)*6)*innerHeight/100;
+      ctx.fillStyle="rgba(255,200,140,.08)";
+      ctx.fillRect(x,y,1,1);
+    }
+  });
+}
+drawLights();
+</script>
+<script>
+  (function(){
+    const menu = document.getElementById('cornerMenu');
+    const btn  = document.getElementById('menuBtn');
 
-      btn.addEventListener('click', (e)=>{
-        e.stopPropagation();
-        box.classList.toggle('open');
-      });
+    btn.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      menu.classList.toggle('open');
+    });
 
-      window.addEventListener('click', (e)=>{
-        if(!box.contains(e.target)) box.classList.remove('open');
-      });
+    window.addEventListener('click', (e)=>{
+      if (!menu.contains(e.target)) menu.classList.remove('open');
+    });
 
-      window.addEventListener('keydown', (e)=>{
-        if(e.key === 'Escape') box.classList.remove('open');
-      });
-    })();
+    window.addEventListener('keydown', (e)=>{
+      if (e.key === 'Escape') menu.classList.remove('open');
+    });
+  })();
+</script>
 
-    // ---- FADE IN MAP ----
-    (function(){
-      const mapLayer = document.getElementById('mapLayer');
-      // let the browser paint first
-      requestAnimationFrame(()=> requestAnimationFrame(()=> mapLayer.classList.add('on')));
-    })();
-
-    // ---- OCEAN CURRENT SHIMMER (slow, subtle, "glass") ----
-    (function(){
-      const c = document.getElementById('currents');
-      const ctx = c.getContext('2d', { alpha:true });
-
-      let W=0, H=0, dpr=1;
-      function resize(){
-        dpr = Math.min(window.devicePixelRatio || 1, 2);
-        W = Math.floor(window.innerWidth);
-        H = Math.floor(window.innerHeight);
-        c.width = Math.floor(W * dpr);
-        c.height = Math.floor(H * dpr);
-        c.style.width = W + "px";
-        c.style.height = H + "px";
-        ctx.setTransform(dpr,0,0,dpr,0,0);
-      }
-      window.addEventListener('resize', resize, { passive:true });
-      resize();
-
-      // A very light noise field built from layered sine bands
-      // (keeps it elegant + performant, no heavy perlin libs)
-      let t = 0;
-
-      function draw(){
-        t += 0.0038; // speed (slow)
-        ctx.clearRect(0,0,W,H);
-
-        // soft global wash to keep shimmer constrained
-        const vign = ctx.createRadialGradient(W*0.55, H*0.45, 0, W*0.55, H*0.45, Math.max(W,H)*0.75);
-        vign.addColorStop(0, "rgba(170,240,255,0.10)");
-        vign.addColorStop(1, "rgba(170,240,255,0.00)");
-        ctx.fillStyle = vign;
-        ctx.fillRect(0,0,W,H);
-
-        // banded currents
-        const bands = 7;
-        for(let i=0;i<bands;i++){
-          const k = i / (bands-1);
-          const yBase = H * (0.18 + 0.64*k);
-          const amp = 14 + 18*(1-k);
-          const freq = 0.006 + 0.004*k;
-          const phase = t*(0.9 + k*0.6);
-
-          ctx.beginPath();
-          const step = 18;
-          for(let x=0; x<=W+step; x+=step){
-            const y = yBase
-              + Math.sin(x*freq + phase) * amp
-              + Math.sin(x*(freq*1.8) - phase*1.1) * (amp*0.35);
-            if(x===0) ctx.moveTo(x,y);
-            else ctx.lineTo(x,y);
-          }
-
-          const alpha = 0.020 + 0.030*(1-k);
-          ctx.strokeStyle = `rgba(170,240,255,${alpha.toFixed(3)})`;
-          ctx.lineWidth = 1.2;
-          ctx.stroke();
-
-          // trailing twin line (glass feel)
-          ctx.globalAlpha = 0.9;
-          ctx.translate(0, 5.5);
-          ctx.strokeStyle = `rgba(255,255,255,${(alpha*0.55).toFixed(3)})`;
-          ctx.stroke();
-          ctx.translate(0, -5.5);
-          ctx.globalAlpha = 1;
-        }
-
-        // micro sparkle is intentionally NOT used (keeps it premium)
-        requestAnimationFrame(draw);
-      }
-
-      // respect reduced motion
-      const prefersReduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
-      if(!prefersReduced) draw();
-    })();
-  </script>
 </body>
 </html>
-
+</html>
