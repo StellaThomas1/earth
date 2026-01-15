@@ -489,18 +489,15 @@
         renderer.render(scene, camera);
       }
     })();
+  </script>
+  /* Kill any line/grid overlays on the opener (mobile + half-size) */
+.gridLines, .wireframe, .latlon, .debugLines, .linesLayer, .overlayLines{
+  display:none !important;
+}
 
-
-
-
-
-    
-  <script>
-  let cancel=false;
-  ['wheel','touchstart','keydown','mousedown'].forEach(e =>
-    window.addEventListener(e,()=>cancel=true,{once:true,passive:true})
-  );
-  setTimeout(()=>{ if(!cancel) window.location.href='planetary.html'; }, 5200);
-</script>
- 
+/* If the lines are drawn on a canvas, hide only the line canvas */
+canvas#lines, canvas.lines, canvas.grid, canvas.wire{
+  display:none !important;
+}
 </body>
+</html>
