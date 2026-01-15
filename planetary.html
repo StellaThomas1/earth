@@ -572,6 +572,20 @@
       }
     });
   })();
-  </script>
+    
+  <script>
+(function(){
+  const box = document.getElementById("cornerMenu");
+  const btn = document.getElementById("menuBtn");
+
+  btn.onclick = (e)=>{
+    e.stopPropagation();
+    box.classList.toggle("open");
+  };
+
+  window.onclick = ()=> box.classList.remove("open");
+})();
+</script>
+
 </body>
 </html>
