@@ -1,224 +1,196 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Global Water Fund — Systems Map</title>
 
 <style>
 :root{
+  --bg:#05060a;
+  --bg2:#0b0f1a;
   --ink:rgba(245,248,255,.92);
-  --muted:rgba(245,248,255,.72);
-  --muted2:rgba(245,248,255,.56);
+  --muted:rgba(245,248,255,.70);
+  --muted2:rgba(245,248,255,.50);
+  --grid:rgba(245,248,255,.06);
+  --grid2:rgba(245,248,255,.035);
 }
 
 html,body{
-  height:100%;
   margin:0;
-  background: radial-gradient(1200px 900px at 55% 28%, rgba(18,24,44,.85) 0%, rgba(8,10,16,.95) 55%, #04050a 100%);
+  height:100%;
+  background: radial-gradient(1200px 900px at 60% 30%, var(--bg2) 0%, var(--bg) 60%, #04050a 100%);
   color:var(--ink);
   font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
   overflow:hidden;
 }
 
-/* ================= MAP IMAGE ================= */
+/* BASE MAP */
 .mapLayer{
   position:fixed;
   inset:0;
   background:url("world.topo.bathy.200412.3x5400x2700.jpg") center/cover no-repeat;
-  filter:contrast(1.05) saturate(.95) brightness(.78);
+  filter: contrast(1.05) saturate(.95) brightness(.6);
   opacity:0;
-  transition:opacity 1.6s ease;
-  z-index:0;
+  transform:translateY(14px);
+  transition:opacity 2s ease, transform 2s ease, filter 2s ease;
 }
-.mapLayer.on{ opacity:.95; }
-
-/* ================= FX CANVAS ================= */
-#fx{
-  position:fixed;
-  inset:0;
-  z-index:1;
-  pointer-events:none;
-  mix-blend-mode:screen;
-}
-
-/* ================= CONTENT ================= */
-.stage{
-  position:fixed;
-  inset:0;
-  z-index:2;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:calc(72px + env(safe-area-inset-top)) 20px 20px;
-  pointer-events:none;
-}
-
-.card{
-  max-width:1080px;
-  width:94vw;
-  opacity:0;
-  transform:translateY(10px);
-  transition
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-<title>Global Water Fund — Systems Map</title>
-
-<style>
-:root{
-  --ink:rgba(245,248,255,.92);
-  --muted:rgba(245,248,255,.72);
-  --muted2:rgba(245,248,255,.56);
-}
-
-html,body{
-  height:100%;
-  margin:0;
-  background: radial-gradient(1200px 900px at 55% 28%, rgba(18,24,44,.85) 0%, rgba(8,10,16,.95) 55%, #04050a 100%);
-  color:var(--ink);
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  overflow:hidden;
-}
-
-/* ================= MAP IMAGE ================= */
-.mapLayer{
-  position:fixed;
-  inset:0;
-  background:url("world.topo.bathy.200412.3x5400x2700.jpg") center/cover no-repeat;
-  filter:contrast(1.05) saturate(.95) brightness(.78);
-  opacity:0;
-  transition:opacity 1.6s ease;
-  z-index:0;
-}
-.mapLayer.on{ opacity:.95; }
-
-/* ================= FX CANVAS ================= */
-#fx{
-  position:fixed;
-  inset:0;
-  z-index:1;
-  pointer-events:none;
-  mix-blend-mode:screen;
-}
-
-/* ================= CONTENT ================= */
-.stage{
-  position:fixed;
-  inset:0;
-  z-index:2;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:calc(72px + env(safe-area-inset-top)) 20px 20px;
-  pointer-events:none;
-}
-
-.card{
-  max-width:1080px;
-  width:94vw;
-  opacity:0;
-  transform:translateY(10px);
-  transition
-: opacity 1.4s ease, transform 1.4s ease;
-}
-.card.on{
-  opacity:1;
+.mapLayer.on{
+  opacity:.92;
   transform:translateY(0);
+  filter: contrast(1.05) saturate(1) brightness(.78);
 }
 
+/* GRID */
+.grid{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  background:
+    repeating-linear-gradient(90deg, transparent 0, transparent 84px, var(--grid) 85px, transparent 86px),
+    repeating-linear-gradient(0deg,  transparent 0, transparent 58px, var(--grid2) 59px, transparent 60px);
+}
+
+/* VIGNETTE */
+.vignette{
+  position:fixed;
+  inset:0;
+  background:radial-gradient(900px 650px at 50% 45%, rgba(0,0,0,0), rgba(0,0,0,.35), rgba(0,0,0,.75));
+}
+
+/* WATER FLOW */
+.water{
+  position:fixed;
+  inset:-12%;
+  pointer-events:none;
+  background:
+    linear-gradient(120deg, transparent, rgba(120,200,255,.08), transparent),
+    radial-gradient(900px 520px at 30% 55%, rgba(120,200,255,.05), transparent),
+    radial-gradient(760px 460px at 70% 40%, rgba(120,200,255,.04), transparent);
+  mix-blend-mode:screen;
+  opacity:.32;
+  animation:ocean 22s ease-in-out infinite;
+}
+
+@keyframes ocean{
+  0%{transform:translate(-3%,-2%);}
+  50%{transform:translate(3%,2%);}
+  100%{transform:translate(-3%,-2%);}
+}
+
+/* CITY LIGHTS */
+#lights{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  mix-blend-mode:screen;
+  opacity:.55;
+}
+
+/* BASINS */
+#basins{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+}
+.basin{
+  fill:none;
+  stroke:rgba(120,220,255,.35);
+  stroke-width:1.4;
+  stroke-dasharray:6 10;
+  animation:flow 30s linear infinite;
+}
+@keyframes flow{ to{ stroke-dashoffset:-500; } }
+
+/* TEXT */
+.topbar{
+  position:fixed;
+  top:14px;
+  width:100%;
+  text-align:center;
+}
 .brand{
-  font-size:12px;
-  letter-spacing:.22em;
+  font-size:11px;
+  letter-spacing:.26em;
   text-transform:uppercase;
   color:var(--muted2);
 }
-
-h1{
-  margin:6px 0 0 0;
-  font-size:clamp(18px,3vw,30px);
-  font-weight:800;
-  letter-spacing:.16em;
-  text-transform:uppercase;
-}
-
-.pills{
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
+.systems{
   margin-top:10px;
-}
-
-.pill{
-  font-size:11px;
-  letter-spacing:.16em;
+  letter-spacing:.2em;
   text-transform:uppercase;
-  padding:9px 12px;
-  border-radius:999px;
-  border:1px solid rgba(255,255,255,.14);
-  background:rgba(0,0,0,.22);
-  color:rgba(245,248,255,.78);
-  backdrop-filter:blur(10px);
-}
-
-.copy{
-  margin-top:14px;
-  max-width:900px;
-  font-size:clamp(13px,1.4vw,15px);
-  line-height:1.8;
   color:var(--muted);
 }
 
-.footer{
-  margin-top:14px;
-  font-size:12px;
-  letter-spacing:.20em;
+.center{
+  position:fixed;
+  inset:0;
+  display:grid;
+  place-items:center;
+  text-align:center;
+}
+.center h1{
+  font-size:48px;
+  letter-spacing:.16em;
   text-transform:uppercase;
-  color:rgba(245,248,255,.62);
+}
+.center p{
+  max-width:700px;
+  margin:20px auto;
+  color:var(--muted);
 }
 
-/* ================= MENU ================= */
-.menuCorner{
+.bottom{
   position:fixed;
-  top:12px;
-  right:12px;
+  bottom:0;
+  width:100%;
+  text-align:center;
+  font-size:11px;
+  letter-spacing:.2em;
+  color:var(--muted2);
+  padding:16px;
+}
+</style>
+  
+  /* ===== Corner MENU (Map) ===== */
+.cornerMenu{
+  position:fixed;
+  top:14px; right:14px;
   z-index:9999;
   pointer-events:auto;
 }
-
-.menuBtn{
+.menuPill{
+  font:inherit;
   font-size:11px;
   letter-spacing:.18em;
   text-transform:uppercase;
-  padding:8px 10px;
+  padding:10px 12px;
   border-radius:999px;
-  border:1px solid rgba(255,255,255,.12);
-  background:rgba(0,0,0,.65);
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(0,0,0,.30);
   color:rgba(245,248,255,.82);
   cursor:pointer;
+  backdrop-filter:blur(10px);
 }
+.menuPill:hover{ background:rgba(0,0,0,.46); border-color:rgba(255,255,255,.22); }
 
-.menuBtn:hover{ background:rgba(0,0,0,.82); }
-
-.menuList{
+.menuDrop{
   position:absolute;
   right:0;
-  top:38px;
-  min-width:220px;
+  top:44px;
+  min-width:230px;
   padding:10px;
   border-radius:14px;
-  background:rgba(0,0,0,.75);
-  border:1px solid rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(0,0,0,.65);
+  backdrop-filter:blur(14px);
   display:none;
 }
+.cornerMenu.open .menuDrop{ display:block; }
 
-.menuCorner.open .menuList{ display:block; }
-
-.menuList a{
+.menuDrop a{
   display:block;
-  padding:10px;
+  padding:10px 10px;
   border-radius:10px;
   font-size:11px;
   letter-spacing:.16em;
@@ -226,117 +198,141 @@ h1{
   color:rgba(245,248,255,.72);
   text-decoration:none;
 }
-
-.menuList a:hover{
+.menuDrop a:hover{
   background:rgba(255,255,255,.06);
-  color:white;
+  color:rgba(245,248,255,.95);
 }
 
-/* ================= MOBILE ================= */
-@media(max-width:760px){
-  .stage{
-    align-items:flex-start;
-    padding-top:calc(90px + env(safe-area-inset-top));
-  }
-}
-</style>
 </head>
 
 <body>
-
-<div class="mapLayer" id="map"></div>
-<canvas id="fx"></canvas>
-
-<div class="menuCorner" id="menu">
-  <button class="menuBtn">MENU</button>
-  <div class="menuList">
+  <!-- MENU dropdown -->
+<div class="cornerMenu" id="cornerMenu">
+  <button class="menuPill" id="menuBtn" type="button">MENU</button>
+  <div class="menuDrop" id="menuDrop" role="menu" aria-label="Site menu">
     <a href="preview.html">Earth</a>
-    <a href="planetary.html">Planetary</a>
+    <a href="planetary.html">Stability</a>
     <a href="map.html">Map</a>
     <a href="capabilities.html">Capabilities</a>
-    <a href="forecasting.html">Forecasting</a>
+    <a href="forecasting.html">Strategic Forecasting</a>
     <a href="maritime.html">Maritime</a>
     <a href="capital.html">Capital</a>
     <a href="about.html">About</a>
     <a href="contact.html">Contact</a>
+</div>
+
+
+<div id="map" class="mapLayer"></div>
+<div class="grid"></div>
+<div class="vignette"></div>
+<div class="water"></div>
+<canvas id="lights"></canvas>
+
+<svg id="basins" viewBox="0 0 1000 500" preserveAspectRatio="none">
+  <path class="basin" d="M120,210 C300,140 500,140 700,210"/>
+  <path class="basin" d="M200,350 C350,300 600,300 800,350"/>
+</svg>
+
+<div class="topbar">
+  <div class="brand">GLOBAL WATER FUND</div>
+  <div class="systems">BASINS • NETWORKS • CASCADING RISKS • EARLY WARNING • ECOSYSTEMS • HUMAN SECURITY</div>
+</div>
+
+<div class="center">
+  <div>
+    <h1>WATER IS EARTH’S OPERATING SYSTEM</h1>
+    <p>We translate basin stress and cross-border dependencies into decision-ready risk signals for governments, investors and operators.</p>
   </div>
 </div>
 
-<div class="stage">
-  <div class="card" id="card">
-    <div class="brand">GLOBAL WATER FUND</div>
-    <h1>Systems Risk Map</h1>
-
-    <div class="pills">
-      <div class="pill">Water Stress</div>
-      <div class="pill">Food Systems</div>
-      <div class="pill">Energy</div>
-      <div class="pill">Migration</div>
-      <div class="pill">Geopolitical Risk</div>
-    </div>
-
-    <div class="copy">
-      This systems map visualizes how water stress propagates through food,
-      energy, health, migration, and geopolitical stability — revealing
-      cascading risk pathways before shocks occur.
-    </div>
-
-    <div class="footer">
-      From signal to strategy
-    </div>
-  </div>
+<div class="bottom">
+  GLOBAL OPERATING PICTURE — WATER, FOOD, ENERGY, COASTS, SECURITY
 </div>
+/* ===== Headline: match opening feel (tracking + calmer weight) ===== */
+.big{
+  letter-spacing:.16em !important;  /* was .12-ish; this matches your opening vibe */
+  font-weight:600 !important;
+  margin-top:14px !important;
+}
+
+/* ===== Capabilities sentence under headline ===== */
+.sub{
+  font-size:clamp(13px, 1.2vw, 17px) !important;
+  line-height:1.7 !important;
+  margin-top:18px !important;  /* more separation from headline */
+  color:rgba(245,248,255,.72) !important;
+  max-width:72ch !important;
+}
+
+/* ===== The cascading risks bar: better type + moved down a touch ===== */
+.tagline{
+  margin-top:22px !important;      /* moves it down */
+  padding-top:2px !important;
+  font-size:12px !important;
+  letter-spacing:.14em !important; /* less “shouty,” more museum-grade */
+  color:rgba(245,248,255,.56) !important;
+}
+
+/* On mobile: keep it readable but not busy */
+@media (max-width:520px){
+  .big{ letter-spacing:.14em !important; }
+  .sub{ margin-top:16px !important; font-size:14px !important; }
+  .tagline{ margin-top:18px !important; font-size:11px !important; }
+}
 
 <script>
-/* Fade-in */
-setTimeout(()=>{
-  document.getElementById('map').classList.add('on');
-  document.getElementById('card').classList.add('on');
-},200);
+const map=document.getElementById("map");
+const img=new Image();
+img.src="world.topo.bathy.200412.3x5400x2700.jpg";
+img.onload=()=>map.classList.add("on");
 
-/* Menu toggle */
-const menu=document.getElementById('menu');
-menu.querySelector('.menuBtn').onclick=e=>{
-  e.stopPropagation();
-  menu.classList.toggle('open');
-};
-window.onclick=()=>menu.classList.remove('open');
-window.onkeydown=e=>{ if(e.key==="Escape") menu.classList.remove('open'); };
-
-/* Grid + current shimmer */
-const c=document.getElementById('fx');
-const ctx=c.getContext('2d');
+// City lights
+const c=document.getElementById("lights");
+const ctx=c.getContext("2d");
 function resize(){
-  c.width=innerWidth;
-  c.height=innerHeight;
+  const d=Math.min(devicePixelRatio||1,2);
+  c.width=innerWidth*d;
+  c.height=innerHeight*d;
+  c.style.width=innerWidth+"px";
+  c.style.height=innerHeight+"px";
+  ctx.setTransform(d,0,0,d,0,0);
 }
-resize();
-addEventListener('resize',resize);
+resize(); window.onresize=resize;
 
-let t=0;
-function draw(){
-  ctx.clearRect(0,0,c.width,c.height);
-  ctx.strokeStyle="rgba(170,240,255,.06)";
-  ctx.lineWidth=1;
-
-  const step=80;
-  for(let x=0;x<c.width;x+=step){
-    ctx.beginPath();
-    ctx.moveTo(x+(Math.sin(t+x*.01)*6),0);
-    ctx.lineTo(x,c.height);
-    ctx.stroke();
-  }
-  for(let y=0;y<c.height;y+=step){
-    ctx.beginPath();
-    ctx.moveTo(0,y+(Math.cos(t+y*.01)*6));
-    ctx.lineTo(c.width,y);
-    ctx.stroke();
-  }
-  t+=0.01;
-  requestAnimationFrame(draw);
+function drawLights(){
+  ctx.clearRect(0,0,innerWidth,innerHeight);
+  const clusters=[[22,28],[48,26],[62,34],[74,28],[30,42],[78,44]];
+  clusters.forEach(p=>{
+    for(let i=0;i<800;i++){
+      const x=(p[0]+(Math.random()-.5)*8)*innerWidth/100;
+      const y=(p[1]+(Math.random()-.5)*6)*innerHeight/100;
+      ctx.fillStyle="rgba(255,200,140,.08)";
+      ctx.fillRect(x,y,1,1);
+    }
+  });
 }
-draw();
+drawLights();
+</script>
+<script>
+  (function(){
+    const menu = document.getElementById('cornerMenu');
+    const btn  = document.getElementById('menuBtn');
+
+    btn.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      menu.classList.toggle('open');
+    });
+
+    window.addEventListener('click', (e)=>{
+      if (!menu.contains(e.target)) menu.classList.remove('open');
+    });
+
+    window.addEventListener('keydown', (e)=>{
+      if (e.key === 'Escape') menu.classList.remove('open');
+    });
+  })();
 </script>
 
 </body>
+</html>
 </html>
