@@ -6,6 +6,67 @@
 <title>Global Water Fund — Systems Map</title>
 
 <style>
+
+  /* === Single MENU pill (top-right) === */
+.menuCorner{
+  position:fixed;
+  top:12px;
+  right:12px;
+  z-index:9999;
+  pointer-events:auto;
+}
+
+.menuBtn{
+  font:inherit;
+  font-size:11px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  padding:8px 10px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(0,0,0,.62);
+  color:rgba(245,248,255,.82);
+  cursor:pointer;
+  backdrop-filter:blur(10px);
+}
+
+.menuBtn:hover{
+  background:rgba(0,0,0,.78);
+  border-color:rgba(255,255,255,.18);
+}
+
+.menuList{
+  position:absolute;
+  right:0;
+  top:38px;
+  min-width:220px;
+  padding:10px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(0,0,0,.72);
+  backdrop-filter:blur(14px);
+  display:none;
+}
+
+.menuCorner.open .menuList{ display:block; }
+
+.menuList a{
+  display:block;
+  padding:10px 10px;
+  border-radius:10px;
+  font-size:11px;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:rgba(245,248,255,.72);
+  text-decoration:none;
+  white-space:nowrap;
+}
+
+.menuList a:hover{
+  background:rgba(255,255,255,.06);
+  color:rgba(245,248,255,.95);
+}
+
 :root{
   --bg:#05060a;
   --bg2:#0b0f1a;
