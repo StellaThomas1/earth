@@ -212,6 +212,15 @@ html,body{
   color:var(--muted2);
   padding:16px;
 }
+  /* Always keep MENU clickable even if other layers exist */
+.menuCorner{ z-index:99999; }
+.menuCorner *{ pointer-events:auto; }
+
+/* Mobile spacing: prevent top header/words from colliding with the MENU */
+@media (max-width: 760px){
+  body{ padding-top: 56px; }     /* pushes content down a touch */
+  .topBar, .header, .systems, .hero, .overlay{ scroll-margin-top: 64px; }
+}
 </style>
   
   /* ===== Corner MENU (Map) ===== */
