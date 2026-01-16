@@ -412,6 +412,25 @@ drawLights();
   });
 })();
 </script>
+<script>
+(function(){
+  const box = document.getElementById('menuCorner');
+  const btn = document.getElementById('menuBtn');
+
+  btn.addEventListener('click', (e)=>{
+    e.stopPropagation();
+    box.classList.toggle('open');
+  });
+
+  window.addEventListener('click', (e)=>{
+    if(!box.contains(e.target)) box.classList.remove('open');
+  });
+
+  window.addEventListener('keydown', (e)=>{
+    if(e.key === 'Escape') box.classList.remove('open');
+  });
+})();
+</script>
 
 </body>
 </html>
