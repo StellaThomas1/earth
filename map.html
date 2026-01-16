@@ -8,8 +8,9 @@
   <style>
     :root{
       --bg:#05060a;
+      --bg2:#0b0f1a;
       --ink:rgba(245,248,255,.92);
-      --muted:rgba(245,248,255,.70);
+      --muted:rgba(245,248,255,.72);
       --muted2:rgba(245,248,255,.56);
       --hair:rgba(255,255,255,.10);
       --hair2:rgba(170,240,255,.10);
@@ -18,29 +19,30 @@
     html,body{
       height:100%;
       margin:0;
-      background: radial-gradient(1000px 700px at 55% 30%, rgba(20,26,44,.75) 0%, rgba(8,10,16,.95) 55%, #04050a 100%);
+      background:
+        radial-gradient(1200px 900px at 55% 28%, rgba(18,24,44,.80) 0%, rgba(8,10,16,.95) 55%, #04050a 100%);
       color:var(--ink);
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       -webkit-text-size-adjust:100%;
       overflow:hidden;
     }
 
-    /* --- Map layer (image) --- */
+    /* --- Map image layer --- */
     .mapLayer{
       position:fixed;
       inset:0;
       z-index:0;
       pointer-events:none;
 
-      /* Put your own file in the repo root as: world.topo.bathy.200412.3x5400x2700.jpg
-         OR change this filename to your own image (case sensitive!) */
-      background-image:
-        url("world.topo.bathy.200412.3x5400x2700.jpg");
+      /* IMPORTANT:
+         Put your file in this same folder:
+         /earth/world.topo.bathy.200412.3x5400x2700.jpg
+         If using WorldMap.jpg, change the filename here. */
+      background-image: url("world.topo.bathy.200412.3x5400x2700.jpg");
       background-size:cover;
       background-position:center;
       background-repeat:no-repeat;
 
-      /* Davos-grade grading */
       filter: contrast(1.06) saturate(0.95) brightness(0.72);
       opacity:0;
       transform: translateY(14px);
@@ -52,7 +54,7 @@
       filter: contrast(1.06) saturate(0.98) brightness(0.80);
     }
 
-    /* --- Canvas overlays (grid + currents shimmer) --- */
+    /* --- FX canvas (grid + currents shimmer) --- */
     canvas#fx{
       position:fixed;
       inset:0;
@@ -61,9 +63,10 @@
       z-index:1;
       pointer-events:none;
       display:block;
+      opacity:.92;
     }
 
-    /* --- Typography / content --- */
+    /* --- Content overlay --- */
     .stage{
       position:fixed;
       inset:0;
@@ -80,7 +83,7 @@
     }
 
     .card{
-      width:min(1040px, 94vw);
+      width:min(1080px, 94vw);
       display:flex;
       flex-direction:column;
       gap:14px;
@@ -100,13 +103,13 @@
       color:var(--muted2);
     }
 
-    .systems{
-      font-size:clamp(16px, 3.2vw, 28px);
-      font-weight:780;
+    .systemsTitle{
+      margin:0;
+      font-size:clamp(18px, 3.0vw, 30px);
+      font-weight:820;
       letter-spacing:.16em;
       text-transform:uppercase;
-      margin:0;
-      line-height:1.12;
+      line-height:1.10;
     }
 
     .pillRow{
@@ -130,16 +133,16 @@
 
     .headline{
       margin:6px 0 0 0;
-      font-size:clamp(16px, 2.2vw, 22px);
-      font-weight:700;
+      font-size:clamp(16px, 2.1vw, 22px);
+      font-weight:740;
       letter-spacing:.10em;
       text-transform:uppercase;
       color:rgba(245,248,255,.90);
     }
 
     .subcopy{
-      max-width:860px;
-      font-size:clamp(13px, 1.5vw, 15px);
+      max-width:900px;
+      font-size:clamp(13px, 1.45vw, 15px);
       line-height:1.85;
       color:var(--muted);
       margin:0;
@@ -154,7 +157,7 @@
       opacity:.85;
     }
 
-    /* --- Single MENU pill (top-right) --- */
+    /* --- MENU (top-right) --- */
     .menuCorner{
       position:fixed;
       top:12px;
@@ -211,11 +214,11 @@
       color:rgba(245,248,255,.95);
     }
 
-    /* --- Mobile polish: keep it calm, not crowded --- */
+    /* --- Mobile: prevent overlap/crowding --- */
     @media (max-width: 760px){
       .stage{
         align-items:flex-start;
-        padding-top: calc(64px + env(safe-area-inset-top)); /* breathing room under MENU */
+        padding-top: calc(72px + env(safe-area-inset-top)); /* space under MENU */
       }
       .card{
         gap:12px;
@@ -226,5 +229,7 @@
         letter-spacing:.14em;
       }
       .subcopy{
-        line-height:1.72;
-     
+        line-height:1.70;
+      }
+      .footerLine{
+        font-size:11px
