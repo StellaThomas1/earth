@@ -25,7 +25,7 @@ html,body{
   overflow:hidden;
 }
 
-/* BASE MAP */
+/* ===== BASE MAP ===== */
 .mapLayer{
   position:fixed;
   inset:0;
@@ -41,7 +41,7 @@ html,body{
   filter: contrast(1.05) saturate(1) brightness(.78);
 }
 
-/* GRID */
+/* ===== GRID ===== */
 .grid{
   position:fixed;
   inset:0;
@@ -51,13 +51,14 @@ html,body{
     repeating-linear-gradient(0deg,  transparent 0, transparent 58px, var(--grid2) 59px, transparent 60px);
 }
 
-/* VIGNETTE */
+/* ===== VIGNETTE ===== */
 .vignette{
   position:fixed;
   inset:0;
+  pointer-events:none;
   background:radial-gradient(900px 650px at 50% 45%, rgba(0,0,0,0), rgba(0,0,0,.35), rgba(0,0,0,.75));
 }
-
+  
 /* WATER FLOW */
 .water{
   position:fixed;
