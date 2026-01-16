@@ -135,7 +135,7 @@
     }
 
     .footerPad{
-      height:40vh; /* room for the map to breathe */
+      height:42vh; /* room for the map to breathe */
     }
 
     /* MENU (top-right) */
@@ -274,4 +274,219 @@
     const canvas = document.getElementById('map');
     const ctx = canvas.getContext('2d', { alpha:true });
 
-    // Prefer your repo file name; fallback to
+    // Use your repo image first (you said you have it now), then fallback:
+    // IMPORTANT: filenames are case-sensitive on GitHub Pages.
+    const MAP_CANDIDATES = [
+      "world.topo.bathy.200412.3x5400x2700.jpg",
+      "WorldMap.jpg"
+    ];
+
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+
+    let dpr=1, W=0, H=0;
+    function resize(){
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      W = Math.floor(window.innerWidth);
+      H = Math.floor(window.innerHeight);
+      canvas.width = Math.floor(W * dpr);
+      canvas.height = Math.floor(H * dpr);
+      canvas.style.width = W + "px";
+      canvas.style.height = H + "px";
+      ctx.setTransform(dpr,0,0,dpr,0,0);
+    }
+    window.addEventListener("resize", resize, { passive:true });
+    resize();
+
+    function loadFirstWorking(i=0){
+      if(i >= MAP_CANDIDATES.length){
+        // If none load, still render a graceful background so nothing looks broken.
+        start();
+        return;
+      }
+      img.onload = () => start();
+      img.onerror = () => loadFirstWorking(i+1);
+      img.src = MAP_CANDIDATES[i];
+    }
+    loadFirstWorking(0);
+
+    // Gentle scroll influence (parallax drift)
+    function scrollInfluence(){
+      const s = window.scrollY || 0;
+      return Math.min(1, s / (window.innerHeight * 0.8));
+    }
+
+    // Helpers
+    const clamp = (x,a,b)=>Math.max(a,Math.min(b,x));
+    const smooth = x => x*x*(3-2*x);
+
+    // “Water current” shimmer: very subtle animated noise + directional streaks
+    // (Premium, not demo-reel.)
+    let t=0;
+    let ready=false;
+
+    // Precompute a small noise canvas we can scroll over time
+    const noise = document.createElement('canvas');
+    const nctx = noise.getContext('2d');
+    const NOISE_W = 512, NOISE_H = 512;
+    noise.width = NOISE_W; noise.height = NOISE_H;
+
+    function seedNoise(){
+      const id = nctx.createImageData(NOISE_W, NOISE_H);
+      const data = id.data;
+      for(let i=0;i<data.length;i+=4){
+        const v = 210 + Math.floor(Math.random()*45); // pale
+        data[i]=v; data[i+1]=v; data[i+2]=v; data[i+3]=Math.random()<0.55? 18: 0; // sparse
+      }
+      nctx.putImageData(id,0,0);
+    }
+    seedNoise();
+
+    // City lights overlay (subtle) — uses blending only (no extra assets)
+    function drawCityHints(alpha){
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.globalCompositeOperation = "screen";
+      // a few soft clusters (approximate major urban belts)
+      const clusters = [
+        [0.73,0.34, 110],[0.78,0.40, 90],[0.63,0.33, 80], // Europe/ME
+        [0.28,0.36, 120],[0.23,0.42, 90],                 // N. America
+        [0.84,0.56, 110],[0.78,0.62, 80],                 // East Asia
+        [0.60,0.68, 90],[0.55,0.73, 70]                   // India/SEA
+      ];
+      for(const [px,py,r] of clusters){
+        const gx = W*px, gy = H*py;
+        const g = ctx.createRadialGradient(gx,gy, 0, gx,gy, r);
+        g.addColorStop(0, "rgba(255,220,140,.22)");
+        g.addColorStop(0.5, "rgba(255,220,140,.10)");
+        g.addColorStop(1, "rgba(255,220,140,0)");
+        ctx.fillStyle = g;
+        ctx.fillRect(gx-r, gy-r, r*2, r*2);
+      }
+      ctx.restore();
+      ctx.globalCompositeOperation = "source-over";
+    }
+
+    // Basin overlays: elegant arcs + nodes (stylized)
+    function drawBasinOverlays(alpha){
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.lineWidth = 1.15;
+      ctx.strokeStyle = "rgba(170,240,255,.22)";
+      ctx.fillStyle = "rgba(170,240,255,.22)";
+
+      const arcs = [
+        // (x0,y0) -> (x1,y1) with control points (c1,c2)
+        [{x:W*0.22,y:H*0.40},{x:W*0.33,y:H*0.52},{x:W*0.40,y:H*0.60},{x:W*0.52,y:H*0.58}],
+        [{x:W*0.60,y:H*0.35},{x:W*0.70,y:H*0.33},{x:W*0.78,y:H*0.42},{x:W*0.84,y:H*0.50}],
+        [{x:W*0.56,y:H*0.68},{x:W*0.62,y:H*0.62},{x:W*0.72,y:H*0.62},{x:W*0.78,y:H*0.58}]
+      ];
+
+      for(const [p0,c1,c2,p3] of arcs){
+        ctx.beginPath();
+        ctx.moveTo(p0.x,p0.y);
+        ctx.bezierCurveTo(c1.x,c1.y, c2.x,c2.y, p3.x,p3.y);
+        ctx.stroke();
+
+        // endpoints nodes
+        ctx.beginPath(); ctx.arc(p0.x,p0.y, 2.2, 0, Math.PI*2); ctx.fill();
+        ctx.beginPath(); ctx.arc(p3.x,p3.y, 2.2, 0, Math.PI*2); ctx.fill();
+      }
+
+      ctx.restore();
+    }
+
+    function start(){
+      ready = true;
+      requestAnimationFrame(draw);
+    }
+
+    function draw(){
+      requestAnimationFrame(draw);
+      resize();
+      t += 0.0045;
+
+      // Clear
+      ctx.clearRect(0,0,W,H);
+
+      // Base background wash (keeps blacks rich even if image not loaded)
+      const bg = ctx.createRadialGradient(W*0.55, H*0.42, 0, W*0.55, H*0.42, Math.max(W,H)*0.95);
+      bg.addColorStop(0,"rgba(12,16,28,.55)");
+      bg.addColorStop(1,"rgba(0,0,0,0)");
+      ctx.fillStyle = bg;
+      ctx.fillRect(0,0,W,H);
+
+      // Draw map image (cover) if available
+      if(img && img.naturalWidth){
+        const iw = img.naturalWidth, ih = img.naturalHeight;
+        const scale = Math.max(W/iw, H/ih);
+        const dw = iw * scale, dh = ih * scale;
+        const dx = (W - dw)/2;
+        const dy = (H - dh)/2;
+
+        // Subtle fade in based on time
+        const fade = clamp((t-0.10)/1.2, 0, 1);
+        const s = smooth(fade);
+
+        // Gentle parallax drift with scroll
+        const p = scrollInfluence();
+        const driftX = (Math.sin(t*0.55) * 8) + (p * -10);
+        const driftY = (Math.cos(t*0.48) * 6) + (p * -6);
+
+        ctx.save();
+        ctx.globalAlpha = 0.84 * s;
+        ctx.filter = `contrast(1.06) saturate(${0.92 + 0.08*s}) brightness(${0.56 + 0.28*s})`;
+        ctx.drawImage(img, dx + driftX, dy + driftY, dw, dh);
+        ctx.restore();
+
+        // Ocean current shimmer (very subtle)
+        // We render a moving noise field, then mask it with a soft “ocean-ish” tint.
+        const shimmer = 0.10 * s; // overall intensity
+        ctx.save();
+        ctx.globalCompositeOperation = "screen";
+        ctx.globalAlpha = shimmer;
+
+        // moving noise tiles
+        const ox = (t*80) % NOISE_W;
+        const oy = (t*55) % NOISE_H;
+
+        for(let x=-NOISE_W; x<=W+NOISE_W; x+=NOISE_W){
+          for(let y=-NOISE_H; y<=H+NOISE_H; y+=NOISE_H){
+            ctx.drawImage(noise, x - ox, y - oy);
+          }
+        }
+
+        // tint to “water glass”
+        ctx.globalAlpha = shimmer * 0.7;
+        const wg = ctx.createLinearGradient(0,H*0.35, W,H*0.70);
+        wg.addColorStop(0,"rgba(120,210,255,.22)");
+        wg.addColorStop(1,"rgba(170,240,255,.08)");
+        ctx.fillStyle = wg;
+        ctx.fillRect(0,0,W,H);
+
+        ctx.restore();
+        ctx.globalCompositeOperation = "source-over";
+
+        // Basin overlays (thin arcs) + city hints
+        const overlays = 0.26 * s;
+        drawBasinOverlays(overlays);
+        drawCityHints(0.16 * s);
+
+        // Slight “coastline” lift
+        ctx.save();
+        ctx.globalAlpha = 0.10 * s;
+        ctx.fillStyle = "rgba(170,240,255,.08)";
+        ctx.fillRect(0,0,W,H);
+        ctx.restore();
+      }
+
+      // Optional: reseed noise occasionally so it never loops obviously
+      if(Math.floor(t*10) % 90 === 0){
+        // cheap guard to avoid constant reseeding
+        if(Math.random() < 0.02) seedNoise();
+      }
+    }
+  })();
+  </script>
+</body>
+</html>
