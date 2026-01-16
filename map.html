@@ -172,25 +172,52 @@ html,body{
   cursor:pointer;
   backdrop-filter:blur(10px);
 }
-.menuPill:hover{ background:rgba(0,0,0,.46); border-color:rgba(255,255,255,.22); }
+/* --- MENU PILL (Top-Right) --- */
+.menuCorner{
+  position:fixed;
+  top:12px;
+  right:12px;
+  z-index:9999;
+  pointer-events:auto;
+}
 
-.menuDrop{
+.menuBtn{
+  font:inherit;
+  font-size:11px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  padding:8px 10px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(0,0,0,.62);
+  color:rgba(245,248,255,.82);
+  cursor:pointer;
+  backdrop-filter:blur(10px);
+}
+
+.menuBtn:hover{
+  background:rgba(0,0,0,.78);
+  border-color:rgba(255,255,255,.18);
+}
+
+.menuList{
   position:absolute;
   right:0;
-  top:44px;
-  min-width:230px;
+  top:38px;
+  min-width:220px;
   padding:10px;
   border-radius:14px;
-  border:1px solid rgba(255,255,255,.14);
-  background:rgba(0,0,0,.65);
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(0,0,0,.72);
   backdrop-filter:blur(14px);
   display:none;
 }
-.cornerMenu.open .menuDrop{ display:block; }
 
-.menuDrop a{
+.menuCorner.open .menuList{ display:block; }
+
+.menuList a{
   display:block;
-  padding:10px 10px;
+  padding:10px;
   border-radius:10px;
   font-size:11px;
   letter-spacing:.16em;
@@ -198,20 +225,22 @@ html,body{
   color:rgba(245,248,255,.72);
   text-decoration:none;
 }
-.menuDrop a:hover{
+
+.menuList a:hover{
   background:rgba(255,255,255,.06);
-  color:rgba(245,248,255,.95);
+  color:white;
 }
 
 </head>
 
 <body>
   <!-- MENU dropdown -->
-<div class="cornerMenu" id="cornerMenu">
-  <button class="menuPill" id="menuBtn" type="button">MENU</button>
-  <div class="menuDrop" id="menuDrop" role="menu" aria-label="Site menu">
+<div class="menuCorner" id="menuCorner">
+  <button class="menuBtn" id="menuBtn">MENU</button>
+
+  <div class="menuList">
     <a href="preview.html">Earth</a>
-    <a href="planetary.html">Stability</a>
+    <a href="planetary.html">Planetary</a>
     <a href="map.html">Map</a>
     <a href="capabilities.html">Capabilities</a>
     <a href="forecasting.html">Strategic Forecasting</a>
@@ -219,7 +248,9 @@ html,body{
     <a href="capital.html">Capital</a>
     <a href="about.html">About</a>
     <a href="contact.html">Contact</a>
+  </div>
 </div>
+
 
 
 <div id="map" class="mapLayer"></div>
@@ -248,37 +279,6 @@ html,body{
 <div class="bottom">
   GLOBAL OPERATING PICTURE — WATER, FOOD, ENERGY, COASTS, SECURITY
 </div>
-/* ===== Headline: match opening feel (tracking + calmer weight) ===== */
-.big{
-  letter-spacing:.16em !important;  /* was .12-ish; this matches your opening vibe */
-  font-weight:600 !important;
-  margin-top:14px !important;
-}
-
-/* ===== Capabilities sentence under headline ===== */
-.sub{
-  font-size:clamp(13px, 1.2vw, 17px) !important;
-  line-height:1.7 !important;
-  margin-top:18px !important;  /* more separation from headline */
-  color:rgba(245,248,255,.72) !important;
-  max-width:72ch !important;
-}
-
-/* ===== The cascading risks bar: better type + moved down a touch ===== */
-.tagline{
-  margin-top:22px !important;      /* moves it down */
-  padding-top:2px !important;
-  font-size:12px !important;
-  letter-spacing:.14em !important; /* less “shouty,” more museum-grade */
-  color:rgba(245,248,255,.56) !important;
-}
-
-/* On mobile: keep it readable but not busy */
-@media (max-width:520px){
-  .big{ letter-spacing:.14em !important; }
-  .sub{ margin-top:16px !important; font-size:14px !important; }
-  .tagline{ margin-top:18px !important; font-size:11px !important; }
-}
 
 <script>
 const map=document.getElementById("map");
