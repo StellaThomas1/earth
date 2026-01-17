@@ -151,27 +151,7 @@ html,body{
   color:var(--muted2);
   padding:16px;
 }
-    /* ===== Corner MENU (Map) ===== */
-.cornerMenu{
-  position:fixed;
-  top:14px; right:14px;
-  z-index:9999;
-  pointer-events:auto;
-}
-.menuPill{
-  font:inherit;
-  font-size:11px;
-  letter-spacing:.18em;
-  text-transform:uppercase;
-  padding:10px 12px;
-  border-radius:999px;
-  border:1px solid rgba(255,255,255,.14);
-  background:rgba(0,0,0,.30);
-  color:rgba(245,248,255,.82);
-  cursor:pointer;
-  backdrop-filter:blur(10px);
-}
-/* --- MENU PILL (Top-Right) --- */
+/* ===== Corner MENU (Top-Right) ===== */
 .menuCorner{
   position:fixed;
   top:12px;
@@ -179,7 +159,6 @@ html,body{
   z-index:9999;
   pointer-events:auto;
 }
-
 .menuBtn{
   font:inherit;
   font-size:11px;
@@ -193,12 +172,10 @@ html,body{
   cursor:pointer;
   backdrop-filter:blur(10px);
 }
-
 .menuBtn:hover{
   background:rgba(0,0,0,.78);
   border-color:rgba(255,255,255,.18);
 }
-
 .menuList{
   position:absolute;
   right:0;
@@ -211,9 +188,7 @@ html,body{
   backdrop-filter:blur(14px);
   display:none;
 }
-
 .menuCorner.open .menuList{ display:block; }
-
 .menuList a{
   display:block;
   padding:10px;
@@ -224,7 +199,6 @@ html,body{
   color:rgba(245,248,255,.72);
   text-decoration:none;
 }
-
 .menuList a:hover{
   background:rgba(255,255,255,.06);
   color:white;
