@@ -203,11 +203,11 @@ html,body{
   background:rgba(255,255,255,.06);
   color:white;
 }
-    <!-- MENU dropdown -->
- <div class="menuCorner" id="menuCorner">
-  <button class="menuBtn" id="menuBtn">MENU</button>
+  <!-- MENU dropdown -->
+<div class="menuCorner" id="menuCorner">
+  <button class="menuBtn" id="menuBtn" type="button">MENU</button>
 
-  <div class="menuList">
+  <div class="menuList" id="menuList">
     <a href="preview.html">Earth</a>
     <a href="planetary.html">Planetary</a>
     <a href="map.html">Map</a>
@@ -219,7 +219,63 @@ html,body{
     <a href="contact.html">Contact</a>
   </div>
 </div>
+/* ===== Global MENU (top-right) ===== */
+.menuCorner{
+  position:fixed;
+  top:12px;
+  right:12px;          /* RIGHT SIDE */
+  z-index:9999;
+  pointer-events:auto;
+}
 
+.menuBtn{
+  font:inherit;
+  font-size:11px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  padding:8px 10px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(0,0,0,.62);
+  color:rgba(245,248,255,.82);
+  cursor:pointer;
+  backdrop-filter:blur(10px);
+}
+.menuBtn:hover{
+  background:rgba(0,0,0,.78);
+  border-color:rgba(255,255,255,.18);
+}
+
+.menuList{
+  position:absolute;
+  right:0;
+  top:38px;
+  min-width:220px;
+  padding:10px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(0,0,0,.72);
+  backdrop-filter:blur(14px);
+  display:none;
+}
+
+.menuCorner.open .menuList{ display:block; }
+
+.menuList a{
+  display:block;
+  padding:10px;
+  border-radius:10px;
+  font-size:11px;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:rgba(245,248,255,.72);
+  text-decoration:none;
+  white-space:nowrap;
+}
+.menuList a:hover{
+  background:rgba(255,255,255,.06);
+  color:rgba(245,248,255,.95);
+}
 </style>
 
 
@@ -319,7 +375,31 @@ drawLights();
 </script>
     
 </script>
+<script>
+(function(){
+  const box = document.getElementById('menuCorner');
+  const btn = document.getElementById('menuBtn');
+  if(!box || !btn) return;
 
+  btn.addEventListener('click', (e)=>{
+    e.stopPropagation();
+    box.classList.toggle('open');
+  });
+
+  window.addEventListener('click', (e)=>{
+    if(!box.contains(e.target)) box.classList.remove('open');
+  });
+
+  window.addEventListener('keydown', (e)=>{
+    if(e.key === 'Escape') box.classList.remove('open');
+  });
+
+  // Close after choosing a link
+  box.querySelectorAll('a').forEach(a=>{
+    a.addEventListener('click', ()=> box.classList.remove('open'));
+  });
+})();
+</script>
 </body>
 </html>
 
