@@ -290,26 +290,36 @@ function drawLights(){
 drawLights();
 </script>
 <script>
-  (function(){
-   (function(){
-    const menu = document.getElementById('cornerMenu');
-    const btn  = document.getElementById('menuBtn');
+ <script>
+(function(){
+  const menu = document.getElementById('menuCorner'); // ✅ correct id
+  const btn  = document.getElementById('menuBtn');
+  const list = menu.querySelector('.menuList');
 
-    btn.addEventListener('click', (e)=>{
-      e.stopPropagation();
-      menu.classList.toggle('open');
-    });
+  btn.addEventListener('click', (e)=>{
+    e.stopPropagation();
+    menu.classList.toggle('open');
+  });
 
-    window.addEventListener('click', (e)=>{
-      if (!menu.contains(e.target)) menu.classList.remove('open');
-    });
+  // click outside closes
+  window.addEventListener('click', (e)=>{
+    if(!menu.contains(e.target)) menu.classList.remove('open');
+  });
 
-    window.addEventListener('keydown', (e)=>{
-      if (e.key === 'Escape') menu.classList.remove('open');
-    });
-  })();
+  // escape closes
+  window.addEventListener('keydown', (e)=>{
+    if(e.key === 'Escape') menu.classList.remove('open');
+  });
+
+  // clicking a link closes (nice on mobile)
+  list.querySelectorAll('a').forEach(a=>{
+    a.addEventListener('click', ()=> menu.classList.remove('open'));
+  });
+})();
+</script>
+    
 </script>
 
 </body>
 </html>
-</html>
+
