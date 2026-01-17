@@ -397,7 +397,7 @@ drawLights();
     if(e.key === 'Escape') box.classList.remove('open');
   });
 
-  // Close after choosing a link
+  // Close after tapping a link (nice on mobile)
   box.querySelectorAll('a').forEach(a=>{
     a.addEventListener('click', ()=> box.classList.remove('open'));
   });
