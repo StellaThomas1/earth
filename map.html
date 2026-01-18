@@ -455,7 +455,32 @@ drawLights();
     a.addEventListener('click', ()=> box.classList.remove('open'));
   });
 })();
+
+  <script>
+(function(){
+  const menu = document.getElementById('menuCorner');
+  const btn  = document.getElementById('menuBtn');
+  if(!menu || !btn) return;
+
+  btn.addEventListener('click', (e)=>{
+    e.stopPropagation();
+    menu.classList.toggle('open');
+  });
+
+  window.addEventListener('click', (e)=>{
+    if(!menu.contains(e.target)) menu.classList.remove('open');
+  });
+
+  window.addEventListener('keydown', (e)=>{
+    if(e.key === 'Escape') menu.classList.remove('open');
+  });
+
+  menu.querySelectorAll('a').forEach(a=>{
+    a.addEventListener('click', ()=> menu.classList.remove('open'));
+  });
+})();
 </script>
+  
 </body>
 </html>
 
