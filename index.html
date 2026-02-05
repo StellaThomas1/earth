@@ -1,474 +1,197 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Global Water Fund — Planetary Water Systems</title>
-
-  <style>
-    :root{
-      --bg0:#07080b;
-      --bg1:#0b0d12;
-      --ink:#f2f5ff;
-      --muted:rgba(242,245,255,.70);
-      --muted2:rgba(242,245,255,.48);
-      --accent:#9fd7ff;
-      --accent2:#4aa3ff;
-    }
-
-    html, body {
-      margin:0; padding:0; height:100%;
-      background: radial-gradient(1200px 800px at 60% 35%, var(--bg1) 0%, var(--bg0) 55%, #05060a 100%);
-      color:var(--ink);
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      overflow-x:hidden;
-    }
-
-    .stage{
-      position:relative;
-      min-height:100vh;
-      overflow:hidden;
-    }
-
-    canvas{
-      position:absolute;
-      inset:0;
-      width:100%;
-      height:100%;
-      display:block;
-    }
-
-    .heroText{
-      position:relative;
-      z-index:5;
-      min-height:100vh;
-      display:grid;
-      align-content:center;
-      padding: clamp(22px, 5vw, 72px);
-      max-width: 980px;
-      pointer-events:none;
-    }
-
-    .kicker{
-      text-transform:uppercase;
-      letter-spacing:.18em;
-      font-size:12px;
-      color:var(--muted2);
-      margin-bottom:12px;
-      opacity:0;
-      transform: translateY(8px);
-      animation: fadeUp .65s ease forwards;
-      animation-delay: .15s;
-    }
-
-    h1{
-      font-size: clamp(36px, 4.6vw, 68px);
-      line-height: 1.03;
-      margin:0 0 14px 0;
-      font-weight:650;
-      letter-spacing:-0.01em;
-      opacity:0;
-      transform: translateY(8px);
-      animation: fadeUp .75s ease forwards;
-      animation-delay: .35s;
-    }
-
-    .sub{
-      font-size: clamp(15px, 1.6vw, 20px);
-      max-width: 64ch;
-      color: var(--muted);
-      line-height:1.55;
-      opacity:0;
-      transform: translateY(8px);
-      animation: fadeUp .75s ease forwards;
-      animation-delay: .55s;
-    }
-
-    .scrollHint{
-      position:absolute;
-      left:0; right:0; bottom:18px;
-      text-align:center;
-      font-size:11px;
-      letter-spacing:.14em;
-      text-transform:uppercase;
-      color: var(--muted2);
-      opacity:.92;
-      z-index:6;
-      pointer-events:none;
-    }
-
-    @keyframes fadeUp { to { opacity:1; transform: translateY(0); } }
-
-    @media (max-width: 900px){
-      .stage{ min-height: 88vh; }
-      .heroText{ min-height: 88vh; padding: 22px; }
-    }
-  </style>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Global Water Fund Institute</title>
+  <meta name="description" content="Global Water Fund Institute — Geopolitical Water Futures Intelligence."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..900&family=Fraunces:opsz,wght@9..144,350..800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css"/>
 </head>
-
 <body>
-  <section class="stage" id="hero">
-    <canvas id="globe"></canvas>
 
-    <div class="heroText">
-      <div class="kicker">GLOBAL WATER FUND</div>
-      <h1>Global water intelligence.</h1>
+<header class="header">
+  <div class="wrap nav">
+    <a class="brand" href="index.html" aria-label="Home">
+      <span class="wordmark">
+        <b>Global Water Fund</b>
+        <span>Institute</span>
+      </span>
+    </a>
+
+    <nav class="menu" aria-label="Primary">
+      <a href="#doctrine">Doctrine</a>
+      <a href="#work">Work</a>
+      <a href="#library">Library</a>
+      <a href="#about">About</a>
+      <a class="cta" href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main class="hero" id="top">
+  <video class="heroVideo" autoplay muted loop playsinline preload="metadata"
+         poster="https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&w=2400&q=80">
+    <!-- Replace with your own MP4 later for perfect control -->
+    <source src="https://cdn.coverr.co/videos/coverr-ocean-waves-1604/1080p.mp4" type="video/mp4">
+  </video>
+
+  <!-- Clean overlay (NOT glass / not dirty) -->
+  <div class="heroShade" aria-hidden="true"></div>
+
+  <div class="wrap heroInner">
+    <div class="kicker">Geopolitical Water Futures Intelligence</div>
+
+    <h1>Water moves everything.</h1>
+
+    <p class="lead">
+      Strategic Intelligence for Water &amp; Security —
+      advancing human and national stability across oceans, earth systems, and strategic infrastructure.
+    </p>
+
+    <div class="actions">
+      <a class="btn primary" href="#doctrine">Read the doctrine</a>
+      <a class="btn" href="#library">Explore the library</a>
     </div>
 
-    <div class="scrollHint">Scroll</div>
-  </section>
+    <div class="fine">Water Security for Human &amp; National Stability</div>
+  </div>
 
-  <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
+  <div class="scroll" aria-hidden="true"></div>
+</main>
 
-  <script>
-    (function(){
-      const canvas = document.getElementById("globe");
-      const heroEl = document.getElementById("hero");
+<section class="section" id="doctrine">
+  <div class="wrap narrow">
+    <h2>Doctrine</h2>
+    <p class="big">
+      Water is the hidden architecture of stability. When water systems fail,
+      legitimacy erodes long before institutions collapse.
+    </p>
+    <p>
+      The Global Water Fund Institute exists to make water visible to strategy:
+      translating hydrological disruption into geopolitical meaning — risk, leverage,
+      fragility, resilience — in language leaders can use.
+    </p>
+    <p class="em">
+      In the end, water is not only a resource. It is a test of governance.
+    </p>
+  </div>
+</section>
 
-      const SETTINGS = {
-        baseSpin: 0.010,
-        cloudSpin: 0.016,
-        bobSpeed: 0.020,
-        riversStart: 0.18,
-        riversPeak:  0.50,
-        detachStart: 0.52,
-        detachEnd:   0.90,
-        earthDesat: 0.88,
-        earthContrast: 1.10,
-        earthBrightness: 0.98,
-        riverCount: 42,
-        riverPointsPer: 120,
-        riverGlow: 1.0,
-        dropletCount: 3200,
-        dropletSize: 0.018,
-        dropletFall: 0.040
-      };
+<section class="imageBand" aria-label="Ocean image band">
+  <div class="imageBandMedia"
+       style="background-image:url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=2400&q=80');">
+  </div>
+</section>
 
-      const isMobile = window.matchMedia && window.matchMedia("(max-width: 900px)").matches;
-      if (isMobile){
-        SETTINGS.riverCount = 30;
-        SETTINGS.dropletCount = 2200;
-        SETTINGS.dropletSize = 0.020;
-      }
+<section class="section" id="work">
+  <div class="wrap narrow">
+    <h2>Work</h2>
+    <p class="big">
+      Beautiful, usable outputs — built for action, not noise.
+    </p>
 
-      const prefersReducedMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      if (prefersReducedMotion){
-        SETTINGS.baseSpin = 0;
-        SETTINGS.cloudSpin = 0;
-        SETTINGS.bobSpeed = 0;
-      }
+    <div class="minimalList">
+      <div class="item">
+        <b>Strategic Briefs</b>
+        <span>Concise, decision-grade analysis linking water stress to security, governance, and economic consequence.</span>
+      </div>
+      <div class="item">
+        <b>Futures Intelligence</b>
+        <span>Signals, scenarios, and second-order impacts across infrastructure, migration pressure, trade, and stability.</span>
+      </div>
+      <div class="item">
+        <b>Convenings</b>
+        <span>Invite-only dialogues designed to produce alignment, not applause — with follow-through.</span>
+      </div>
+    </div>
+  </div>
+</section>
 
-      const clamp01 = (x)=>Math.max(0, Math.min(1, x));
-      const lerp = (a,b,t)=>a+(b-a)*t;
+<section class="quoteBand" aria-label="Quote">
+  <div class="wrap narrow">
+    <p class="quote">
+      “We forget that the water cycle and the life cycle are one.”
+    </p>
+    <div class="cite">Jacques Cousteau</div>
+  </div>
+</section>
 
-      function getProgress(){
-        const rect = heroEl.getBoundingClientRect();
-        const h = heroEl.offsetHeight || window.innerHeight;
-        return clamp01((-rect.top) / (h * 0.95));
-      }
+<section class="section" id="library">
+  <div class="wrap narrow">
+    <h2>Library</h2>
+    <p class="big">
+      A living body of work — briefs, notes, dossiers, and doctrine.
+    </p>
 
-      const renderer = new THREE.WebGLRenderer({ canvas, antialias: !isMobile, alpha: true });
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isMobile ? 1.5 : 2));
-      renderer.outputColorSpace = THREE.SRGBColorSpace;
+    <div class="library">
+      <a class="libRow" href="#" onclick="return false;">
+        <span class="libTitle">Water Security Brief</span>
+        <span class="libMeta">Monthly</span>
+      </a>
+      <a class="libRow" href="#" onclick="return false;">
+        <span class="libTitle">Strategic Notes</span>
+        <span class="libMeta">Quarterly</span>
+      </a>
+      <a class="libRow" href="#" onclick="return false;">
+        <span class="libTitle">Resilience Dossiers</span>
+        <span class="libMeta">As needed</span>
+      </a>
 
-      const scene = new THREE.Scene();
+      <p class="hint">
+        (When you’re ready, we’ll add PDF links here — clean, like a real institute library.)
+      </p>
+    </div>
+  </div>
+</section>
 
-      const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 200);
-      camera.position.set(0.35, 0.08, 6.2);
+<section class="imageBand" aria-label="Earth systems image band">
+  <div class="imageBandMedia"
+       style="background-image:url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=2400&q=80');">
+  </div>
+</section>
 
-      scene.add(new THREE.AmbientLight(0xffffff, 0.30));
+<section class="section" id="about">
+  <div class="wrap narrow">
+    <h2>About</h2>
+    <p class="big">
+      A Zurich-based institute with a global network across policy, finance, and academia.
+    </p>
+    <p>
+      Led by Stella Thomas, the Institute convenes and publishes at the intersection of water, governance,
+      and security — building partnerships that strengthen stability and resilience.
+    </p>
+  </div>
+</section>
 
-      const key = new THREE.DirectionalLight(0xffffff, 1.10);
-      key.position.set(5, 2.5, 6);
-      scene.add(key);
+<section class="section contact" id="contact">
+  <div class="wrap narrow">
+    <h2>Contact</h2>
+    <p class="big">Institutional inquiries, partnerships, briefings, and convenings.</p>
 
-      const rim = new THREE.DirectionalLight(0x9fd7ff, 0.85);
-      rim.position.set(-8, -2, 3);
-      scene.add(rim);
+    <div class="contactLine">
+      <a class="email" href="mailto:info@globalwaterfund.org?subject=Global%20Water%20Fund%20Institute%20—%20Briefing%20Request">
+        info@globalwaterfund.org
+      </a>
+      <span class="dotSep">•</span>
+      <a class="smallLink" href="#top">Back to top</a>
+    </div>
+  </div>
+</section>
 
-      function resize(){
-        const w = canvas.clientWidth;
-        const h = canvas.clientHeight;
-        if (!w || !h) return;
-        renderer.setSize(w, h, false);
-        camera.aspect = w / h;
-        camera.updateProjectionMatrix();
-      }
-      window.addEventListener("resize", resize);
+<footer class="footer">
+  <div class="wrap foot">
+    <div>© <span id="year"></span> Global Water Fund Institute</div>
+    <div class="footLinks">
+      <a href="#doctrine">Doctrine</a>
+      <a href="#library">Library</a>
+      <a href="mailto:info@globalwaterfund.org">Email</a>
+    </div>
+  </div>
+</footer>
 
-      const TEX = {
-        day:    "https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg",
-        normal: "https://threejs.org/examples/textures/planets/earth_normal_2048.jpg",
-        spec:   "https://threejs.org/examples/textures/planets/earth_specular_2048.jpg",
-        clouds: "https://threejs.org/examples/textures/planets/earth_clouds_1024.png"
-      };
-
-      const loader = new THREE.TextureLoader();
-      loader.crossOrigin = "anonymous";
-      const loadTex = (url)=>new Promise((resolve,reject)=>{
-
-        loader.load(url, t => { t.colorSpace = THREE.SRGBColorSpace; resolve(t); }, undefined, reject);
-      });
-
-      const seg = isMobile ? 96 : 128;
-      const earthGeo  = new THREE.SphereGeometry(1.95, seg, seg);
-      const cloudsGeo = new THREE.SphereGeometry(1.975, seg, seg);
-
-      let earth, clouds, atmo;
-
-      // ===========
-      // River network (geographic glow) + detaching droplets
-      // ===========
-      const riverGroup = new THREE.Group();
-      scene.add(riverGroup);
-
-      // For “rivers,” we generate curved lines constrained to the sphere surface.
-      // This is an original visualization (not copying anyone’s river dataset),
-      // but it reads as “river networks / basins” on the globe.
-      function randomOnSphere(){
-        const u = Math.random();
-        const v = Math.random();
-        const theta = 2*Math.PI*u;
-        const phi = Math.acos(2*v-1);
-        const x = Math.sin(phi)*Math.cos(theta);
-        const y = Math.cos(phi);
-        const z = Math.sin(phi)*Math.sin(theta);
-        return new THREE.Vector3(x,y,z);
-      }
-
-      function greatCircle(a,b,t){
-        // slerp along unit sphere
-        const dot = clamp01(a.dot(b));
-        const omega = Math.acos(Math.min(1, Math.max(-1, dot)));
-        if (omega < 1e-6) return a.clone();
-        const so = Math.sin(omega);
-        const s1 = Math.sin((1-t)*omega)/so;
-        const s2 = Math.sin(t*omega)/so;
-        return a.clone().multiplyScalar(s1).add(b.clone().multiplyScalar(s2)).normalize();
-      }
-
-      function makeRiverLine(){
-        const a = randomOnSphere();
-        // bias endpoints to be “near-ish” so it looks like basins
-        const b = randomOnSphere().lerp(a, 0.35).normalize();
-
-        const pts = [];
-        for (let i=0;i<SETTINGS.riverPointsPer;i++){
-          const t = i/(SETTINGS.riverPointsPer-1);
-          const p = greatCircle(a,b,t);
-
-          // add slight meander so it reads like a river, not airline routes
-          const n = new THREE.Vector3(
-            (Math.random()-0.5)*0.02,
-            (Math.random()-0.5)*0.02,
-            (Math.random()-0.5)*0.02
-          );
-          p.add(n).normalize();
-
-          pts.push(p.multiplyScalar(1.955)); // slightly above surface
-        }
-
-        const geo = new THREE.BufferGeometry().setFromPoints(pts);
-        const mat = new THREE.LineBasicMaterial({
-          color: 0x4aa3ff,
-          transparent: true,
-          opacity: 0.0,
-          blending: THREE.AdditiveBlending
-        });
-
-        const line = new THREE.Line(geo, mat);
-        line.userData.baseOpacity = 0.0;
-        line.userData.seed = Math.random()*Math.PI*2;
-        riverGroup.add(line);
-      }
-
-      // Droplets that “detach” from rivers (not a full shell)
-      const dropletGeom = new THREE.BufferGeometry();
-      let dropletPositions, dropletVelocities;
-      const dropletMat = new THREE.PointsMaterial({
-        color: 0x9fd7ff,
-        size: SETTINGS.dropletSize,
-        transparent: true,
-        opacity: 0.0,
-        depthWrite: false,
-        blending: THREE.AdditiveBlending
-      });
-      const droplets = new THREE.Points(dropletGeom, dropletMat);
-      scene.add(droplets);
-
-      function initDroplets(){
-        dropletPositions = new Float32Array(SETTINGS.dropletCount*3);
-        dropletVelocities = new Float32Array(SETTINGS.dropletCount*3);
-
-        for(let i=0;i<SETTINGS.dropletCount;i++){
-          // start droplets near surface
-          const p = randomOnSphere().multiplyScalar(1.98);
-          dropletPositions[i*3+0]=p.x;
-          dropletPositions[i*3+1]=p.y;
-          dropletPositions[i*3+2]=p.z;
-
-          // gentle outward + gravity down
-          dropletVelocities[i*3+0]=(Math.random()-0.5)*0.01;
-          dropletVelocities[i*3+1]=-(0.02 + Math.random()*0.03);
-          dropletVelocities[i*3+2]=(Math.random()-0.5)*0.01;
-        }
-
-        dropletGeom.setAttribute("position", new THREE.BufferAttribute(dropletPositions, 3));
-      }
-
-      // ===========
-      // Build scene after textures
-      // ===========
-      Promise.all([loadTex(TEX.day), loadTex(TEX.normal), loadTex(TEX.spec), loadTex(TEX.clouds)])
-        .then(([day, normal, spec, cloudsTex]) => {
-          // Earth material
-          const earthMat = new THREE.MeshPhongMaterial({
-            map: day,
-            normalMap: normal,
-            specularMap: spec,
-            specular: new THREE.Color(0x2b5a7a),
-            shininess: 14
-          });
-
-          // Desaturate + contrast tweak (Regeneration-like grey Earth vibe, but original)
-          earthMat.onBeforeCompile = (shader) => {
-            shader.uniforms.uDesat = { value: SETTINGS.earthDesat };
-            shader.uniforms.uContrast = { value: SETTINGS.earthContrast };
-            shader.uniforms.uBright = { value: SETTINGS.earthBrightness };
-
-            shader.fragmentShader = shader.fragmentShader.replace(
-              "#include <dithering_fragment>",
-              `
-                // desaturate
-                float luma = dot(gl_FragColor.rgb, vec3(0.299, 0.587, 0.114));
-                vec3 gray = vec3(luma);
-                gl_FragColor.rgb = mix(gl_FragColor.rgb, gray, uDesat);
-
-                // contrast
-                gl_FragColor.rgb = (gl_FragColor.rgb - 0.5) * uContrast + 0.5;
-
-                // brightness
-                gl_FragColor.rgb *= uBright;
-
-                #include <dithering_fragment>
-              `
-            );
-
-            shader.fragmentShader = "uniform float uDesat; uniform float uContrast; uniform float uBright;\n" + shader.fragmentShader;
-          };
-
-          earth = new THREE.Mesh(earthGeo, earthMat);
-          earth.rotation.y = 0.9;
-          scene.add(earth);
-
-          // Clouds
-          clouds = new THREE.Mesh(cloudsGeo, new THREE.MeshLambertMaterial({
-            map: cloudsTex,
-            transparent: true,
-            opacity: 0.32,
-            depthWrite: false
-          }));
-          clouds.rotation.y = earth.rotation.y + 0.35;
-          scene.add(clouds);
-
-          // Atmosphere rim
-          atmo = new THREE.Mesh(
-            new THREE.SphereGeometry(2.05, seg, seg),
-            new THREE.MeshBasicMaterial({
-              color: 0x9fd7ff,
-              transparent: true,
-              opacity: 0.08,
-              depthWrite: false,
-              blending: THREE.AdditiveBlending
-            })
-          );
-          scene.add(atmo);
-
-          // Rivers
-          for(let i=0;i<SETTINGS.riverCount;i++) makeRiverLine();
-          initDroplets();
-
-          animate();
-        })
-        .catch(err => console.error("Texture load error:", err));
-
-      // ===========
-      // Animation loop
-      // ===========
-      let tick = 0;
-      function animate(){
-        requestAnimationFrame(animate);
-        resize();
-
-        const p = getProgress();
-        tick += SETTINGS.bobSpeed;
-
-        if (earth){
-          // MUCH faster and more “alive”
-          earth.rotation.y += SETTINGS.baseSpin;
-          earth.rotation.x = Math.sin(tick) * 0.02;
-
-          if (clouds) clouds.rotation.y += SETTINGS.cloudSpin;
-
-          // Scroll-driven camera (more responsive like premium sites)
-          camera.position.z = 6.2 + p * (isMobile ? 1.1 : 1.35);
-          camera.position.y = 0.08 + p * 0.22;
-
-          // River opacity choreography
-          const rIn = clamp01((p - SETTINGS.riversStart) / (SETTINGS.riversPeak - SETTINGS.riversStart));
-          const rOut = 1.0 - clamp01((p - SETTINGS.riversPeak) / (SETTINGS.detachEnd - SETTINGS.riversPeak));
-          const riverStrength = clamp01(rIn * rOut);
-
-          riverGroup.children.forEach((line, idx) => {
-            // add subtle wave so it feels organic
-            const pulse = 0.65 + 0.35*Math.sin(tick*1.2 + line.userData.seed);
-            line.material.opacity = 0.85 * riverStrength * pulse * SETTINGS.riverGlow;
-          });
-
-          // Detach: fade rivers slightly and turn on droplets
-          const detach = clamp01((p - SETTINGS.detachStart) / (SETTINGS.detachEnd - SETTINGS.detachStart));
-          const detachEase = detach*detach*(3-2*detach); // smoothstep
-
-          // When detaching, rivers dim a bit (they "shed")
-          riverGroup.children.forEach((line) => {
-            line.material.opacity *= (1.0 - detachEase*0.55);
-          });
-
-          // Droplets appear strongly + fall
-          dropletMat.opacity = 0.85 * detachEase;
-
-          if (detachEase > 0.001){
-            const posAttr = dropletGeom.getAttribute("position");
-            const fall = SETTINGS.dropletFall * (0.55 + detachEase*1.8);
-
-            for(let i=0;i<SETTINGS.dropletCount;i++){
-              dropletPositions[i*3+0] += dropletVelocities[i*3+0] * (1 + detachEase*2.0);
-              dropletPositions[i*3+1] += (dropletVelocities[i*3+1] - fall) * (1 + detachEase*1.7);
-              dropletPositions[i*3+2] += dropletVelocities[i*3+2] * (1 + detachEase*2.0);
-
-              // recycle under frame
-              if (dropletPositions[i*3+1] < -5.2){
-                const p0 = randomOnSphere().multiplyScalar(1.98);
-                dropletPositions[i*3+0]=p0.x;
-                dropletPositions[i*3+1]=p0.y;
-                dropletPositions[i*3+2]=p0.z;
-              }
-            }
-            posAttr.needsUpdate = true;
-          }
-        }
-
-        renderer.render(scene, camera);
-      }
-    })();
-  </script>
-  
-<script>
-  // Auto-enter after 4.5 seconds (change the number if you want)
-  setTimeout(() => {
-    window.location.href = "planetary.html";
-  }, 4500);
-</script>
-  
+<script src="assets/main.js"></script>
 </body>
 </html>
