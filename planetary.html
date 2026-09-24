@@ -1,780 +1,883 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Global Water Fund — Planetary Stability</title>
-
-  <style>
-    :root{
-      --bg:#05060a;
-      --bg2:#0b0f1a;
-      --ink:rgba(245,248,255,.92);
-      --muted:rgba(245,248,255,.76);
-      --muted2:rgba(245,248,255,.56);
-      --line:rgba(245,248,255,.10);
-      --accent:#78dcff;
-    }
-
-    *{
-      box-sizing:border-box;
-    }
-
-    html{
-      margin:0;
-      padding:0;
-      width:100%;
-      min-height:100%;
-      overflow-x:hidden;
-      overflow-y:auto;
-      -webkit-text-size-adjust:100%;
-    }
-
-    body{
-      margin:0;
-      padding:0;
-      width:100%;
-      min-height:100vh;
-      overflow-x:hidden;
-      overflow-y:auto;
-      -webkit-overflow-scrolling:touch;
-
-      background:
-        radial-gradient(
-          1200px 900px at 60% 30%,
-          var(--bg2) 0%,
-          var(--bg) 60%,
-          #04050a 100%
-        );
-
-      color:var(--ink);
-
-      font-family:
-        system-ui,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        Roboto,
-        Arial,
-        sans-serif;
-    }
-
-    a{
-      color:inherit;
-      text-decoration:none;
-    }
-
-
-    /* ==================================================
-       HEADER
-       ================================================== */
-
-    .siteHeader{
-      position:sticky;
-      top:0;
-      z-index:1000;
-      width:100%;
-
-      background:
-        linear-gradient(
-          to bottom,
-          rgba(0,0,0,.88),
-          rgba(0,0,0,.48)
-        );
-
-      border-bottom:1px solid var(--line);
-
-      backdrop-filter:blur(12px);
-      -webkit-backdrop-filter:blur(12px);
-    }
-
-    .headerInner{
-      width:100%;
-      max-width:1120px;
-      margin:0 auto;
-      padding:14px 18px;
-
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:20px;
-    }
-
-
-    /* ==================================================
-       GLOBAL WATER FUND BRAND
-       ================================================== */
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+<title>Global Water Fund — Planetary Stability</title>
+
+<style>
+
+:root{
+  --bg:#05060a;
+  --bg2:#0b0f1a;
+  --ink:rgba(245,248,255,.92);
+  --muted:rgba(245,248,255,.76);
+  --muted2:rgba(245,248,255,.56);
+  --line:rgba(245,248,255,.12);
+  --accent:#78dcff;
+  --glass:rgba(0,0,0,.78);
+}
+
+/* =========================================================
+   RESET + MOBILE SCROLL
+   ========================================================= */
+
+*{
+  box-sizing:border-box;
+}
+
+html{
+  margin:0;
+  padding:0;
+  width:100%;
+  min-height:100%;
+  overflow-x:hidden;
+  overflow-y:auto;
+  -webkit-text-size-adjust:100%;
+}
 
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:10px;
+body{
+  margin:0;
+  padding:0;
+  width:100%;
+  min-height:100vh;
 
-      color:var(--muted2);
+  overflow-x:hidden;
+  overflow-y:auto;
 
-      font-size:11px;
-      letter-spacing:.26em;
-      text-transform:uppercase;
+  -webkit-overflow-scrolling:touch;
 
-      white-space:nowrap;
+  background:
+    radial-gradient(
+      1200px 900px at 60% 30%,
+      var(--bg2) 0%,
+      var(--bg) 60%,
+      #04050a 100%
+    );
 
-      transition:color .25s ease;
-    }
+  color:var(--ink);
 
-    .brand:hover{
-      color:#fff;
-    }
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Arial,
+    sans-serif;
+}
 
-    .dot{
-      width:9px;
-      height:9px;
-      flex:0 0 9px;
+a{
+  color:inherit;
+  text-decoration:none;
+}
 
-      border-radius:50%;
 
-      background:var(--accent);
+/* =========================================================
+   EARTH CANVAS
+   ========================================================= */
 
-      box-shadow:
-        0 0 14px rgba(120,220,255,.38);
-    }
+canvas{
+  position:fixed;
+  inset:0;
 
+  width:100%;
+  height:100%;
 
-    /* ==================================================
-       MENU BUTTON
-       ================================================== */
+  display:block;
 
-    .menuButton{
-      appearance:none;
-      -webkit-appearance:none;
+  pointer-events:none;
 
-      border:
-        1px solid rgba(245,248,255,.24);
+  z-index:0;
+}
 
-      background:
-        rgba(255,255,255,.04);
 
-      color:
-        rgba(245,248,255,.90);
+/* =========================================================
+   PAGE
+   ========================================================= */
 
-      padding:10px 15px;
+.wrap{
+  position:relative;
+  z-index:1;
+  min-height:150vh;
+}
 
-      border-radius:999px;
+.hero{
+  position:relative;
 
-      font-family:inherit;
-      font-size:10px;
-      letter-spacing:.24em;
-      text-transform:uppercase;
+  min-height:100vh;
+  min-height:100svh;
+  min-height:100dvh;
 
-      cursor:pointer;
+  overflow:hidden;
+}
 
-      transition:
-        border-color .25s ease,
-        background .25s ease,
-        color .25s ease;
-    }
 
-    .menuButton:hover{
-      color:#fff;
+/* =========================================================
+   PLANETARY CONTENT
+   ========================================================= */
 
-      border-color:
-        rgba(120,220,255,.55);
+.overlay{
+  position:relative;
+  z-index:10;
 
-      background:
-        rgba(120,220,255,.08);
-    }
+  min-height:100vh;
+  min-height:100svh;
+  min-height:100dvh;
 
+  display:grid;
 
-    /* ==================================================
-       FULL SCREEN MENU
-       ================================================== */
+  grid-template-columns:
+    minmax(280px,540px)
+    1fr;
 
-    .menuOverlay{
-      position:fixed;
-      inset:0;
+  gap:clamp(16px,3vw,44px);
 
-      z-index:3000;
+  align-items:center;
 
-      display:none;
+  padding-top:
+    calc(90px + env(safe-area-inset-top));
 
-      width:100%;
+  padding-bottom:
+    calc(30px + env(safe-area-inset-bottom));
 
-      min-height:100vh;
-      min-height:100dvh;
+  padding-left:
+    calc(18px + env(safe-area-inset-left));
 
-      overflow-x:hidden;
-      overflow-y:auto;
+  padding-right:
+    calc(18px + env(safe-area-inset-right));
 
-      -webkit-overflow-scrolling:touch;
+  padding-inline:
+    clamp(18px,4.5vw,64px);
 
-      background:
-        radial-gradient(
-          900px 700px at 50% 30%,
-          rgba(11,15,26,.99) 0%,
-          rgba(5,6,10,.99) 65%,
-          #04050a 100%
-        );
-    }
+  pointer-events:none;
+}
 
-    .menuOverlay.open{
-      display:block;
-    }
 
+/* =========================================================
+   TEXT
+   ========================================================= */
 
-    /* ==================================================
-       MENU TOP
-       ================================================== */
+.copy{
+  max-width:520px;
+}
 
-    .menuTop{
-      position:sticky;
-      top:0;
-      z-index:2;
+.kicker{
+  margin-bottom:14px;
 
-      width:100%;
+  color:var(--muted2);
 
-      padding:14px 18px;
+  font-size:12px;
 
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:20px;
+  letter-spacing:.20em;
 
-      background:
-        rgba(5,6,10,.97);
+  text-transform:uppercase;
+}
 
-      border-bottom:
-        1px solid var(--line);
+h1{
+  margin:0 0 12px 0;
 
-      backdrop-filter:blur(12px);
-      -webkit-backdrop-filter:blur(12px);
-    }
+  font-size:clamp(22px,2.4vw,34px);
 
-    .menuTitle{
-      display:flex;
-      align-items:center;
-      gap:10px;
+  line-height:1.15;
 
-      color:var(--muted2);
+  font-weight:700;
 
-      font-size:11px;
-      letter-spacing:.26em;
-      text-transform:uppercase;
-    }
+  letter-spacing:.14em;
 
-    .closeButton{
-      appearance:none;
-      -webkit-appearance:none;
+  text-transform:uppercase;
+}
 
-      border:
-        1px solid rgba(245,248,255,.24);
+.sectionTitle{
+  margin-top:10px;
 
-      background:
-        rgba(255,255,255,.04);
+  color:rgba(245,248,255,.62);
 
-      color:
-        rgba(245,248,255,.88);
+  font-size:12px;
 
-      padding:10px 14px;
+  letter-spacing:.18em;
 
-      border-radius:999px;
+  text-transform:uppercase;
+}
 
-      font-family:inherit;
-      font-size:10px;
-      letter-spacing:.22em;
-      text-transform:uppercase;
+.copy p{
+  margin:10px 0;
 
-      cursor:pointer;
-    }
+  color:var(--muted);
 
+  font-size:clamp(13px,1.15vw,15px);
 
-    /* ==================================================
-       MENU LINKS
-       ================================================== */
+  line-height:1.92;
 
-    .menuCenter{
-      width:100%;
+  text-align:justify;
 
-      min-height:
-        calc(100vh - 65px);
+  text-justify:inter-word;
+}
 
-      min-height:
-        calc(100dvh - 65px);
 
-      display:flex;
-      align-items:center;
-      justify-content:center;
+/* =========================================================
+   REVEAL LINE
+   ========================================================= */
 
-      padding:40px 24px 60px;
-    }
+.revealLine{
+  margin-top:18px;
 
-    .menuLinks{
-      width:min(520px,100%);
+  color:rgba(245,248,255,.64);
 
-      display:flex;
-      flex-direction:column;
+  font-size:12px;
 
-      text-align:center;
-    }
+  letter-spacing:.20em;
 
-    .menuLinks a{
-      position:relative;
+  text-transform:uppercase;
 
-      display:block;
+  opacity:0;
 
-      padding:14px 10px;
+  transform:translateY(8px);
 
-      color:
-        rgba(245,248,255,.60);
+  transition:
+    opacity 1.4s ease,
+    transform 1.4s ease;
+}
 
-      font-size:
-        clamp(15px,2vw,19px);
+.revealLine.on{
+  opacity:1;
+  transform:translateY(0);
+}
 
-      letter-spacing:.22em;
 
-      text-transform:uppercase;
+/* =========================================================
+   PLANETARY VISUAL
+   ========================================================= */
 
-      transition:
-        color .25s ease,
-        letter-spacing .25s ease;
-    }
+.viz{
+  width:min(84vh,880px);
+  height:min(84vh,880px);
 
-    .menuLinks a:hover{
-      color:#fff;
-      letter-spacing:.27em;
-    }
+  justify-self:center;
+}
 
-    .menuLinks a.current{
-      color:#fff;
-    }
+.viz svg{
+  width:100%;
+  height:100%;
 
-    .menuLinks a.current::after{
-      content:"";
+  display:block;
 
-      position:absolute;
+  overflow:visible;
+}
 
-      left:50%;
-      bottom:6px;
+.labels{
+  font-weight:750;
 
-      transform:
-        translateX(-50%);
+  font-size:20px;
 
-      width:30px;
-      height:1px;
+  letter-spacing:.10em;
 
-      background:var(--accent);
+  fill:rgba(245,248,255,.92);
 
-      opacity:.85;
-    }
+  text-transform:uppercase;
+}
 
+.labels tspan{
+  letter-spacing:.08em;
+}
 
-    /* ==================================================
-       EARTH CANVAS
-       ================================================== */
+.cone{
+  opacity:.10;
 
-    canvas{
-      position:fixed;
-      inset:0;
+  transition:opacity 150ms linear;
+}
 
-      width:100%;
-      height:100%;
 
-      display:block;
+/* =========================================================
+   HEADER
+   ========================================================= */
 
-      pointer-events:none;
+.site-header{
+  position:fixed;
 
-      z-index:0;
-    }
+  top:0;
+  left:0;
+  right:0;
 
+  z-index:1000;
 
-    /* ==================================================
-       PAGE STRUCTURE
-       ================================================== */
+  width:100%;
 
-    .wrap{
-      min-height:150vh;
-      position:relative;
-      z-index:1;
-    }
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(0,0,0,.84),
+      rgba(0,0,0,.42)
+    );
 
-    .hero{
-      min-height:100vh;
-      min-height:100svh;
-      min-height:100dvh;
+  border-bottom:1px solid var(--line);
 
-      position:relative;
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
 
-      overflow:visible;
-    }
+  pointer-events:auto;
+}
 
-    .overlay{
-      position:relative;
-      z-index:10;
+.header-inner{
+  width:100%;
+  max-width:1120px;
 
-      min-height:
-        calc(100vh - 65px);
+  margin:0 auto;
 
-      display:grid;
+  padding:14px 18px;
 
-      grid-template-columns:
-        minmax(280px,540px) 1fr;
+  display:flex;
 
-      gap:
-        clamp(16px,3vw,44px);
+  align-items:center;
 
-      align-items:center;
+  justify-content:space-between;
 
-      padding-top:
-        calc(18px + env(safe-area-inset-top));
+  gap:20px;
+}
 
-      padding-bottom:
-        calc(40px + env(safe-area-inset-bottom));
 
-      padding-left:
-        calc(18px + env(safe-area-inset-left));
+/* =========================================================
+   GLOBAL WATER FUND HOME LINK
+   ========================================================= */
 
-      padding-right:
-        calc(18px + env(safe-area-inset-right));
+.brand{
+  display:flex;
 
-      padding-inline:
-        clamp(18px,4.5vw,64px);
+  align-items:center;
 
-      pointer-events:none;
-    }
+  gap:10px;
 
+  color:var(--muted2);
 
-    /* ==================================================
-       TEXT
-       ================================================== */
+  font-size:11px;
 
-    .kicker{
-      text-transform:uppercase;
+  letter-spacing:.26em;
 
-      letter-spacing:.20em;
+  text-transform:uppercase;
 
-      font-size:12px;
+  white-space:nowrap;
 
-      color:var(--muted2);
+  cursor:pointer;
 
-      margin-bottom:14px;
-    }
+  pointer-events:auto;
 
-    h1{
-      margin:0 0 12px 0;
+  transition:color .25s ease;
+}
 
-      font-size:
-        clamp(22px,2.4vw,34px);
+.brand:hover{
+  color:#fff;
+}
 
-      line-height:1.15;
+.dot{
+  width:9px;
+  height:9px;
 
-      font-weight:700;
+  flex:0 0 9px;
 
-      letter-spacing:.14em;
+  border-radius:50%;
 
-      text-transform:uppercase;
-    }
+  background:var(--accent);
 
-    .sectionTitle{
-      margin-top:10px;
+  box-shadow:
+    0 0 14px rgba(120,220,255,.35);
+}
 
-      font-size:12px;
 
-      letter-spacing:.18em;
+/* =========================================================
+   MENU BUTTON
+   ========================================================= */
 
-      text-transform:uppercase;
+.menu-button{
+  appearance:none;
+  -webkit-appearance:none;
 
-      color:
-        rgba(245,248,255,.62);
-    }
+  border:
+    1px solid rgba(245,248,255,.24);
 
-    .copy{
-      max-width:520px;
-    }
+  background:
+    rgba(255,255,255,.04);
 
-    .copy p{
-      margin:10px 0;
+  color:
+    rgba(245,248,255,.88);
 
-      font-size:
-        clamp(13px,1.15vw,15px);
+  padding:10px 15px;
 
-      line-height:1.92;
+  border-radius:999px;
 
-      text-align:justify;
+  font-family:inherit;
 
-      text-justify:inter-word;
+  font-size:10px;
 
-      color:var(--muted);
-    }
+  letter-spacing:.24em;
 
-    .revealLine{
-      margin-top:18px;
+  text-transform:uppercase;
 
-      font-size:12px;
+  cursor:pointer;
 
-      letter-spacing:.20em;
+  pointer-events:auto;
 
-      text-transform:uppercase;
+  transition:
+    border-color .25s ease,
+    background .25s ease,
+    color .25s ease;
+}
 
-      color:
-        rgba(245,248,255,.64);
+.menu-button:hover{
+  color:#fff;
 
-      opacity:0;
+  border-color:
+    rgba(120,220,255,.55);
 
-      transform:
-        translateY(8px);
+  background:
+    rgba(120,220,255,.08);
+}
 
-      transition:
-        opacity 1.4s ease,
-        transform 1.4s ease;
-    }
 
-    .revealLine.on{
-      opacity:1;
+/* =========================================================
+   FULL SCREEN MENU
+   ========================================================= */
 
-      transform:
-        translateY(0);
-    }
+.menu-overlay{
+  position:fixed;
 
+  inset:0;
 
-    /* ==================================================
-       PLANETARY DIAGRAM
-       ================================================== */
+  z-index:3000;
 
-    .viz{
-      width:
-        min(84vh,880px);
+  display:none;
 
-      height:
-        min(84vh,880px);
+  width:100%;
 
-      justify-self:center;
-    }
+  min-height:100vh;
+  min-height:100dvh;
 
-    .viz svg{
-      width:100%;
-      height:100%;
+  overflow-x:hidden;
+  overflow-y:auto;
 
-      display:block;
+  -webkit-overflow-scrolling:touch;
 
-      overflow:visible;
-    }
+  pointer-events:auto;
 
-    .labels{
-      font-weight:750;
+  background:
+    radial-gradient(
+      900px 700px at 50% 30%,
+      rgba(11,15,26,.98) 0%,
+      rgba(5,6,10,.99) 65%,
+      #04050a 100%
+    );
+}
 
-      font-size:20px;
+.menu-overlay.open{
+  display:block;
+}
 
-      letter-spacing:.10em;
 
-      fill:
-        rgba(245,248,255,.92);
+/* =========================================================
+   MENU HEADER
+   ========================================================= */
 
-      text-transform:uppercase;
-    }
+.menu-top{
+  position:sticky;
 
-    .labels tspan{
-      letter-spacing:.08em;
-    }
+  top:0;
 
-    .cone{
-      opacity:.10;
+  z-index:2;
 
-      transition:
-        opacity 150ms linear;
-    }
+  width:100%;
 
+  padding:14px 18px;
 
-    /* ==================================================
-       TABLET + MOBILE
-       ================================================== */
+  display:flex;
 
-    @media (max-width:980px){
+  align-items:center;
 
-      html,
-      body{
-        height:auto;
+  justify-content:space-between;
 
-        min-height:100%;
+  gap:20px;
 
-        overflow-x:hidden;
-        overflow-y:auto;
+  background:
+    rgba(5,6,10,.96);
 
-        -webkit-overflow-scrolling:touch;
-      }
+  border-bottom:
+    1px solid var(--line);
 
-      .headerInner{
-        padding:12px 16px;
-      }
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+}
 
-      .brand{
-        font-size:10px;
+.menu-title{
+  display:flex;
 
-        letter-spacing:.18em;
-      }
+  align-items:center;
 
-      .dot{
-        width:8px;
-        height:8px;
+  gap:10px;
 
-        flex-basis:8px;
-      }
+  color:var(--muted2);
 
-      .menuButton{
-        padding:9px 12px;
+  font-size:11px;
 
-        font-size:9px;
+  letter-spacing:.26em;
 
-        letter-spacing:.20em;
-      }
+  text-transform:uppercase;
+}
 
-      .menuTop{
-        padding:12px 16px;
-      }
+.menu-close{
+  appearance:none;
+  -webkit-appearance:none;
 
-      .menuTitle{
-        font-size:10px;
+  border:
+    1px solid rgba(245,248,255,.24);
 
-        letter-spacing:.18em;
-      }
+  background:
+    rgba(255,255,255,.04);
 
-      .closeButton{
-        padding:9px 12px;
+  color:
+    rgba(245,248,255,.85);
 
-        font-size:9px;
-      }
+  padding:10px 14px;
 
-      .menuCenter{
-        min-height:0;
+  border-radius:999px;
 
-        align-items:flex-start;
+  font-family:inherit;
 
-        padding:
-          38px
-          20px
-          70px;
-      }
+  font-size:10px;
 
-      .menuLinks a{
-        padding:12px 8px;
+  letter-spacing:.22em;
 
-        font-size:15px;
+  text-transform:uppercase;
 
-        letter-spacing:.18em;
-      }
+  cursor:pointer;
+}
 
-      .wrap{
-        min-height:auto;
-      }
+.menu-close:hover{
+  color:#fff;
 
-      .hero{
-        min-height:auto;
+  border-color:
+    rgba(120,220,255,.55);
 
-        overflow:visible;
-      }
+  background:
+    rgba(120,220,255,.08);
+}
 
-      .overlay{
-        min-height:auto;
 
-        grid-template-columns:1fr;
+/* =========================================================
+   MENU LINKS
+   ========================================================= */
 
-        align-content:start;
+.menu-center{
+  width:100%;
 
-        gap:14px;
+  min-height:
+    calc(100vh - 65px);
 
-        padding-inline:18px;
+  min-height:
+    calc(100dvh - 65px);
 
-        padding-top:
-          calc(38px + env(safe-area-inset-top));
+  display:flex;
 
-        padding-bottom:
-          calc(80px + env(safe-area-inset-bottom));
-      }
+  align-items:center;
 
-      .copy p{
-        text-align:left;
+  justify-content:center;
 
-        line-height:1.75;
+  padding:40px 24px 60px;
+}
 
-        margin:8px 0;
-      }
+.menu-links{
+  width:min(520px,100%);
 
-      .viz{
-        width:
-          min(92vw,620px);
+  display:flex;
 
-        height:
-          min(92vw,620px);
+  flex-direction:column;
 
-        margin:0 auto;
+  text-align:center;
+}
 
-        padding-bottom:46px;
-      }
+.menu-links a{
+  position:relative;
 
-      .labels{
-        font-size:19px;
+  display:block;
 
-        letter-spacing:.06em;
-      }
+  padding:14px 10px;
 
-      .labels tspan{
-        letter-spacing:.05em;
-      }
+  color:
+    rgba(245,248,255,.60);
 
-    }
+  font-size:
+    clamp(15px,2vw,19px);
 
+  font-weight:400;
 
-    @media (max-width:600px){
+  letter-spacing:.22em;
 
-      .kicker{
-        font-size:10px;
+  text-transform:uppercase;
 
-        letter-spacing:.17em;
-      }
+  transition:
+    color .25s ease,
+    letter-spacing .25s ease;
+}
 
-      h1{
-        font-size:
-          clamp(24px,8vw,32px);
+.menu-links a:hover{
+  color:#fff;
 
-        letter-spacing:.10em;
-      }
+  letter-spacing:.27em;
+}
 
-      .sectionTitle{
-        font-size:10px;
+.menu-links a.current{
+  color:#fff;
+}
 
-        letter-spacing:.14em;
-      }
+.menu-links a.current::after{
+  content:"";
 
-      .copy p{
-        font-size:14px;
+  position:absolute;
 
-        line-height:1.72;
-      }
+  left:50%;
 
-      .revealLine{
-        font-size:10px;
+  bottom:6px;
 
-        letter-spacing:.15em;
-      }
+  transform:
+    translateX(-50%);
 
-    }
+  width:30px;
 
-  </style>
+  height:1px;
+
+  background:var(--accent);
+
+  opacity:.8;
+}
+
+
+/* =========================================================
+   TABLET / MOBILE
+   ========================================================= */
+
+@media (max-width:980px){
+
+  .wrap{
+    min-height:auto;
+  }
+
+  .hero{
+    overflow:visible;
+    min-height:auto;
+  }
+
+  .overlay{
+    min-height:auto;
+
+    grid-template-columns:1fr;
+
+    align-content:start;
+
+    gap:14px;
+
+    padding-inline:18px;
+
+    padding-top:
+      calc(90px + env(safe-area-inset-top));
+
+    padding-bottom:
+      calc(50px + env(safe-area-inset-bottom));
+  }
+
+  .copy p{
+    text-align:left;
+
+    line-height:1.75;
+
+    margin:8px 0;
+  }
+
+  .viz{
+    width:min(92vw,620px);
+
+    height:auto;
+
+    aspect-ratio:1 / 1;
+
+    margin:0 auto;
+
+    padding-bottom:46px;
+  }
+
+  .labels{
+    font-size:19px;
+
+    letter-spacing:.06em;
+  }
+
+  .labels tspan{
+    letter-spacing:.05em;
+  }
+}
+
+
+/* =========================================================
+   PHONE
+   ========================================================= */
+
+@media (max-width:600px){
+
+  html,
+  body{
+    height:auto;
+
+    min-height:100%;
+
+    overflow-x:hidden;
+
+    overflow-y:auto;
+  }
+
+  .header-inner{
+    padding:12px 16px;
+  }
+
+  .brand{
+    font-size:10px;
+
+    letter-spacing:.18em;
+  }
+
+  .dot{
+    width:8px;
+
+    height:8px;
+
+    flex-basis:8px;
+  }
+
+  .menu-button{
+    padding:9px 12px;
+
+    font-size:9px;
+
+    letter-spacing:.20em;
+  }
+
+  .menu-top{
+    padding:12px 16px;
+  }
+
+  .menu-title{
+    font-size:10px;
+
+    letter-spacing:.18em;
+  }
+
+  .menu-close{
+    padding:9px 12px;
+
+    font-size:9px;
+  }
+
+  .menu-center{
+    min-height:0;
+
+    align-items:flex-start;
+
+    padding:38px 20px 70px;
+  }
+
+  .menu-links a{
+    padding:12px 8px;
+
+    font-size:15px;
+
+    letter-spacing:.18em;
+  }
+
+  .overlay{
+    padding-top:
+      calc(82px + env(safe-area-inset-top));
+
+    padding-left:
+      calc(18px + env(safe-area-inset-left));
+
+    padding-right:
+      calc(18px + env(safe-area-inset-right));
+
+    padding-bottom:
+      calc(60px + env(safe-area-inset-bottom));
+  }
+
+  .kicker{
+    font-size:10px;
+
+    letter-spacing:.18em;
+  }
+
+  h1{
+    font-size:clamp(22px,7vw,30px);
+
+    letter-spacing:.10em;
+  }
+
+  .sectionTitle{
+    font-size:11px;
+
+    letter-spacing:.14em;
+  }
+
+  .copy p{
+    font-size:14px;
+
+    line-height:1.75;
+  }
+
+  .revealLine{
+    font-size:10px;
+
+    letter-spacing:.16em;
+
+    line-height:1.7;
+  }
+
+  .viz{
+    width:min(96vw,560px);
+
+    padding-bottom:55px;
+  }
+
+  .labels{
+    font-size:18px;
+  }
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion:reduce){
+
+  *,
+  *::before,
+  *::after{
+    transition:none !important;
+  }
+}
+
+</style>
 </head>
-
 
 <body>
 
 
-<!-- ==================================================
+<!-- ======================================================
      GLOBAL HEADER
-     ================================================== -->
+     ====================================================== -->
 
-<header class="siteHeader">
+<header class="site-header">
 
-  <div class="headerInner">
+  <div class="header-inner">
 
     <a
       class="brand"
       href="/"
-      aria-label="Global Water Fund homepage">
+      aria-label="Return to Global Water Fund homepage">
 
       <span class="dot"></span>
 
@@ -782,9 +885,8 @@
 
     </a>
 
-
     <button
-      class="menuButton"
+      class="menu-button"
       id="menuButton"
       type="button"
       aria-label="Open navigation menu"
@@ -800,32 +902,27 @@
 </header>
 
 
-<!-- ==================================================
+<!-- ======================================================
      FULL SCREEN MENU
-     ================================================== -->
+     ====================================================== -->
 
 <div
-  class="menuOverlay"
+  class="menu-overlay"
   id="siteMenu"
   aria-hidden="true">
 
+  <div class="menu-top">
 
-  <div class="menuTop">
-
-    <a
-      class="menuTitle"
-      href="/"
-      aria-label="Global Water Fund homepage">
+    <div class="menu-title">
 
       <span class="dot"></span>
 
       GLOBAL WATER FUND
 
-    </a>
-
+    </div>
 
     <button
-      class="closeButton"
+      class="menu-close"
       id="menuClose"
       type="button"
       aria-label="Close navigation menu">
@@ -837,68 +934,60 @@
   </div>
 
 
-  <div class="menuCenter">
+  <div class="menu-center">
 
     <nav
-      class="menuLinks"
+      class="menu-links"
       aria-label="Primary navigation">
 
-
       <a
-        href="/earth/planetary.html"
+        href="/planetary.html"
         class="current"
         aria-current="page">
 
-        PLANETARY
+        Planetary
 
       </a>
 
+      <a href="/map.html">
 
-      <a href="/earth/map.html">
-
-        MAP
-
-      </a>
-
-
-      <a href="/earth/capabilities.html">
-
-        CAPABILITIES
+        Map
 
       </a>
 
+      <a href="/capabilities.html">
 
-      <a href="/earth/forecasting.html">
-
-        FORESIGHT
-
-      </a>
-
-
-      <a href="/earth/maritime.html">
-
-        MARITIME
+        Capabilities
 
       </a>
 
+      <a href="/forecasting.html">
 
-      <a href="/earth/capital.html">
-
-        CAPITAL
-
-      </a>
-
-
-      <a href="/earth/about.html">
-
-        ABOUT
+        Foresight
 
       </a>
 
+      <a href="/maritime.html">
 
-      <a href="/earth/contact.html">
+        Maritime
 
-        CONTACT
+      </a>
+
+      <a href="/capital.html">
+
+        Capital
+
+      </a>
+
+      <a href="/about.html">
+
+        About
+
+      </a>
+
+      <a href="/contact.html">
+
+        Contact
 
       </a>
 
@@ -909,9 +998,9 @@
 </div>
 
 
-<!-- ==================================================
+<!-- ======================================================
      PLANETARY PAGE
-     ================================================== -->
+     ====================================================== -->
 
 <div class="wrap">
 
@@ -919,16 +1008,13 @@
     class="hero"
     id="hero">
 
-
-    <!-- SPINNING EARTH -->
-
     <canvas id="globe"></canvas>
 
 
     <div class="overlay">
 
 
-      <!-- LEFT COPY -->
+      <!-- LEFT SIDE TEXT -->
 
       <div class="copy">
 
@@ -938,13 +1024,11 @@
 
         </div>
 
-
         <h1>
 
           PLANETARY STABILITY THRESHOLDS
 
         </h1>
-
 
         <div class="sectionTitle">
 
@@ -952,27 +1036,26 @@
 
         </div>
 
-
         <p>
 
-          Planetary stability depends on a small number of critical thresholds. When crossed, systems shift — often abruptly and irreversibly.
+          Planetary stability depends on a small number of critical thresholds.
+          When crossed, systems shift — often abruptly and irreversibly.
 
         </p>
 
-
         <p>
 
-          Water sits at the center of multiple thresholds, linking climate variability, ecosystems, food systems, coastlines, and human security.
+          Water sits at the center of multiple thresholds, linking climate
+          variability, ecosystems, food systems, coastlines, and human security.
 
         </p>
 
-
         <p>
 
-          Global Water Fund focuses on where water-related stress pushes systems toward instability — and how strategic intervention preserves resilience.
+          Global Water Fund focuses on where water-related stress pushes systems
+          toward instability — and how strategic intervention preserves resilience.
 
         </p>
-
 
         <div
           id="revealLine"
@@ -985,18 +1068,16 @@
       </div>
 
 
-      <!-- RIGHT PLANETARY DIAGRAM -->
+      <!-- RIGHT SIDE VISUAL -->
 
       <div
         class="viz"
         aria-label="Planetary Stability Cones">
 
-
         <svg
           viewBox="0 0 1000 1000"
           preserveAspectRatio="xMidYMid meet"
           aria-hidden="true">
-
 
           <defs>
 
@@ -1008,15 +1089,15 @@
 
               <stop
                 offset="0%"
-                stop-color="rgba(170,240,255,.26)"/>
+                stop-color="rgba(170,240,255,.26)" />
 
               <stop
                 offset="42%"
-                stop-color="rgba(100,200,255,.12)"/>
+                stop-color="rgba(100,200,255,.12)" />
 
               <stop
                 offset="72%"
-                stop-color="rgba(10,14,24,0)"/>
+                stop-color="rgba(10,14,24,0)" />
 
             </radialGradient>
 
@@ -1026,14 +1107,16 @@
           <g id="chartGroup">
 
 
-            <!-- RINGS -->
+            <!-- HALO -->
 
             <circle
               cx="500"
               cy="500"
               r="430"
-              fill="url(#halo)"/>
+              fill="url(#halo)" />
 
+
+            <!-- RINGS -->
 
             <circle
               cx="500"
@@ -1041,8 +1124,7 @@
               r="210"
               fill="none"
               stroke="rgba(255,255,255,.14)"
-              stroke-width="2"/>
-
+              stroke-width="2" />
 
             <circle
               cx="500"
@@ -1050,8 +1132,7 @@
               r="300"
               fill="none"
               stroke="rgba(255,255,255,.12)"
-              stroke-width="2"/>
-
+              stroke-width="2" />
 
             <circle
               cx="500"
@@ -1059,8 +1140,7 @@
               r="390"
               fill="none"
               stroke="rgba(255,255,255,.10)"
-              stroke-width="2"/>
-
+              stroke-width="2" />
 
             <circle
               cx="500"
@@ -1068,7 +1148,7 @@
               r="460"
               fill="none"
               stroke="rgba(255,255,255,.08)"
-              stroke-width="2"/>
+              stroke-width="2" />
 
 
             <!-- SIX CONES -->
@@ -1076,40 +1156,35 @@
             <path
               class="cone"
               d="M500 500 L500 120 A380 380 0 0 1 829.1 310 Z"
-              fill="rgba(160,220,255,.42)"/>
-
+              fill="rgba(160,220,255,.42)" />
 
             <path
               class="cone"
               d="M500 500 L829.1 310 A380 380 0 0 1 829.1 690 Z"
-              fill="rgba(130,255,230,.34)"/>
-
+              fill="rgba(130,255,230,.34)" />
 
             <path
               class="cone"
               d="M500 500 L829.1 690 A380 380 0 0 1 500 880 Z"
-              fill="rgba(255,210,120,.32)"/>
-
+              fill="rgba(255,210,120,.32)" />
 
             <path
               class="cone"
               d="M500 500 L500 880 A380 380 0 0 1 170.9 690 Z"
-              fill="rgba(140,170,255,.32)"/>
-
+              fill="rgba(140,170,255,.32)" />
 
             <path
               class="cone"
               d="M500 500 L170.9 690 A380 380 0 0 1 170.9 310 Z"
-              fill="rgba(155,255,170,.32)"/>
-
+              fill="rgba(155,255,170,.32)" />
 
             <path
               class="cone"
               d="M500 500 L170.9 310 A380 380 0 0 1 500 120 Z"
-              fill="rgba(255,150,200,.30)"/>
+              fill="rgba(255,150,200,.30)" />
 
 
-            <!-- WATER CENTER -->
+            <!-- CENTER -->
 
             <circle
               cx="500"
@@ -1117,8 +1192,7 @@
               r="74"
               fill="rgba(10,14,24,.58)"
               stroke="rgba(255,255,255,.14)"
-              stroke-width="2"/>
-
+              stroke-width="2" />
 
             <text
               x="500"
@@ -1282,12 +1356,9 @@
 
               </text>
 
-
             </g>
 
-
           </g>
-
 
         </svg>
 
@@ -1300,16 +1371,16 @@
 </div>
 
 
-<!-- ==================================================
+<!-- ======================================================
      THREE.JS
-     ================================================== -->
+     ====================================================== -->
 
 <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
 
 
-<!-- ==================================================
-     SPINNING EARTH + CONE ANIMATION
-     ================================================== -->
+<!-- ======================================================
+     EARTH + PLANETARY ANIMATION
+     ====================================================== -->
 
 <script>
 
@@ -1332,17 +1403,20 @@
       document.querySelectorAll(".cone")
     );
 
-
   const isMobile =
     matchMedia(
       "(max-width: 980px)"
     ).matches;
 
+  const prefersReduced =
+    matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
 
-  if(
-    isMobile &&
-    chartGroup
-  ){
+
+  /* MOBILE POSITIONING */
+
+  if(isMobile && chartGroup){
 
     chartGroup.setAttribute(
       "transform",
@@ -1351,6 +1425,8 @@
 
   }
 
+
+  /* RENDERER */
 
   const renderer =
     new THREE.WebGLRenderer({
@@ -1381,9 +1457,13 @@
     THREE.SRGBColorSpace;
 
 
+  /* SCENE */
+
   const scene =
     new THREE.Scene();
 
+
+  /* CAMERA */
 
   const camera =
     new THREE.PerspectiveCamera(
@@ -1400,6 +1480,8 @@
     6.35
   );
 
+
+  /* LIGHTS */
 
   scene.add(
 
@@ -1445,9 +1527,13 @@
   scene.add(rim);
 
 
-  const smooth =
-    x => x*x*(3-2*x);
+  /* HELPERS */
 
+  const smooth =
+    x => x * x * (3 - 2 * x);
+
+
+  /* RESIZE */
 
   function resize(){
 
@@ -1487,24 +1573,26 @@
   );
 
 
-  let targetPX = 0;
+  /* POINTER MOVEMENT */
 
+  let targetPX = 0;
   let targetPY = 0;
 
   let px = 0;
-
   let py = 0;
 
 
   addEventListener(
+
     "mousemove",
-    (e)=>{
+
+    (event) => {
 
       const nx =
-        (e.clientX / innerWidth) * 2 - 1;
+        (event.clientX / innerWidth) * 2 - 1;
 
       const ny =
-        (e.clientY / innerHeight) * 2 - 1;
+        (event.clientY / innerHeight) * 2 - 1;
 
 
       targetPX =
@@ -1514,15 +1602,19 @@
         ny * 0.08;
 
     },
+
     {
       passive:true
     }
+
   );
 
 
+  /* SCROLL INFLUENCE */
+
   function scrollInfluence(){
 
-    const r =
+    const rect =
       hero.getBoundingClientRect();
 
 
@@ -1534,7 +1626,7 @@
 
         1,
 
-        (-r.top) /
+        (-rect.top) /
         (innerHeight * 0.7)
 
       )
@@ -1543,6 +1635,8 @@
 
   }
 
+
+  /* TEXTURE LOADER */
 
   const loader =
     new THREE.TextureLoader();
@@ -1555,13 +1649,13 @@
   const loadTex =
     url =>
       new Promise(
-        (resolve,reject)=>{
+        (resolve,reject) => {
 
           loader.load(
 
             url,
 
-            texture=>{
+            texture => {
 
               texture.colorSpace =
                 THREE.SRGBColorSpace;
@@ -1596,17 +1690,14 @@
 
 
   let earth;
-
   let clouds;
 
   let revealT = 0;
-
   let revealShown = false;
-
-  let glowClock = 0;
-
   let tick = 0;
 
+
+  /* LOAD EARTH */
 
   Promise.all([
 
@@ -1614,9 +1705,11 @@
 
     loadTex(TEX.clouds)
 
-  ]).then(
+  ])
 
-    ([day,cloudsTex])=>{
+  .then(
+
+    ([day,cloudsTex]) => {
 
 
       const earthMat =
@@ -1687,15 +1780,23 @@
 
     }
 
-  ).catch(function(error){
+  )
 
-    console.error(
-      "Earth textures could not be loaded:",
-      error
-    );
+  .catch(
 
-  });
+    error => {
 
+      console.error(
+        "Earth textures could not load:",
+        error
+      );
+
+    }
+
+  );
+
+
+  /* ANIMATION */
 
   function animate(){
 
@@ -1741,20 +1842,25 @@
       sScroll * 0.30;
 
 
-    earth.rotation.y +=
-      0.0024;
+    if(!prefersReduced){
+
+      earth.rotation.y +=
+        0.0024;
 
 
-    clouds.rotation.y +=
-      0.0030;
+      clouds.rotation.y +=
+        0.0030;
 
 
-    tick +=
-      0.006;
+      tick +=
+        0.006;
 
 
-    earth.rotation.x =
-      Math.sin(tick) * 0.012;
+      earth.rotation.x =
+        Math.sin(tick) *
+        0.012;
+
+    }
 
 
     revealT =
@@ -1768,27 +1874,22 @@
       smooth(revealT);
 
 
-    glowClock +=
-      0.012;
-
-
     const base =
-      0.10 + 0.62 * s;
+      0.10 +
+      0.62 * s;
 
 
     const rotDeg =
+
       (
         (
           earth.rotation.y *
           180 /
           Math.PI
-        )
-        %
+        ) %
+        360 +
         360
-        +
-        360
-      )
-      %
+      ) %
       360;
 
 
@@ -1799,32 +1900,36 @@
 
 
     cones.forEach(
-      (cone,i)=>{
 
-        const d =
+      (cone,index) => {
+
+
+        const distance =
           Math.min(
 
-            (i - idx + 6) % 6,
+            (index - idx + 6) % 6,
 
-            (idx - i + 6) % 6
+            (idx - index + 6) % 6
 
           );
 
 
-        if(d === 0){
+        if(distance === 0){
 
           cone.style.opacity =
             "0.9";
+
 
           cone.style.filter =
             "drop-shadow(0 0 22px rgba(170,240,255,.45))";
 
         }
 
-        else if(d === 1){
+        else if(distance === 1){
 
           cone.style.opacity =
             "0.45";
+
 
           cone.style.filter =
             "drop-shadow(0 0 12px rgba(170,240,255,.25))";
@@ -1836,12 +1941,14 @@
           cone.style.opacity =
             base * 0.2;
 
+
           cone.style.filter =
             "none";
 
         }
 
       }
+
     );
 
 
@@ -1850,7 +1957,9 @@
       revealT > 0.95
     ){
 
-      revealShown = true;
+      revealShown =
+        true;
+
 
       revealLine.classList.add(
         "on"
@@ -1871,9 +1980,9 @@
 </script>
 
 
-<!-- ==================================================
+<!-- ======================================================
      MENU JAVASCRIPT
-     ================================================== -->
+     ====================================================== -->
 
 <script>
 
@@ -1946,7 +2055,9 @@
 
 
   document.addEventListener(
+
     "keydown",
+
     function(event){
 
       if(event.key === "Escape"){
@@ -1956,26 +2067,32 @@
       }
 
     }
+
   );
 
 
-  siteMenu
-    .querySelectorAll("a")
-    .forEach(
-      function(link){
-
-        link.addEventListener(
-          "click",
-          closeMenu
-        );
-
-      }
+  const navigationLinks =
+    siteMenu.querySelectorAll(
+      "a"
     );
+
+
+  navigationLinks.forEach(
+
+    function(link){
+
+      link.addEventListener(
+        "click",
+        closeMenu
+      );
+
+    }
+
+  );
 
 })();
 
 </script>
-
 
 </body>
 </html>
